@@ -63,7 +63,28 @@ curl -s -X POST http://127.0.0.1:8383/api/jobs/<id>/resume -d @selection.json
   If it fails again, use the `fallback_pdf` from the response and set
   `resume_tailored = false`. Never let a resume failure block the application.
 
-### 5. Apply in Chrome
+### 5. Apply — IN GOOGLE CHROME, ALWAYS
+
+**Chrome is NOT Harshil's default browser.** Every application must happen in Google
+Chrome, because that is the browser signed into his accounts (Google, job boards) and
+the one his ATS workarounds are proven against. Never let the OS pick.
+
+- **Claude Code**: use the Chrome browser tools (the connected-Chrome MCP). Before the
+  first job, confirm you are actually driving Chrome — list the connected browsers /
+  tab context and verify. If no Chrome connection is available, STOP and report
+  `deferred` with "Chrome not connected"; do not fall back to any other browser.
+- **Codex**: drive Chrome explicitly through the browser backend. If you must open a
+  URL from a shell, use `open -a "Google Chrome" <url>` on macOS or
+  `google-chrome <url>` on Linux — never a bare `open`/`xdg-open`, which would launch
+  his default browser (Zen) where he is not signed in.
+- If a form opens in the wrong browser, close it and redo the step in Chrome rather
+  than filling it there.
+
+**Gate 0 (before investing in any form)**: navigate to the job URL and read the page
+back. If navigation reports success but the page content is stale or from a different
+URL, that is the known Chrome-extension reversion fault — STOP the whole apply stage,
+report the remaining jobs as `deferred`, and say so plainly. Do not fight it.
+
 Follow Harshil's existing `job-applier` skill for the actual form work — its field map,
 `references/profile.md` (the ONLY source of factual answers), and
 `references/answers-bank.md` (pre-approved verbatim answers) remain authoritative.

@@ -17,11 +17,11 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"os/exec"
 	"regexp"
 	"strings"
 	"time"
 
+	"github.com/harshil/agent/internal/agent"
 	"github.com/harshil/agent/internal/ats"
 	"github.com/harshil/agent/internal/jd"
 	"github.com/harshil/agent/internal/llm"
@@ -43,7 +43,8 @@ func main() {
 	only := fs.String("only", "", "sweep: restrict to one board, as ats:token")
 	listen := fs.String("listen", "127.0.0.1:8383", "daemon: dashboard/API listen address")
 	gateMax := fs.Int("gate-max", 0, "daemon: max LLM gates per cycle (0 = unlimited)")
-	applyCmd := fs.String("apply-cmd", "", "daemon: shell command to run the apply stage after each cycle (empty = off)")
+	backend := fs.String("backend", "auto", "daemon: apply/outreach agent — auto | claude | codex | off")
+	primary := fs.String("primary", "claude", "daemon: which backend auto tries first (claude | codex)")
 	from := fs.String("from", "harshilshukla0502@gmail.com", "outreach-send: From address")
 	dryRun := fs.Bool("dry-run", false, "outreach-send: print what would be sent, send nothing")
 	intervalMin := fs.Int("interval-min", 30, "daemon: min minutes between cycles")
@@ -66,7 +67,20 @@ func main() {
 	case "gate":
 		gate(st, *max)
 	case "daemon":
-		daemon(st, *listen, *gateMax, *intervalMin, *intervalMax, *applyCmd)
+		var runner *agent.Runner
+		if *backend != "off" {
+			cwd, _ := os.Getwd()
+			runner = &agent.Runner{
+				Backend: agent.Backend(*backend),
+				Primary: agent.Backend(*primary),
+				Dir:     cwd,
+			}
+			if !agent.Available(agent.Claude) && !agent.Available(agent.Codex) {
+				die("no apply agent found: install Claude Code or Codex, " +
+					"or run with -backend off to do discovery only")
+			}
+		}
+		daemon(st, *listen, *gateMax, *intervalMin, *intervalMax, runner)
 	case "auth-gmail":
 		authGmail()
 	case "outreach-send":
@@ -212,7 +226,7 @@ func sweep(st *store.Store, max int, only string) (okBoards, failedBoards, newJo
 
 // daemon runs sweep+gate cycles forever on a jittered interval and serves the
 // dashboard/API. This is the process the laptop runs under systemd.
-func daemon(st *store.Store, listen string, gateMax, intervalMin, intervalMax int, applyCmd string) {
+func daemon(st *store.Store, listen string, gateMax, intervalMin, intervalMax int, runner *agent.Runner) {
 	srv := &http.Server{Addr: listen, Handler: web.New(st).Routes()}
 	go func() {
 		fmt.Printf("dashboard on http://%s\n", listen)
@@ -236,18 +250,18 @@ func daemon(st *store.Store, listen string, gateMax, intervalMin, intervalMax in
 		}); err != nil {
 			die("record run: %v", err)
 		}
-		// Hand the shortlist to the apply stage (a headless Claude session).
-		// Trigger on the QUEUE DEPTH, not this cycle's new shortlists — a cycle
-		// that shortlists nothing must still work the jobs already waiting.
-		if applyCmd != "" {
+		// Hand the shortlist downstream. Trigger on QUEUE DEPTH, not this
+		// cycle's new shortlists — a cycle that shortlists nothing must still
+		// work the jobs already waiting.
+		if runner != nil {
 			queued, err := st.JobRows("shortlisted", 1000)
 			if err != nil {
 				die("queue depth: %v", err)
 			}
 			if len(queued) > 0 {
-				runApplyStage(applyCmd, len(queued))
+				runDownstream(runner, len(queued))
 			} else {
-				fmt.Println("apply stage skipped: queue empty")
+				fmt.Println("downstream skipped: apply queue empty")
 			}
 		}
 
@@ -393,21 +407,22 @@ func applyPolicy(v llm.Verdict) (status, note string, score int) {
 	return "shortlisted", note, score
 }
 
-// runApplyStage shells out to the apply worker (normally a headless Claude
-// session running skills/jobd-apply). Output is streamed so the systemd
-// journal shows exactly what the agent did. Never fatal: an apply failure
-// must not kill the discovery daemon.
-func runApplyStage(applyCmd string, shortlisted int) {
-	fmt.Printf("\n--- apply stage: %d shortlisted, running: %s\n", shortlisted, applyCmd)
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Hour)
+// runDownstream drives the apply and outreach stages via a coding-agent CLI
+// (Claude Code or Codex, with quota failover). Never fatal: a downstream
+// failure must not kill the discovery daemon.
+func runDownstream(r *agent.Runner, queued int) {
+	fmt.Printf("\n=== downstream: %d job(s) in the apply queue ===\n", queued)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Hour)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, "sh", "-c", applyCmd)
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	if err := cmd.Run(); err != nil {
+
+	if err := r.Run(ctx, "apply stage", agent.ApplyPrompt); err != nil {
 		fmt.Printf("apply stage failed (continuing): %v\n", err)
-		return
+		return // no point drafting outreach if nothing was applied to
 	}
-	fmt.Println("--- apply stage finished")
+	if err := r.Run(ctx, "outreach drafting", agent.OutreachPrompt); err != nil {
+		fmt.Printf("outreach drafting failed (continuing): %v\n", err)
+	}
+	fmt.Println("=== downstream done ===")
 }
 
 func die(format string, a ...any) {

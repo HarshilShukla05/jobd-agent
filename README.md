@@ -77,7 +77,15 @@ on the dashboard, then `jobd outreach-send` delivers via the Gmail API (send-onl
 scope, his own one-time OAuth). Rails: 20/day cap, 30-120s spacing, 8% trailing-bounce
 circuit breaker, and a bounce permanently blacklists that domain.
 
-**Autonomous loop**: `jobd daemon -apply-cmd deploy/run-apply.sh` runs sweep → prefilter
-→ gate (unlimited) → and then invokes headless Claude sessions for apply + outreach
-drafting. No caps anywhere: every survivor gets gated, every shortlisted job gets
-applied to. See [DEPLOY.md](DEPLOY.md) for the laptop install.
+**Autonomous loop** — one command, no wrapper scripts:
+
+```bash
+./jobd-bin daemon -db jobd.db
+```
+
+Each cycle: release stale claims → sweep → prefilter → gate (unlimited) → and if the
+apply queue is non-empty, invoke a headless coding agent for apply + outreach drafting
+([internal/agent](internal/agent/agent.go)). Backends: `-backend auto` (default) tries
+Claude Code and fails over to Codex **only on quota exhaustion**, so an exhausted
+subscription never stalls the pipeline; `-primary codex` flips the order;
+`-backend off` does discovery only. No caps anywhere. See [DEPLOY.md](DEPLOY.md).

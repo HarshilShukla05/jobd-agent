@@ -32,12 +32,18 @@ carries over (this is what prevents re-applying to anything from v1):
     curl -fsSL https://drop-sh.fullyjustified.net | sh    # tectonic → ./tectonic
     sudo mv tectonic /usr/local/bin/
 
-**Claude Code** (needed by the apply stage — this is the piece that opens the session):
+**A coding agent** — jobd invokes one of these directly for the apply stage. Install
+either or both; with `-backend auto` it uses Claude first and fails over to Codex when
+Claude's usage limit is hit (and `-primary codex` flips that).
 
     curl -fsSL https://claude.ai/install.sh | bash
     claude          # log in once with your Pro account, interactively
+    # and/or
+    codex           # log in once with your ChatGPT account
 
-**Chrome** must be installed and signed in for the apply stage's browser automation.
+**Google Chrome** must be installed and signed into Harshil's accounts. It does NOT
+need to be the OS default browser — the apply skill drives Chrome explicitly — but the
+applications will fail if Chrome is missing or signed out.
 
 ## 4. Install the service
 
@@ -81,11 +87,12 @@ automatically when no App Password is set.
     jobd (systemd)
       └─ every 30-60 min (jittered):
            release stale claims → sweep all boards → prefilter → LLM gate (unlimited)
-           └─ if anything got shortlisted: exec deploy/run-apply.sh
-                ├─ claude -p "follow skills/jobd-apply/SKILL.md"    (applies to ALL of them)
-                └─ claude -p "follow skills/jobd-outreach/SKILL.md" (stages drafts only)
+           └─ if the apply queue is non-empty, invoke a coding agent directly:
+                ├─ apply stage    (applies to ALL queued jobs, in Chrome)
+                └─ outreach draft (stages drafts only, never sends)
+              Backend: claude → falls over to codex on quota exhaustion (-backend auto)
 
-So yes — **jobd opens the Claude Code session itself** on each run. Nothing is capped:
+So yes — **jobd opens the coding-agent session itself** on each run. Nothing is capped:
 every prefilter survivor gets gated, and every shortlisted job gets applied to.
 
 Outreach never sends automatically. Approve drafts on the dashboard, then:
