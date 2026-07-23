@@ -259,7 +259,7 @@ func daemon(st *store.Store, listen string, gateMax, intervalMin, intervalMax in
 				die("queue depth: %v", err)
 			}
 			if len(queued) > 0 {
-				runDownstream(runner, len(queued))
+				runDownstream(st, runner, len(queued))
 			} else {
 				fmt.Println("downstream skipped: apply queue empty")
 			}
@@ -410,16 +410,41 @@ func applyPolicy(v llm.Verdict) (status, note string, score int) {
 // runDownstream drives the apply and outreach stages via a coding-agent CLI
 // (Claude Code or Codex, with quota failover). Never fatal: a downstream
 // failure must not kill the discovery daemon.
-func runDownstream(r *agent.Runner, queued int) {
+//
+// Progress is measured from the database, not the agent's words: if the
+// queue depth didn't move, the backend did nothing, and the failover in
+// agent.Run is allowed to try the other CLI.
+func runDownstream(st *store.Store, r *agent.Runner, queued int) {
 	fmt.Printf("\n=== downstream: %d job(s) in the apply queue ===\n", queued)
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Hour)
 	defer cancel()
 
-	if err := r.Run(ctx, "apply stage", agent.ApplyPrompt); err != nil {
-		fmt.Printf("apply stage failed (continuing): %v\n", err)
-		return // no point drafting outreach if nothing was applied to
+	countShortlisted := func() int {
+		rows, err := st.JobRows("shortlisted", 10000)
+		if err != nil {
+			return -1
+		}
+		return len(rows)
 	}
-	if err := r.Run(ctx, "outreach drafting", agent.OutreachPrompt); err != nil {
+	before := countShortlisted()
+	applyProgressed := func() bool {
+		n := countShortlisted()
+		return n >= 0 && n < before // jobs left the queue = real work happened
+	}
+	if err := r.Run(ctx, "apply stage", agent.ApplyPrompt, applyProgressed); err != nil {
+		fmt.Printf("apply stage failed (continuing): %v\n", err)
+	}
+	if applied := before - countShortlisted(); applied <= 0 {
+		fmt.Println("no jobs left the queue — skipping outreach drafting this cycle")
+		return
+	}
+
+	draftsBefore, _ := st.OutreachByStatus("draft", 1000)
+	outreachProgressed := func() bool {
+		d, err := st.OutreachByStatus("draft", 1000)
+		return err == nil && len(d) > len(draftsBefore)
+	}
+	if err := r.Run(ctx, "outreach drafting", agent.OutreachPrompt, outreachProgressed); err != nil {
 		fmt.Printf("outreach drafting failed (continuing): %v\n", err)
 	}
 	fmt.Println("=== downstream done ===")

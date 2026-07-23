@@ -27,7 +27,9 @@ const (
 )
 
 // quotaRe matches the ways either CLI reports "you are out of usage".
-var quotaRe = regexp.MustCompile(`(?i)usage limit|rate limit|quota|too many requests|\b429\b|out of credit|insufficient_quota|limit reached|upgrade to continue`)
+// Learned the hard way: Claude's actual message was "You've hit your monthly
+// spend limit", which the first version of this regex missed.
+var quotaRe = regexp.MustCompile(`(?i)spend limit|usage limit|monthly limit|weekly limit|session limit|rate.?limit|quota|too many requests|\b429\b|out of credits?|credit balance|insufficient_quota|limit reached|hit your .{0,20}limit|upgrade to continue|resets at`)
 
 type Runner struct {
 	Backend Backend // auto | claude | codex
@@ -49,9 +51,19 @@ const (
 	failed
 )
 
-// Run executes one stage prompt, failing over on quota exhaustion.
-func (r *Runner) Run(ctx context.Context, label, prompt string) error {
+// Run executes one stage prompt, failing over between backends.
+//
+// Failover policy (reliability-first): the secondary runs whenever the
+// primary hit a quota wall OR died without making any progress (progressed
+// reports whether the stage changed real state, e.g. jobs left the queue).
+// The only case that does NOT fail over is a backend that did real work and
+// then failed — rerunning that on a second quota could double-spend effort
+// on a systemic fault, and the atomic claims make a retry next cycle safe.
+func (r *Runner) Run(ctx context.Context, label, prompt string, progressed func() bool) error {
 	fmt.Printf("=== %s ===\n", label)
+	if progressed == nil {
+		progressed = func() bool { return false }
+	}
 
 	if r.Backend != Auto {
 		if !Available(r.Backend) {
@@ -73,25 +85,35 @@ func (r *Runner) Run(ctx context.Context, label, prompt string) error {
 		secondary = Claude
 	}
 
-	for _, b := range []Backend{primary, secondary} {
+	var lastErr error
+	for i, b := range []Backend{primary, secondary} {
 		if !Available(b) {
 			fmt.Printf("--- %s not installed, skipping\n", b)
 			continue
 		}
 		fmt.Printf("--- backend: %s\n", b)
 		res, err := r.exec(ctx, b, prompt)
-		switch res {
-		case ok:
+		lastErr = err
+		if res == ok {
 			return nil
-		case quotaExhausted:
-			fmt.Printf("--- %s is out of quota, failing over\n", b)
-			continue // try the other one
+		}
+		if i == 1 {
+			break // secondary already ran; nothing left to fail over to
+		}
+		switch {
+		case res == quotaExhausted:
+			fmt.Printf("--- %s is out of quota, failing over to %s\n", b, secondary)
+		case !progressed():
+			fmt.Printf("--- %s failed before doing any work (%v), failing over to %s\n", b, err, secondary)
 		default:
-			// a real failure — don't burn the other backend's quota on it
-			return fmt.Errorf("%s failed: %w", b, err)
+			return fmt.Errorf("%s failed after partial progress — not failing over, "+
+				"remaining jobs retry next cycle: %w", b, err)
 		}
 	}
-	return fmt.Errorf("all backends unavailable or out of quota")
+	if lastErr != nil {
+		return fmt.Errorf("all backends failed: %w", lastErr)
+	}
+	return fmt.Errorf("no backend available (install claude or codex)")
 }
 
 func (r *Runner) exec(ctx context.Context, b Backend, prompt string) (result, error) {
@@ -100,7 +122,14 @@ func (r *Runner) exec(ctx context.Context, b Backend, prompt string) (result, er
 	case Claude:
 		cmd = exec.CommandContext(ctx, "claude", "-p", prompt)
 	case Codex:
-		cmd = exec.CommandContext(ctx, "codex", "exec", "--skip-git-repo-check", prompt)
+		// Codex sandboxes shell commands with NO network by default, which
+		// silently breaks every curl to the jobd API — the stage "runs" and
+		// applies to nothing. workspace-write + network_access is required.
+		cmd = exec.CommandContext(ctx, "codex", "exec",
+			"--skip-git-repo-check",
+			"-s", "workspace-write",
+			"-c", "sandbox_workspace_write.network_access=true",
+			prompt)
 	default:
 		return failed, fmt.Errorf("unknown backend %q", b)
 	}

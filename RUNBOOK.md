@@ -3,6 +3,52 @@
 Read this before your first unattended run so you know what is normal and what is a
 real fault.
 
+## Manual override — run any stage yourself
+
+The daemon chains these automatically, but every stage is a standalone command you can
+run by hand when something fails. Order matters only in that each feeds the next.
+
+    cd ~/agent
+
+    # 1. discovery: sweep all 178 boards (no LLM, free)
+    ./jobd-bin sweep -db jobd.db
+
+    # 2. prefilter + LLM gate (add -max 25 to limit spend on a big backlog)
+    ./jobd-bin gate -db jobd.db
+
+    # 3. see what's queued
+    ./jobd-bin stats -db jobd.db
+    sqlite3 jobd.db "SELECT id, score, title, token, note FROM jobs WHERE status='shortlisted' ORDER BY score DESC"
+
+    # 4. apply — pick a backend explicitly
+    claude "Read skills/jobd-apply/SKILL.md and follow it exactly. Work the entire apply queue."
+    # or, if Claude's limit is exhausted (note the sandbox flags — Codex has no
+    # network in its default sandbox and every curl to jobd would return empty):
+    codex exec --skip-git-repo-check -s workspace-write \
+      -c sandbox_workspace_write.network_access=true \
+      "Read skills/jobd-apply/SKILL.md and follow it exactly. Work the entire apply queue."
+
+    # 5. outreach drafting (same backend choice)
+    claude "Read skills/jobd-outreach/SKILL.md and follow it exactly. Stage drafts only."
+
+    # 6. approve drafts at http://127.0.0.1:8383, then send
+    ./jobd-bin outreach-send -db jobd.db -dry-run
+    ./jobd-bin outreach-send -db jobd.db
+
+The dashboard/API needs the daemon running. To get just the dashboard without the
+daemon doing any work: `./jobd-bin daemon -db jobd.db -backend off`.
+
+Single-job manual recovery (when one job is wedged):
+
+    curl -s -X POST http://127.0.0.1:8383/api/jobs/<id>/claim      # 409 = already taken
+    curl -s http://127.0.0.1:8383/api/jobs/<id>/context | less     # JD + experience bank
+    curl -s -X POST http://127.0.0.1:8383/api/jobs/<id>/result \
+      -H 'Content-Type: application/json' \
+      -d '{"status":"applied","note":"applied by hand","resume_tailored":false}'
+
+    # put a job back in the queue
+    sqlite3 jobd.db "UPDATE jobs SET status='shortlisted', note='' WHERE id=<id>"
+
 ## Start it
 
 Terminal 1 — the daemon (leave it open; this is the whole discovery+gate engine):
