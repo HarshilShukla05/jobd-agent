@@ -9,8 +9,18 @@ You are the apply worker for Harshil's job pipeline. `jobd` has already swept th
 boards, prefiltered, and LLM-gated — every job in the queue passed the YoE/location/
 salary gates. Your job: claim, tailor, apply, report. Never re-litigate the gate.
 
-**API base**: `http://127.0.0.1:8383` (assume the daemon is running; if it is not
-reachable, stop and tell Harshil to start it — do not proceed).
+**API base**: `http://127.0.0.1:8383`
+
+### Step 0 — make sure jobd is reachable (do this first, always)
+
+```
+curl -sf http://127.0.0.1:8383/api/stats || (cd ~/agent && (./jobd-bin daemon -db jobd.db -backend off >/tmp/jobd.log 2>&1 &) && sleep 4 && curl -sf http://127.0.0.1:8383/api/stats)
+```
+
+The daemon serves the API this whole skill depends on. If it isn't running, start it
+in API-only mode (`-backend off`, so it does not recursively invoke another apply
+stage) as shown above. If it still won't come up after that, stop and report — do not
+attempt to apply without it.
 
 ## Loop (one job at a time, max 5 per run unless told otherwise)
 
@@ -85,9 +95,15 @@ back. If navigation reports success but the page content is stale or from a diff
 URL, that is the known Chrome-extension reversion fault — STOP the whole apply stage,
 report the remaining jobs as `deferred`, and say so plainly. Do not fight it.
 
-Follow Harshil's existing `job-applier` skill for the actual form work — its field map,
-`references/profile.md` (the ONLY source of factual answers), and
-`references/answers-bank.md` (pre-approved verbatim answers) remain authoritative.
+**Facts come from two files in this repo, and nowhere else:**
+- `references/profile.md` — the ONLY source of factual answers (identity, education,
+  employment, compensation, work authorization, form workarounds).
+- `references/answers-bank.md` — pre-approved verbatim answers to common questions.
+
+If a required field is covered by neither, **skip the job and flag it**. Never guess a
+date, a number, a credential, or a preference. Anything marked `[TODO]` in profile.md
+is unanswerable — skip jobs that require it.
+
 Upload the PDF from step 4.
 
 Carry over these hard-won rules:
