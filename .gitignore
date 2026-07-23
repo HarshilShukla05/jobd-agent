@@ -1,0 +1,26 @@
+# state — regenerable with `jobd seed`, and contains scraped job data
+jobd.db
+jobd.db-wal
+jobd.db-shm
+jobd.db.backup-*
+
+# compiled binaries
+jobd-bin
+resumegen-bin
+jobd-linux
+resumegen-linux
+
+# vendored toolchain (tectonic, ~49MB) — fetched per machine, see DEPLOY.md
+tools/
+
+# render output (generated resumes + per-job selections)
+out/
+
+# never commit credentials — these live in ~/.config/jobd/
+*.pem
+*sa.json
+*token.json
+*client.json
+.env
+resumegen
+jobd

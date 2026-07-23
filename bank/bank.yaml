@@ -1,0 +1,277 @@
+# Master Experience Bank — Harshil Shukla
+# FACTS ARE FROZEN. The LLM selects bullet IDs and approved aliases only; it never
+# writes or edits prose. Style: one line, clean simple English, <=105 chars per bullet.
+# Sources: resume-4.PDF + FRD work summary doc (both 2026-07-22) — validated by Harshil: PENDING.
+# OPEN QUESTION for Harshil: FRD doc says "Oct 2024 - Jul 2025" but resume says intern
+# Jul-Sep 2025 / SE1 Oct 2025-present — resolve before these bullets ship on a resume.
+# A bullet's `conflicts` lists bullets describing the same underlying work — the
+# renderer rejects a selection containing both.
+
+identity:
+  name: Harshil Shukla
+  phone: "+91 7905878588"
+  email: harshilshukla0502@gmail.com
+  linkedin: linkedin.com/in/harshil-shukla
+  github: github.com/HarshilShukla05
+
+education:
+  - school: Maulana Azad National Institute of Technology
+    location: Bhopal, MP
+    degree: B.Tech in Mechanical Engineering, Minor in Computer Science
+    dates: "2021 -- 2025"
+
+experience:
+  - id: clarity-se1
+    company: Clarity App
+    location: Jhansi, UP
+    title: Software Engineer 1
+    dates: "Oct. 2025 -- Present"
+    # tech line is assembled per-JD from this pool (order = selection order)
+    tech_pool: [Go, Node.js, Express, Java, C++, gRPC, GCP, Redis, Temporal, Spanner, Dataflow, Pub/Sub]
+    min_bullets: 4
+    max_bullets: 8
+    bullets:
+      - id: llm-rag-pipeline
+        text: "Optimized an LLM-driven agentic chat pipeline on Apache Beam with Pinecone RAG"
+        tags: [llm, rag, ai, agentic, apache-beam, dataflow, pinecone, vector-db, pipelines]
+      - id: redis-cluster-migration
+        text: "Migrated 3 services from Memorystore to highly available Redis Cluster with zero downtime"
+        tags: [redis, gcp, high-availability, migration, infra, reliability]
+        metric: "3 services, zero downtime"
+      - id: temporal-webhooks
+        text: "Solved 1K/day late Razorpay webhook faults via durable Temporal workflows (Go SDK)"
+        tags: [go, temporal, webhooks, payments, fintech, reliability, workflows]
+        metric: "1K/day"
+      - id: feed-dataflow
+        text: "Built Pub/Sub Dataflow pipeline processing feeds for 10K+ users at sub-20ms p99 reads"
+        tags: [dataflow, pubsub, gcp, feed, realtime, performance, pipelines, streaming]
+        metric: "10K+ users, sub-20ms p99"
+      - id: wal-cpp
+        text: "Implemented Write-Ahead Logging (WAL) in C++ for resilient recovery in a stateful gRPC server"
+        tags: [cpp, grpc, storage, systems, low-level, reliability, databases]
+      - id: rest-apis
+        text: "Shipped 50+ user-listener engagement REST APIs across microservices, meeting business deadlines"
+        tags: [rest, node, microservices, apis, delivery, product]
+        metric: "50+ APIs"
+      - id: bifrost-go-migration
+        text: "Migrated Bifrost from Node.js to Go, re-architected distributed message queues sustaining 1M+ RPS"
+        tags: [go, node, queues, performance, distributed, migration, scale]
+        metric: "1M+ RPS"
+      - id: spanner-consistency
+        text: "Eliminated user-state race conditions via Spanner external consistency, preventing downstream faults"
+        tags: [spanner, gcp, distributed, correctness, concurrency, databases]
+      # --- from FRD work summary (feed & ranking) ---
+      - id: feed-rewrite
+        text: "Rewrote the listener feed service from scratch, replacing legacy logic with a modular design"
+        tags: [architecture, feed, node, refactor, backend, ranking]
+      - id: feed-ranking-windows
+        text: "Replaced rolling-average feed ranking with duration-based sorting over listeners' recent active days"
+        tags: [ranking, algorithms, feed, product, backend]
+      - id: feed-weighted-score
+        text: "Ranked paid-user feeds via a weighted session-duration formula, merging two feeds into one"
+        tags: [ranking, algorithms, feed, monetization, product]
+      - id: boost-feature
+        text: "Shipped a paid boost feature pinning listeners atop the feed for 30 minutes with FIFO ordering"
+        tags: [product, monetization, feed, redis, backend]
+      - id: redis-proxy-removal
+        text: "Replaced an unreliable Redis proxy with native CRUD endpoints in the feed service for pipeline writes"
+        tags: [redis, reliability, architecture, apis, pipelines]
+      - id: feed-index-opt
+        text: "Cut production feed query time significantly by adding a targeted index to the new-user query"
+        tags: [performance, databases, sql, optimization]
+      - id: multi-vertical-feeds
+        text: "Launched separate Astrologer and Counsellor feeds with dedicated call flows and per-type charge rates"
+        tags: [product, feed, backend, launch]
+      - id: cooldown-system
+        text: "Built a configurable listener cooldown system with timers that pause offline and resume on reconnect"
+        tags: [state-machine, redis, product, backend, fairness]
+      # --- payments & wallet ---
+      - id: gst-ab-rollout
+        text: "Ran a GST-at-recharge A/B test across wallet, receipts, and recharge flows, then rolled out to 100%"
+        tags: [ab-testing, payments, fintech, product, rollout]
+      - id: late-webhook-guard
+        text: "Rejected late payment webhooks arriving after the gateway auto-refund window, preventing wrong credits"
+        tags: [payments, webhooks, correctness, fintech, reliability]
+      - id: payment-polling-backup
+        text: "Built a Redis Streams pipeline polling Razorpay every 30s as backup for delayed or missed webhooks"
+        tags: [payments, redis, reliability, pipelines, fintech, webhooks]
+      - id: mid-session-rates
+        text: "Split session billing into per-rate segments so mid-session rate changes pay out exactly"
+        tags: [payments, correctness, billing, fintech]
+      - id: negative-wallet-flow
+        text: "Enforced negative-balance limits with a mandatory recharge flow that auto-restores listener profiles"
+        tags: [payments, product, fintech, backend]
+      - id: auto-wallet-credit
+        text: "Automated manual wallet credits for underpaid sessions, including benefit-rate recalculation"
+        tags: [payments, automation, fintech, backend]
+      # --- AI & onboarding ---
+      - id: onboarding-state-machine
+        text: "Built a resumable state-machine backend for multi-step onboarding with face detection and AI interviews"
+        tags: [state-machine, ai, onboarding, backend, product]
+      - id: ws-audio-recording
+        text: "Recorded AI interview WebSocket sessions asynchronously to GCS as 16-bit audio files"
+        tags: [websocket, gcs, async, ai, audio, realtime]
+      # --- telephony & WebRTC ---
+      - id: telephony-migration
+        text: "Migrated OTP and call traffic between telephony vendors via staged 50-50 splits to full cutover"
+        tags: [migration, telephony, rollout, reliability, backend]
+      - id: turn-stun-failover
+        text: "Built TURN/STUN failover that auto-switches WebRTC traffic to Twilio when primary servers fail"
+        tags: [webrtc, reliability, failover, realtime, voip]
+      # --- analytics & events ---
+      - id: meta-capi-events
+        text: "Logged server-side Meta Conversions API purchase events with device fields for 1:1 ad attribution"
+        tags: [analytics, events, marketing, apis, attribution]
+      # --- infra & security ---
+      - id: redis-dual-write
+        text: "Ran a phased Redis migration with dual-writes to old and new clusters before zero-downtime cutover"
+        tags: [redis, migration, reliability, infra, zero-downtime]
+        conflicts: [redis-cluster-migration]
+      - id: secret-rotation
+        text: "Rotated hardcoded API keys across six services and moved all secrets to GCP Secret Manager"
+        tags: [security, gcp, infra, secrets]
+      - id: authz-fix
+        text: "Closed unauthorized data-access paths in feed APIs exposing other users' data"
+        tags: [security, apis, authorization, backend]
+      - id: webp-optimization
+        text: "Cut image bandwidth platform-wide by converting uploads to WebP while preserving originals"
+        tags: [performance, media, optimization, backend]
+      - id: pubsub-user-state
+        text: "Replaced Redis subscriptions with Pub/Sub for observing listener availability in pipelines"
+        tags: [pubsub, gcp, events, pipelines, architecture]
+      # --- realtime & sessions ---
+      - id: broker-flush-replay
+        text: "Added a broker flush endpoint replaying unacked events on reconnect so no client event is missed"
+        tags: [realtime, reliability, events, websocket, distributed]
+        conflicts: [offline-replay]
+      - id: chat-media-support
+        text: "Added image, streaming audio, and GIF support to chat sessions and inbox messages"
+        tags: [product, media, chat, realtime]
+      - id: server-side-races
+        text: "Fixed connection race conditions by moving session state transitions from the client to the server"
+        tags: [concurrency, correctness, distributed, realtime, mobile]
+      - id: user-state-loss-proof
+        text: "Reworked user-state event routing so session lifecycle events are never lost across reconnects"
+        tags: [reliability, events, realtime, distributed]
+      # --- users & platform ---
+      - id: block-penalty-ledger
+        text: "Built a Spanner ledger with escalating penalties for abusive users, covered by a Jest test suite"
+        tags: [spanner, testing, product, backend, trust-safety]
+      - id: notify-fanout
+        text: "Built listener-online notification fanout with per-user FCM rate caps and deduplication"
+        tags: [notifications, fanout, product, backend, rate-limiting]
+
+  - id: clarity-intern
+    company: Clarity App
+    location: Jhansi, UP
+    title: Software Engineering Intern
+    dates: "Jul. 2025 -- Sep. 2025"
+    tech_pool: [Node.js, HTTP, gRPC, GCP, Redis, WebSocket, Pub/Sub]
+    min_bullets: 2
+    max_bullets: 4
+    bullets:
+      - id: wallet-ab-cicd
+        text: "Deployed a wallet A/B test to production on Day 1 via Jenkins/Spinnaker CI/CD from GitHub to GKE"
+        tags: [cicd, jenkins, spinnaker, gke, kubernetes, delivery, fintech]
+      - id: bifrost-design
+        text: "Designed Bifrost, an event-driven real-time service streaming updates via WebSocket pods"
+        tags: [websocket, realtime, node, events, distributed, streaming, architecture]
+      - id: at-least-once-delivery
+        text: "Implemented at-least-once delivery via Pub/Sub and Redis Streams as pod-specific queues"
+        tags: [pubsub, redis, queues, reliability, distributed, messaging]
+      - id: offline-replay
+        text: "Added offline-replay via Redis Sorted Sets for fault tolerance and zero data loss on client reconnects"
+        tags: [redis, reliability, realtime, fault-tolerance]
+
+  - id: ibm-intern
+    company: IBM
+    location: Bangalore, KA
+    title: SDE Intern
+    dates: "May 2025 -- Jun. 2025"
+    tech_pool: [Jest, ESLint, Node.js, Java, SQL, Jenkins]
+    min_bullets: 2
+    max_bullets: 3
+    bullets:
+      - id: jest-coverage
+        text: "Raised Jest unit test coverage on a microservices-based notification system, hardening CI gates"
+        tags: [testing, jest, node, microservices, quality, ci]
+      - id: ci-quality-gates
+        text: "Added linting and test automation (unit, integration, mutation) as quality gates in Jenkins CI/CD"
+        tags: [testing, cicd, jenkins, quality, automation]
+      - id: sql-migrations
+        text: "Executed 20+ SQL data migrations across microservice-owned table schemas"
+        tags: [sql, databases, migration, microservices]
+        metric: "20+ migrations"
+
+projects:
+  - id: loop
+    name: Loop
+    tech_line: "Go, PostgreSQL, Webhooks, Meta API"
+    dates: "2025 -- 2026"
+    min_bullets: 2
+    max_bullets: 4
+    bullets:
+      - id: loop-webhook-engine
+        text: "Architected an async comment-to-DM automation engine in Go scaling 1M+ daily webhook events"
+        tags: [go, webhooks, async, scale, architecture]
+        metric: "1M+ daily events"
+      - id: loop-pg-queue
+        text: "Built lock-free PostgreSQL job queue for concurrent goroutines"
+        tags: [go, postgresql, queues, concurrency, databases]
+      - id: loop-rate-limiter
+        text: "Engineered thread-safe token-bucket rate limiter in atomic SQL, enforcing Meta's 750/hr API cap"
+        tags: [go, rate-limiting, sql, concurrency, apis]
+        metric: "750/hr cap"
+      - id: loop-idempotency
+        text: "Added per-comment idempotency, exponential backoff, and dead-letter queue for reliability"
+        tags: [reliability, idempotency, queues, distributed]
+
+  - id: rusty
+    name: Rusty
+    tech_line: "Rust, Cargo"
+    dates: "2026"
+    min_bullets: 0        # include only for Rust-relevant JDs or when space allows
+    max_bullets: 2
+    bullets:
+      - id: rusty-book
+        text: "Working through The Rust Book: built guessing game and ownership/pattern matching exercises"
+        tags: [rust, learning, systems]
+      - id: rusty-web-server
+        text: "Targeting the multi-threaded web server final project as next milestone"
+        tags: [rust, learning, concurrency]
+
+# Skills line is assembled per-JD from these pools only. Order within a category is
+# selection order (lead with JD-matching items).
+skills:
+  languages: [Go, Node.js, JavaScript, C++, Java, SQL]
+  cloud_infra: ["GCP (Pub/Sub, Dataflow, GKE)", Kubernetes, Docker, Terraform, Jenkins, Spinnaker]
+  data_storage: [Spanner, PostgreSQL, Redis, MongoDB, BigQuery]
+  systems: [gRPC, REST, Protocol Buffers, Express, WebSockets, Microservices, Distributed Systems, Temporal]
+
+achievements:
+  - id: jee
+    text: "Academics: JEE Advanced AIR 7001 (top 0.5%), JEE Main 99.1 percentile, NTSE Scholar"
+  - id: dsa
+    text: "DSA: 800+ problems solved across LeetCode, GeeksforGeeks, CodeChef"
+
+# Approved semantic mirrors — the ONLY term substitutions the selector may request.
+# Each maps a term as written in a bullet to truthful equivalents a JD might use.
+aliases:
+  Go: [Golang]
+  "Apache Beam": [Dataflow]
+  "Pub/Sub": [pub-sub messaging]
+  WebSocket: [WebSockets]
+  "Redis Cluster": [managed Redis]
+  REST: [RESTful]
+  microservices: [service-oriented architecture]
+  "CI/CD": [continuous delivery]
+  Dataflow: [Apache Beam]
+  FCM: [push notification]
+  Razorpay: [payment gateway]
+  GCS: [Cloud Storage]
+
+# Global layout constraints enforced by resumegen
+constraints:
+  one_page: true
+  max_bullet_chars: 105
+  style: "one line, clean simple English, no added adjectives"

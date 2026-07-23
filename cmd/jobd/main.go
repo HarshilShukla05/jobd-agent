@@ -1,0 +1,418 @@
+// jobd is the deterministic spine of the job pipeline. Commands:
+//
+//	jobd seed  -db jobd.db -skill <v1 SKILL.md>   import registry tokens + ledger
+//	jobd sweep -db jobd.db [-max N]               sweep boards, record new postings
+//	jobd gate  -db jobd.db [-max N]               prefilter 'new' jobs, LLM-gate survivors
+//	jobd stats -db jobd.db                        print table counts
+//
+// The sweep is politeness-hardened per DESIGN.md: sequential per-host requests
+// with 1-3s jittered spacing, conditional GETs, and two-strikes token death.
+package main
+
+import (
+	"bufio"
+	"context"
+	"flag"
+	"fmt"
+	"math/rand"
+	"net/http"
+	"os"
+	"os/exec"
+	"regexp"
+	"strings"
+	"time"
+
+	"github.com/harshil/agent/internal/ats"
+	"github.com/harshil/agent/internal/jd"
+	"github.com/harshil/agent/internal/llm"
+	"github.com/harshil/agent/internal/prefilter"
+	"github.com/harshil/agent/internal/store"
+	"github.com/harshil/agent/internal/web"
+)
+
+func main() {
+	if len(os.Args) < 2 {
+		fmt.Fprintln(os.Stderr, "usage: jobd <seed|sweep|stats> [flags]")
+		os.Exit(2)
+	}
+	cmd, args := os.Args[1], os.Args[2:]
+	fs := flag.NewFlagSet(cmd, flag.ExitOnError)
+	dbPath := fs.String("db", "jobd.db", "sqlite database path")
+	skill := fs.String("skill", "", "seed: path to v1 pipeline SKILL.md")
+	max := fs.Int("max", 0, "sweep: max companies this pass (0 = all)")
+	only := fs.String("only", "", "sweep: restrict to one board, as ats:token")
+	listen := fs.String("listen", "127.0.0.1:8383", "daemon: dashboard/API listen address")
+	gateMax := fs.Int("gate-max", 0, "daemon: max LLM gates per cycle (0 = unlimited)")
+	applyCmd := fs.String("apply-cmd", "", "daemon: shell command to run the apply stage after each cycle (empty = off)")
+	from := fs.String("from", "harshilshukla0502@gmail.com", "outreach-send: From address")
+	dryRun := fs.Bool("dry-run", false, "outreach-send: print what would be sent, send nothing")
+	intervalMin := fs.Int("interval-min", 30, "daemon: min minutes between cycles")
+	intervalMax := fs.Int("interval-max", 60, "daemon: max minutes between cycles")
+	fs.Parse(args)
+
+	st, err := store.Open(*dbPath)
+	if err != nil {
+		die("open db: %v", err)
+	}
+
+	switch cmd {
+	case "seed":
+		if *skill == "" {
+			die("seed requires -skill")
+		}
+		seed(st, *skill)
+	case "sweep":
+		sweep(st, *max, *only)
+	case "gate":
+		gate(st, *max)
+	case "daemon":
+		daemon(st, *listen, *gateMax, *intervalMin, *intervalMax, *applyCmd)
+	case "auth-gmail":
+		authGmail()
+	case "outreach-send":
+		outreachSend(st, *from, *dryRun)
+	case "stats":
+		c, j, l, err := st.Counts()
+		if err != nil {
+			die("stats: %v", err)
+		}
+		fmt.Printf("companies(active): %d  jobs: %d  ledger: %d\n", c, j, l)
+	default:
+		die("unknown command %q", cmd)
+	}
+}
+
+var (
+	tokenRe  = regexp.MustCompile(`\b(greenhouse|lever|ashby|workable|smartrecruiters):([A-Za-z0-9][A-Za-z0-9._-]*)(\??)`)
+	ledgerRe = regexp.MustCompile(`^(https?://\S+)\s*\|\s*([a-z-]+)`)
+)
+
+// seed imports the v1 scheduled task's COMPANY REGISTRY tokens and SEEN JOBS
+// LEDGER lines. Tokens suffixed "?" (failed last v1 run) import as 'unstable'.
+func seed(st *store.Store, skillPath string) {
+	f, err := os.Open(skillPath)
+	if err != nil {
+		die("open skill: %v", err)
+	}
+	defer f.Close()
+
+	var nTok, nLed int
+	sc := bufio.NewScanner(f)
+	sc.Buffer(make([]byte, 1024*1024), 1024*1024)
+	for sc.Scan() {
+		line := sc.Text()
+		if m := ledgerRe.FindStringSubmatch(strings.TrimSpace(line)); m != nil {
+			if err := st.AddLedger(m[1], m[2]); err != nil {
+				die("ledger insert: %v", err)
+			}
+			nLed++
+			continue
+		}
+		for _, m := range tokenRe.FindAllStringSubmatch(line, -1) {
+			status := "active"
+			if m[3] == "?" {
+				status = "unstable"
+			}
+			if err := st.AddCompany(m[1], m[2], status); err != nil {
+				die("company insert: %v", err)
+			}
+			nTok++
+		}
+	}
+	if err := sc.Err(); err != nil {
+		die("scan: %v", err)
+	}
+	fmt.Printf("seeded: %d token refs, %d ledger entries\n", nTok, nLed)
+}
+
+func sweep(st *store.Store, max int, only string) (okBoards, failedBoards, newJobs int) {
+	if max <= 0 {
+		max = 1 << 30
+	}
+	companies, err := st.ActiveCompanies(max)
+	if err != nil {
+		die("companies: %v", err)
+	}
+	if only != "" {
+		ats, token, ok := strings.Cut(only, ":")
+		if !ok {
+			die("-only must be ats:token")
+		}
+		all, err := st.ActiveCompanies(1 << 30)
+		if err != nil {
+			die("companies: %v", err)
+		}
+		companies = nil
+		for _, c := range all {
+			if c.ATS == ats && c.Token == token {
+				companies = []store.Company{c}
+			}
+		}
+		if companies == nil {
+			die("board %s not found or dead", only)
+		}
+	}
+	// randomize order every pass (anti-uniformity, per DESIGN.md)
+	rand.Shuffle(len(companies), func(i, j int) { companies[i], companies[j] = companies[j], companies[i] })
+
+	client := &http.Client{Timeout: 30 * time.Second}
+	ctx := context.Background()
+	var unchanged int
+
+	for i, c := range companies {
+		if i > 0 {
+			time.Sleep(time.Second + time.Duration(rand.Intn(2000))*time.Millisecond)
+		}
+		res, err := ats.Fetch(ctx, client, c.ATS, c.Token, c.ETag)
+		if err != nil {
+			failedBoards++
+			fmt.Printf("FAIL  %s:%s  %v\n", c.ATS, c.Token, err)
+			if err := st.SweepResult(c, "", false); err != nil {
+				die("record fail: %v", err)
+			}
+			continue
+		}
+		okBoards++
+		if res.NotModified {
+			unchanged++
+			if err := st.SweepResult(c, c.ETag, true); err != nil {
+				die("record 304: %v", err)
+			}
+			continue
+		}
+		for _, p := range res.Postings {
+			if _, hit, err := st.InLedger(p.URL); err != nil {
+				die("ledger check: %v", err)
+			} else if hit {
+				continue // already applied/rejected in v1 — never resurface
+			}
+			// same job code under a different URL path (Workable aggregators)
+			if _, hit, err := st.InLedgerByFragment("/" + p.ReqID); err != nil {
+				die("ledger fragment check: %v", err)
+			} else if hit {
+				continue
+			}
+			isNew, err := st.UpsertJob(c.ATS, c.Token, p.ReqID, p.URL, p.Title, p.Location, p.PostedAt)
+			if err != nil {
+				die("upsert: %v", err)
+			}
+			if isNew {
+				newJobs++
+				fmt.Printf("NEW   %-60.60s  %-25.25s  %s\n", p.Title, p.Location, p.URL)
+			}
+		}
+		if err := st.SweepResult(c, res.ETag, true); err != nil {
+			die("record ok: %v", err)
+		}
+	}
+	fmt.Printf("\nsweep done: %d boards ok (%d unchanged), %d failed, %d new postings\n",
+		okBoards, unchanged, failedBoards, newJobs)
+	return okBoards, failedBoards, newJobs
+}
+
+// daemon runs sweep+gate cycles forever on a jittered interval and serves the
+// dashboard/API. This is the process the laptop runs under systemd.
+func daemon(st *store.Store, listen string, gateMax, intervalMin, intervalMax int, applyCmd string) {
+	srv := &http.Server{Addr: listen, Handler: web.New(st).Routes()}
+	go func() {
+		fmt.Printf("dashboard on http://%s\n", listen)
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			die("http: %v", err)
+		}
+	}()
+	for {
+		started := time.Now().UTC()
+		// an apply session that crashed mid-job shouldn't strand it forever
+		if n, err := st.ReleaseStaleClaims(time.Hour); err != nil {
+			die("release claims: %v", err)
+		} else if n > 0 {
+			fmt.Printf("released %d stale claim(s) back to the queue\n", n)
+		}
+		ok, failedB, newJ := sweep(st, 0, "")
+		gatedN, shortN := gate(st, gateMax)
+		if err := st.InsertRun(store.Run{
+			StartedAt: started.Format(time.RFC3339), FinishedAt: time.Now().UTC().Format(time.RFC3339),
+			BoardsOK: ok, BoardsFail: failedB, NewJobs: newJ, Gated: gatedN, Shortlisted: shortN,
+		}); err != nil {
+			die("record run: %v", err)
+		}
+		// Hand the shortlist to the apply stage (a headless Claude session).
+		// Trigger on the QUEUE DEPTH, not this cycle's new shortlists — a cycle
+		// that shortlists nothing must still work the jobs already waiting.
+		if applyCmd != "" {
+			queued, err := st.JobRows("shortlisted", 1000)
+			if err != nil {
+				die("queue depth: %v", err)
+			}
+			if len(queued) > 0 {
+				runApplyStage(applyCmd, len(queued))
+			} else {
+				fmt.Println("apply stage skipped: queue empty")
+			}
+		}
+
+		mins := intervalMin
+		if intervalMax > intervalMin {
+			mins += rand.Intn(intervalMax - intervalMin)
+		}
+		fmt.Printf("cycle done %s — next in %dm\n\n", time.Now().UTC().Format(time.RFC3339), mins)
+		time.Sleep(time.Duration(mins) * time.Minute)
+	}
+}
+
+// YoE policy: Harshil has ~1 year. Roles at or below that are the preferred
+// target; 1-2 years is a reasonable stretch worth applying to (the JD gate
+// has already read the real requirement, and "2 years" postings routinely
+// hire 1-year candidates). Above 2 years is a hard reject — v1 proved those
+// get same-day rejections.
+const (
+	preferredYoE = 1.0
+	maxYoE       = 2.0
+)
+
+var profileStack = []string{"go", "golang", "node", "node.js", "javascript", "java", "c++",
+	"grpc", "rest", "websocket", "redis", "postgres", "postgresql", "spanner", "sql",
+	"gcp", "google cloud", "kubernetes", "docker", "pub/sub", "pubsub", "dataflow",
+	"apache beam", "temporal", "microservices", "distributed"}
+
+// gate runs the $0 prefilter over ALL 'new' jobs, then the LLM gate over up
+// to max survivors (JD fetch -> Gemini extraction -> YoE/salary policy).
+func gate(st *store.Store, max int) (gatedN, shortlistedN int) {
+	if max <= 0 {
+		max = 1 << 30 // unlimited: gate every prefilter survivor this cycle
+	}
+	jobs, err := st.JobsByStatus("new", 1<<30)
+	if err != nil {
+		die("jobs: %v", err)
+	}
+	var kept []store.Job
+	var dropped int
+	for _, j := range jobs {
+		if keep, note := prefilter.Check(j.Title, j.Location); !keep {
+			if err := st.SetJobStatus(j.ID, "rejected_hard", note); err != nil {
+				die("reject: %v", err)
+			}
+			dropped++
+		} else {
+			kept = append(kept, j)
+		}
+	}
+	cap := fmt.Sprint(max)
+	if max >= 1<<30 {
+		cap = "unlimited"
+	}
+	fmt.Printf("prefilter: %d dropped, %d kept (LLM gate cap: %s)\n\n", dropped, len(kept), cap)
+
+	ctx := context.Background()
+	gem, err := llm.NewGeminiFromEnv(ctx)
+	if err != nil {
+		die("gemini: %v", err)
+	}
+	client := &http.Client{Timeout: 30 * time.Second}
+
+	for _, j := range kept {
+		if gatedN >= max {
+			break
+		}
+		time.Sleep(500*time.Millisecond + time.Duration(rand.Intn(1000))*time.Millisecond)
+		text, err := jd.Fetch(ctx, client, j.ATS, j.Token, j.ReqID)
+		if err != nil {
+			if err := st.SetJobStatus(j.ID, "dead", "jd fetch: "+err.Error()); err != nil {
+				die("mark dead: %v", err)
+			}
+			fmt.Printf("DEAD  %-55.55s %v\n", j.Title, err)
+			continue
+		}
+		if len(text) < 200 {
+			if err := st.SetJobStatus(j.ID, "deferred", "jd too short for gate"); err != nil {
+				die("defer: %v", err)
+			}
+			continue
+		}
+		v, raw, err := gem.GateJD(ctx, j.Title, text)
+		gatedN++
+		if err != nil {
+			// schema drift twice -> Claude session queue per DESIGN.md
+			if err := st.SetJobStatus(j.ID, "deferred", "gate escalation: "+err.Error()); err != nil {
+				die("defer: %v", err)
+			}
+			fmt.Printf("ESC   %-55.55s %v\n", j.Title, err)
+			continue
+		}
+		status, note, score := applyPolicy(v)
+		if err := st.SaveGate(j.ID, status, note, raw, v.YoeMin, score); err != nil {
+			die("save gate: %v", err)
+		}
+		if status == "shortlisted" {
+			shortlistedN++
+		}
+		fmt.Printf("%-5s %-55.55s score=%-3d %s\n", strings.ToUpper(status[:4]), j.Title, score, note)
+	}
+	fmt.Printf("\ngate done: %d LLM-gated this pass, %d prefilter-kept remain for next pass\n",
+		gatedN, len(kept)-gatedN)
+	return gatedN, shortlistedN
+}
+
+// applyPolicy turns extracted facts into a verdict. Policy lives here in
+// code — the LLM only ever reports facts.
+func applyPolicy(v llm.Verdict) (status, note string, score int) {
+	if v.YoeMin != nil && *v.YoeMin > maxYoE {
+		return "rejected_hard", fmt.Sprintf("YoE gate: min %.1f > %.1f (%q)", *v.YoeMin, maxYoE, v.YoeEvidence), 0
+	}
+	if v.LocationIndia != nil && !*v.LocationIndia {
+		return "rejected_hard", "JD states non-India location", 0
+	}
+	if v.SalaryMaxLPA != nil && *v.SalaryMaxLPA < 16 {
+		return "rejected_hard", fmt.Sprintf("salary band max %.0f LPA < 16 floor", *v.SalaryMaxLPA), 0
+	}
+	for _, s := range v.Stack {
+		for _, p := range profileStack {
+			if strings.EqualFold(strings.TrimSpace(s), p) {
+				score += 10
+				break
+			}
+		}
+	}
+	if score > 50 {
+		score = 50
+	}
+	switch {
+	case v.YoeMin == nil:
+		score += 5
+		note = "no YoE stated — verify at apply time"
+	case *v.YoeMin <= preferredYoE: // squarely in range
+		score += 20
+		note = fmt.Sprintf("YoE ideal: %.1f (%q)", *v.YoeMin, v.YoeEvidence)
+	default: // 1-2 years: a stretch, still worth applying to
+		score += 10
+		note = fmt.Sprintf("YoE stretch: %.1f vs his ~1yr (%q)", *v.YoeMin, v.YoeEvidence)
+	}
+	if v.LocationIndia != nil && *v.LocationIndia {
+		score += 10
+	}
+	return "shortlisted", note, score
+}
+
+// runApplyStage shells out to the apply worker (normally a headless Claude
+// session running skills/jobd-apply). Output is streamed so the systemd
+// journal shows exactly what the agent did. Never fatal: an apply failure
+// must not kill the discovery daemon.
+func runApplyStage(applyCmd string, shortlisted int) {
+	fmt.Printf("\n--- apply stage: %d shortlisted, running: %s\n", shortlisted, applyCmd)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Hour)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "sh", "-c", applyCmd)
+	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("apply stage failed (continuing): %v\n", err)
+		return
+	}
+	fmt.Println("--- apply stage finished")
+}
+
+func die(format string, a ...any) {
+	fmt.Fprintf(os.Stderr, "jobd: "+format+"\n", a...)
+	os.Exit(1)
+}
+
+func randInt(n int) int { return rand.Intn(n) }

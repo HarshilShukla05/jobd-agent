@@ -1,0 +1,21 @@
+[Unit]
+Description=jobd — job pipeline daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=harshil
+WorkingDirectory=/home/harshil/agent
+EnvironmentFile=/home/harshil/.config/jobd/env
+ExecStart=/home/harshil/agent/jobd-bin daemon \
+  -db /home/harshil/agent/jobd.db \
+  -listen 0.0.0.0:8383 \
+  -apply-cmd /home/harshil/agent/deploy/run-apply.sh
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

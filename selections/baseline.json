@@ -1,0 +1,49 @@
+{
+  "job_id": "baseline",
+  "bullets": {
+    "clarity-se1": [
+      "llm-rag-pipeline",
+      "redis-cluster-migration",
+      "temporal-webhooks",
+      "feed-dataflow",
+      "wal-cpp",
+      "rest-apis",
+      "bifrost-go-migration",
+      "spanner-consistency"
+    ],
+    "clarity-intern": [
+      "wallet-ab-cicd",
+      "bifrost-design",
+      "at-least-once-delivery",
+      "offline-replay"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-pg-queue",
+      "loop-rate-limiter",
+      "loop-idempotency"
+    ],
+    "rusty": [
+      "rusty-book",
+      "rusty-web-server"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": ["Go", "Node.js", "Express", "Java", "gRPC", "GCP", "Redis", "Temporal"],
+    "clarity-intern": ["Node.js", "HTTP", "gRPC", "GCP", "Redis", "WebSocket"],
+    "ibm-intern": ["Jest", "ESLint", "Node.js", "Java", "SQL", "Jenkins"]
+  },
+  "skills": {
+    "languages": ["Go", "Node.js", "JavaScript", "C++", "Java"],
+    "cloud_infra": ["GCP (Pub/Sub, Dataflow, GKE)", "Kubernetes", "Docker", "Terraform", "Jenkins", "Spinnaker"],
+    "data_storage": ["Spanner", "PostgreSQL", "Redis", "MongoDB", "BigQuery"],
+    "systems": ["gRPC", "REST", "Protocol Buffers", "Express", "WebSockets", "Microservices", "Distributed Systems"]
+  },
+  "aliases": [],
+  "include_projects": ["loop", "rusty"]
+}

@@ -1,0 +1,70 @@
+\documentclass[10.5pt]{article}
+% ATS-safe: single column, no tables, no graphics, standard Latin Modern font.
+\usepackage[margin=0.55in]{geometry}
+% ATS: no common ligatures (fi/fl/ff) so extracted text matches ASCII keywords
+\usepackage{fontspec}
+\setmainfont{lmroman10-regular.otf}[
+  BoldFont = lmroman10-bold.otf,
+  ItalicFont = lmroman10-italic.otf,
+  BoldItalicFont = lmroman10-bolditalic.otf,
+  Ligatures = {TeX, NoCommon}]
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{parskip}
+\pagestyle{empty}
+\setlist[itemize]{leftmargin=1.15em, itemsep=0.5pt, parsep=0pt, topsep=1.5pt, label=\textbullet}
+\titleformat{\section}{\normalsize\bfseries\scshape}{}{0em}{}[\vspace{-3pt}\titlerule]
+\titlespacing*{\section}{0pt}{7pt}{4pt}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{<< .Identity.Name >>}}\\[3pt]
+<< .Identity.Phone >> \textbar{} \href{mailto:<< .Identity.Email >>}{<< .Identity.Email >>} \textbar{} \href{https://<< .Identity.Linkedin >>}{<< .Identity.Linkedin >>} \textbar{} \href{https://<< .Identity.Github >>}{<< .Identity.Github >>}
+\end{center}
+
+\section{Education}
+<<- range .Education >>
+\textbf{<< .School >>} \hfill << .Location >>\\
+<< .Degree >> \hfill << .Dates >>
+<<- end >>
+
+\section{Experience}
+<<- range .Experience >>
+\textbf{<< .Company >>} \hfill << .Location >>\\
+\textit{<< .Title >>} $|$ \textit{<< .TechLine >>} \hfill << .Dates >>
+\begin{itemize}
+<<- range .Bullets >>
+  \item << . >>
+<<- end >>
+\end{itemize}
+\vspace{2pt}
+<<- end >>
+
+\section{Projects}
+<<- range .Projects >>
+\textbf{<< .Name >>} $|$ \textit{<< .TechLine >>} \hfill << .Dates >>
+\begin{itemize}
+<<- range .Bullets >>
+  \item << . >>
+<<- end >>
+\end{itemize}
+\vspace{2pt}
+<<- end >>
+
+\section{Technologies}
+\textbf{Languages:} << .Skills.Languages >>\\
+\textbf{Cloud \& Infra:} << .Skills.CloudInfra >>\\
+\textbf{Data \& Storage:} << .Skills.DataStorage >>\\
+\textbf{Systems:} << .Skills.Systems >>
+
+\section{Achievements}
+\begin{itemize}
+<<- range .Achievements >>
+  \item << . >>
+<<- end >>
+\end{itemize}
+
+\end{document}
