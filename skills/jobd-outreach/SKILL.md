@@ -42,34 +42,85 @@ Be honest about the tier. High-confidence drafts are batch-approvable by Harshil
 lower tiers require an individual click. Overstating confidence is how a Gmail account
 gets flagged.
 
-## 4. Write the pitch — the closer voice
+## 4. Write the pitch
 
-Three sentences. Confidence comes from specificity, not adjectives.
+### The principle: SELECT relevance, never manufacture it
 
-1. **A specific signal about their team/role** — something you actually read in the JD
-   or on their site. Not "I'm excited about your company."
-2. **One proof line from the experience bank** (`~/agent/bank/bank.yaml`) that mirrors
-   their problem, with the real metric.
+The evidence (see `RESEARCH.md` §5) settles a question worth understanding, because it
+decides every sentence you write.
+
+Generic outreach gets under 1% replies; genuinely relevant outreach gets 15-18%. So
+"here is why I am a good engineer, I would do well anywhere" loses — even though it is
+true. But the fix is NOT researching the company harder. Superficial personalisation
+("loved your blog post") now reads as automated and performs worse than saying nothing,
+because AI-written flattery has flooded every inbox.
+
+The resolution: **the proof is company-agnostic, the selection is company-specific.**
+
+Harshil's competence is portable — that is the honest fact. He also has ~80 real
+bullets. So the personalised part is not "I studied you", it is "of everything I have
+built, THIS is the piece that matters to you." Nothing is invented; something is chosen.
+
+Two consequences, and both matter:
+
+- **You are never blocked by a thin JD.** The material comes from his side, not theirs.
+  A vague posting still tells you the domain, and the domain tells you which of his
+  bullets to lead with.
+- **It is a signal that cannot be faked.** Anyone can praise a blog post. Only someone
+  who has actually solved that shape of problem can select a matching bullet. That is
+  what makes it land.
+
+### Choosing what to lead with, when they gave you little
+
+Reason from what the company DOES to what they must be solving, then pick his closest
+real work. Never assert a flaw in their system — say it as a shape of problem, not a
+diagnosis of their code.
+
+  - booking / scheduling → double-booking under concurrent writes, reminders, no-shows
+  - insurance / lending → state machines, workflows that must not lose an event,
+    idempotent money movement, late webhooks, reconciliation
+  - marketplace → order state across parties, fan-out, partial-delivery reconciliation
+  - social / feed → ranking freshness, fan-out cost, read latency at p99
+  - realtime / chat → delivery guarantees, reconnect replay, presence
+
+### Write it for the FORWARD, not for the read
+
+A recruiter's own win condition is submitting someone the hiring manager approves. Make
+that easy and you are serving their interest, not asking a favour: quantified, specific,
+and copy-pasteable into an internal message without editing.
+
+### Shape
+
+100-150 words. Three or four short sentences, or two plus two bullets.
+
+1. **The role, and the problem shape it implies.** One line.
+2. **One or two proof lines** from `bank/bank.yaml`, with the real metric.
 3. **Assume the meeting**: "Worth 15 minutes this week?"
 
 Rules:
 - Facts only from the bank and `profile.md`. **Never invent a metric, a system, or a
   claim.** Same no-fabrication rule as the resume.
+- **Never mention `recruiter_safe: false` projects** (the job agent, Rezume). A
+  job-search tool shown to the person you are applying to invites the conclusion that
+  the message itself was generated.
 - Present tense, no hedging ("I was wondering if maybe…" is banned), no flattery, no
   exclamation marks, no emoji.
-- Never quote or reference fictional characters, films, or TV in the email.
+- Never quote or reference fictional characters, films, or TV.
+- Never state a weakness, a gap, or an apology. Omission is honest; self-criticism on
+  an opening message is not (same rule as the bank header).
 - Subject line: 4-6 words, concrete. "Feed infra — 10K users, sub-20ms p99" beats
   "Application for Backend Engineer".
-- Mention he's already applied, once, briefly. It's context, not a request for a favor.
+- Mention he applied, once, briefly. Context, not a request for a favour.
 
 Good example:
 
 > Subject: Backend SDE-1 application — feed infra
 >
-> Saw you're hiring an SDE-1 for the feed team at Acme. I currently run a sorted home
-> feed serving 10K+ users at sub-20ms p99 on Pub/Sub, Dataflow and Redis, and I
-> migrated our message broker from Node to Go to sustain 1M+ RPS. I applied through
-> the portal this morning — worth 15 minutes this week?
+> Saw you're hiring an SDE-1 for the feed team at Acme. Feed systems get hard at the
+> read path, which is most of what I do right now: I run a sorted home feed for 10K+
+> users at sub-20ms p99 on Pub/Sub, Dataflow and Redis, and I moved our message broker
+> from Node to Go to sustain 1M+ RPS. I applied through the portal this morning —
+> worth 15 minutes this week?
 >
 > Harshil
 

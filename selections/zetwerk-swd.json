@@ -1,30 +1,32 @@
 {
-  "job_id": "kiwi-backend-engineer",
-  "summary": "node-ts-cloud",
+  "job_id": "zetwerk-software-developer",
+  "summary": "node-express-api",
   "bullets": {
     "clarity-se1": [
       "rest-apis",
-      "swagger-docs",
-      "feed-index-opt",
-      "redis-cluster-migration",
-      "temporal-webhooks",
-      "spanner-consistency",
-      "authz-fix",
+      "feed-rewrite",
       "code-review-gate",
+      "swagger-docs",
+      "spanner-consistency",
+      "feed-index-opt",
+      "authz-fix",
       "server-side-races",
-      "bifrost-go-migration",
-      "feed-dataflow"
+      "temporal-webhooks",
+      "bifrost-go-migration"
     ],
     "clarity-intern": [
       "bifrost-design",
       "at-least-once-delivery",
-      "offline-replay",
       "wallet-ab-cicd"
     ],
     "ibm-intern": [
       "jest-coverage",
       "ci-quality-gates",
       "sql-migrations"
+    ],
+    "jobd-agent": [
+      "jobd-agent-failover",
+      "jobd-llm-gate"
     ],
     "rezume": [
       "rezume-curator",
@@ -33,9 +35,7 @@
     ],
     "loop": [
       "loop-webhook-engine",
-      "loop-react-dashboard",
-      "loop-sqlc-postgres",
-      "loop-rate-limiter"
+      "loop-sqlc-postgres"
     ]
   },
   "tech_lines": {
@@ -68,14 +68,14 @@
   },
   "skills": {
     "languages": [
+      "JavaScript",
       "TypeScript",
       "Node.js",
-      "JavaScript",
       "SQL",
       "Go",
-      "Python",
       "Java",
-      "C++"
+      "C++",
+      "Python"
     ],
     "cloud_infra": [
       "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
@@ -83,30 +83,29 @@
       "Docker",
       "Kubernetes",
       "GitHub Actions",
-      "Jenkins",
-      "Terraform"
+      "Jenkins"
     ],
     "data_storage": [
-      "PostgreSQL",
-      "SQL",
-      "NoSQL",
       "MongoDB",
-      "Redis",
+      "PostgreSQL",
       "Spanner",
-      "BigQuery"
+      "Redis",
+      "SQL",
+      "NoSQL"
     ],
     "systems": [
       "REST",
       "Express",
       "Microservices",
-      "WebSockets",
+      "OOP",
+      "Git",
       "Distributed Systems",
-      "gRPC",
       "React"
     ]
   },
   "aliases": [],
   "include_projects": [
+    "jobd-agent",
     "rezume",
     "loop"
   ]

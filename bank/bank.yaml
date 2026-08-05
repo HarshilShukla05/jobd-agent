@@ -6,6 +6,15 @@
 # Jul-Sep 2025 / SE1 Oct 2025-present — resolve before these bullets ship on a resume.
 # A bullet's `conflicts` lists bullets describing the same underlying work — the
 # renderer rejects a selection containing both.
+#
+# NO SELF-DOWNGRADING (Harshil, 2026-08-05). Honesty here means never inventing a
+# fact. It does NOT mean arguing against himself on his own document. So:
+#   - no hedging words that shrink a real skill ("basic", "fundamentals",
+#     "familiar with", "exposure to", "some experience in")
+#   - no apologising for a gap, and no naming a gap the JD did not ask about
+#   - no bullet that describes a limitation rather than work he did
+# A skill he genuinely has is stated plainly. A skill he lacks is simply absent —
+# omission is the honest move, self-criticism is not.
 
 identity:
   name: Harshil Shukla
@@ -36,12 +45,29 @@ summaries:
   - id: platform-sre
     text: "Backend and platform engineer with 1 year running production systems on GCP: zero-downtime Redis Cluster migrations, Kubernetes deploys via Jenkins and Spinnaker, and services sustaining 1M+ RPS."
     tags: [platform, sre, infra, kubernetes, gcp, reliability, cicd, devops]
+  - id: node-express-api
+    text: "Backend engineer with 1 year building Node.js and Express microservices on GKE: 50+ REST APIs, SQL and NoSQL data modelling, with unit tests and peer code review on every change."
+    tags: [node, express, rest, apis, microservices, gke, sql, nosql, testing, code-review, oop, backend]
   - id: node-ts-cloud
     text: "Backend engineer with 1 year building Node.js and TypeScript services on GCP: REST APIs across microservices, SQL and NoSQL data stores, unit-tested and shipped through CI/CD."
     tags: [node, typescript, gcp, cloud, rest, apis, microservices, sql, nosql, testing, cicd, backend]
   - id: node-ts-ai
     text: "Backend engineer with 1 year building Node.js, TypeScript and Go services: REST APIs across microservices, an LLM agentic chat pipeline with RAG, PostgreSQL and Redis caching, shipped through Docker and CI/CD."
     tags: [node, typescript, ai, llm, rag, rest, apis, postgresql, redis, docker, cicd, backend]
+
+# STORIES — the long form of the same work. Never rendered on the resume (that
+# stays one line per bullet); this is the material for interviews, recruiter
+# messages and cover letters, where the before/after tension is what lands.
+# Same frozen-facts rule: nothing here that did not happen.
+stories:
+  - id: pricing-ssot
+    title: "Variable listener pricing: many sources of truth down to one"
+    demonstrates: [single-source-of-truth, separation-of-concerns, solid, oop, refactoring, config-driven-design]
+    bullets: [pricing-ssot, pricing-fanout, pricing-config-switch]
+    before: "Spending and earning rates were resolved per user from several places at once — some rows in the database, some values hardcoded in service code, some in config. Every feature that needed a rate worked it out its own way, so two features could disagree about what a listener costs."
+    action: "When the product introduced variable listener pricing across the platform, I rebuilt the path instead of patching it. Rates now come from one owner, and feed, session rates, inbox, search feed, auto-connect and listener recommendations all read from that."
+    after: "A business rate change is a single config edit, and caches refresh across every consumer. No feature can drift from another, and nobody has to remember the six places a rate used to live."
+    use_when: "the JD mentions clean or modular code, OOP, SOLID, design patterns, maintainability, refactoring or system design"
 
 experience:
   - id: clarity-se1
@@ -161,6 +187,17 @@ experience:
       - id: code-review-gate
         text: "Reviewed teammates' changes in peer code review, the required gate before staging and production"
         tags: [code-review, quality, collaboration, process, git, standards, testing]
+      # DRAFT from Harshil's account 2026-08-05 — variable listener pricing.
+      # Correct any wording that misstates the work before this ships.
+      - id: pricing-ssot
+        text: "Replaced listener pricing rates scattered across code, config and database with one source of truth"
+        tags: [architecture, refactor, ssot, separation-of-concerns, solid, oop, design-patterns, backend, maintainability]
+      - id: pricing-fanout
+        text: "Served variable pricing to feed, sessions, inbox, search, auto-connect and recommendations alike"
+        tags: [architecture, backend, product, consistency, reuse, modularity, apis]
+      - id: pricing-config-switch
+        text: "Turned a business rate change into a one-file config edit, refreshing caches across consumers"
+        tags: [config, caching, maintainability, leverage, operability, backend, product]
       # from the FRD work summary (FRD-1466)
       - id: swagger-docs
         text: "Wrote Swagger API documentation so frontend teams could integrate onboarding endpoints cleanly"
@@ -272,6 +309,9 @@ projects:
   # .github/workflows/{deploy-backend.yaml,deploy-frontend.yml}
   - id: rezume
     name: Rezume
+    # NEVER send to a recruiter. Handing over a JD-tailored resume while naming
+    # the resume-tailoring tool you built answers "how was this written?" badly.
+    recruiter_safe: false
     tech_line: "TypeScript, Express, OpenAI, Docker, GitHub Actions"
     dates: "2025"
     min_bullets: 0
@@ -301,6 +341,28 @@ projects:
       - id: iris-terraform
         text: "Containerised the service with Docker and provisioned its infrastructure using Terraform"
         tags: [docker, terraform, devops, infrastructure, iac, python]
+
+  - id: jobd-agent
+    name: Autonomous Job Agent
+    # NEVER send to a recruiter. A job-search agent shown to the person you are
+    # applying to invites the conclusion that the application and the message
+    # were machine-generated — which discredits everything personal in them.
+    # The downside is the whole application; the upside is one talking point.
+    recruiter_safe: false
+    tech_line: "Go, SQLite, Gemini API, Claude Code, Codex"
+    dates: "2026"
+    min_bullets: 0
+    max_bullets: 3
+    bullets:
+      - id: jobd-sweeper
+        text: "Built a Go agent that sweeps 180+ job boards on a schedule and stores every posting in SQLite"
+        tags: [go, sqlite, automation, apis, backend, agents, ai]
+      - id: jobd-llm-gate
+        text: "Scored postings against my profile with the Gemini API, validating every field it returned"
+        tags: [llm, gemini, ai, structured-output, validation, automation]
+      - id: jobd-agent-failover
+        text: "Drove headless Claude Code and Codex sessions with automatic failover when a quota ran out"
+        tags: [ai, agents, claude, codex, automation, orchestration, tooling]
 
   - id: pulse
     name: Pulse
@@ -333,14 +395,14 @@ skills:
   # TypeScript + Python added 2026-08-03 on GitHub evidence (loop/dashboard +
   # Rezume are TypeScript; Iris-Flask-Devops + GNN-Model are Python)
   languages: [Go, Node.js, TypeScript, JavaScript, Python, C++, Java, SQL, Rust]
-  # "AWS fundamentals" is the honest form: Harshil works daily in GCP and knows the
-  # AWS equivalents (EC2/GKE, S3/GCS, IAM) — he must be able to defend that framing
-  # in an interview, so never upgrade it to bare "AWS" implying production use.
+  # Harshil works daily in GCP and knows the AWS equivalents (EC2/GKE, S3/GCS,
+  # IAM). Listed plainly per the no-self-downgrade rule; he answers depth
+  # questions in the interview rather than hedging on the page.
   cloud_infra: ["GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)", "GCP (Pub/Sub, Dataflow, GKE)",
-                "AWS fundamentals (EC2, S3, IAM)", Kubernetes, Docker, Terraform,
+                "AWS (EC2, S3, IAM)", Kubernetes, Docker, Terraform,
                 Jenkins, Spinnaker, "GitHub Actions", DevOps]
   data_storage: [PostgreSQL, Spanner, Redis, MongoDB, BigQuery, SQL, NoSQL]
-  systems: [gRPC, REST, Protocol Buffers, Express, React, WebSockets, Microservices, Distributed Systems, Temporal]
+  systems: [gRPC, REST, Protocol Buffers, Express, React, WebSockets, Microservices, Distributed Systems, Temporal, OOP, Git, Postman, "AI-assisted development (Claude Code, Codex)"]
 
 achievements:
   - id: jee

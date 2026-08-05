@@ -67,6 +67,7 @@ type Role struct {
 	Dates      string   `yaml:"dates"`
 	TechPool   []string `yaml:"tech_pool"`
 	TechLine   string   `yaml:"tech_line"` // projects: fixed line
+	RecruiterSafe *bool  `yaml:"recruiter_safe"` // nil = safe; false = never send out
 	MinBullets int      `yaml:"min_bullets"`
 	MaxBullets int      `yaml:"max_bullets"`
 	Bullets    []Bullet `yaml:"bullets"`
@@ -234,6 +235,10 @@ func main() {
 		p, ok := projIndex[pid]
 		if !ok {
 			fail("unknown project id %q", pid)
+		}
+		if p.RecruiterSafe != nil && !*p.RecruiterSafe {
+			fail("project %q is marked recruiter_safe: false — it must never appear "+
+				"on a resume sent to a company", pid)
 		}
 		data.Projects = append(data.Projects, resolveRole(p, true))
 	}

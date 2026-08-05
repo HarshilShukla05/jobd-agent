@@ -71,3 +71,36 @@ bullets are wasted ink. This is what `atsmatch.Skim()` checks.
   https://www.prnewswire.com/news-releases/ladders-updates-popular-recruiter-eye-tracking-study-with-new-key-insights-on-how-job-seekers-can-improve-their-resumes-300744217.html
 - Jobscan — what an ATS is and what it does:
   https://www.jobscan.co/blog/8-things-you-need-to-know-about-applicant-tracking-systems/
+
+## 5. Outreach: select relevance, do not manufacture it
+
+Researched 2026-08 to settle whether candidate outreach should be company-specific or
+should simply present a strong engineer and let portability speak.
+
+**Generic loses on the numbers.** Generic cold email replies land under 1%; genuinely
+relevant outreach reaches 15-18%. Personalised subject lines open at ~20.8% vs ~15.0%
+generic. 78% of decision-makers say they are likelier to respond to a message showing
+real understanding of their business.
+
+**But more research on the company is not the fix.** The bar has moved from
+"personalised vs generic" to "relevant vs everything else". AI-written flattery has
+saturated inboxes, so surface personalisation ("loved your blog post") now reads as
+automated and underperforms saying nothing.
+
+**Signalling theory explains why.** A signal is only informative if it is costly to
+fake. Praise is free, so it carries no information. Selecting the one piece of your own
+work that maps to the recipient's problem is not free — it requires having done the
+work. Tailoring also carries a meta-signal: this person understands the game.
+
+**Resolution adopted:** the PROOF is company-agnostic (his real, portable work), the
+SELECTION is company-specific (which of ~80 bullets to lead with). Nothing is invented;
+something is chosen. This also removes the dependency on the company having published a
+detailed JD — the material comes from our side.
+
+**Supporting practice:** keep it 100-150 words; quantify impact in one sentence; write
+it so a recruiter can forward it unedited, since their win condition is submitting
+someone the hiring manager approves.
+
+Sources: woodpecker.co and snov.io cold-email datasets (10-20M sends), Apollo
+personalisation analysis, hunter.io cold-emailing-for-a-job guide, Connelly et al.
+signalling-theory review (Journal of Management, 2025).
