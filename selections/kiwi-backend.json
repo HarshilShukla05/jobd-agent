@@ -1,20 +1,19 @@
 {
-  "job_id": "zoca-backend-engineer",
-  "summary": "node-ts-ai",
+  "job_id": "kiwi-backend-engineer",
+  "summary": "node-ts-cloud",
   "bullets": {
     "clarity-se1": [
-      "llm-rag-pipeline",
       "rest-apis",
-      "bifrost-go-migration",
+      "swagger-docs",
+      "feed-index-opt",
       "redis-cluster-migration",
       "temporal-webhooks",
-      "feed-dataflow",
-      "feed-index-opt",
-      "authz-fix",
       "spanner-consistency",
-      "feed-rewrite",
+      "authz-fix",
+      "code-review-gate",
       "server-side-races",
-      "code-review-gate"
+      "bifrost-go-migration",
+      "feed-dataflow"
     ],
     "clarity-intern": [
       "bifrost-design",
@@ -47,8 +46,8 @@
       "GCP",
       "Redis",
       "Spanner",
-      "Temporal",
-      "gRPC"
+      "gRPC",
+      "Temporal"
     ],
     "clarity-intern": [
       "Node.js",
@@ -72,37 +71,38 @@
       "TypeScript",
       "Node.js",
       "JavaScript",
-      "Go",
       "SQL",
+      "Go",
       "Python",
       "Java",
       "C++"
     ],
     "cloud_infra": [
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "AWS fundamentals (EC2, S3, IAM)",
       "Docker",
       "Kubernetes",
       "GitHub Actions",
-      "DevOps",
-      "GCP (Pub/Sub, Dataflow, GKE)",
       "Jenkins",
       "Terraform"
     ],
     "data_storage": [
       "PostgreSQL",
+      "SQL",
+      "NoSQL",
+      "MongoDB",
       "Redis",
       "Spanner",
-      "MongoDB",
       "BigQuery"
     ],
     "systems": [
       "REST",
       "Express",
       "Microservices",
-      "Distributed Systems",
       "WebSockets",
+      "Distributed Systems",
       "gRPC",
-      "React",
-      "Temporal"
+      "React"
     ]
   },
   "aliases": [],

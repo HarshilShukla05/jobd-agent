@@ -7,7 +7,11 @@
   BoldFont = lmroman10-bold.otf,
   ItalicFont = lmroman10-italic.otf,
   BoldItalicFont = lmroman10-bolditalic.otf,
-  Ligatures = {TeX, NoCommon}]
+  Ligatures = {TeX, NoCommon},
+  % Kerning off: kern pairs (AW, Te, Va...) make pdf text extraction insert a
+  % space mid-word — "AWS" came out as "A WS", invisible to an ATS keyword
+  % search. Correct extraction matters more than micro-typography here.
+  Kerning = Off]
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{titlesec}

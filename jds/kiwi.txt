@@ -1,0 +1,20 @@
+Backend Engineer - Kiwi (Insurance Tech)
+Function: Software Engineering, Backend Development
+Node.js, TypeScript, APIs, SQL, NoSQL, Git, AWS, Azure, Google Cloud (GCP)
+
+Responsibilities:
+Contribute to the design, development, and maintenance of backend services for our insurance tech platform.
+Implement APIs, database queries, and integrations under the guidance of senior engineers.
+Work on bug fixes, feature enhancements, and performance optimisations.
+Support API documentation, testing, and deployment processes.
+Collaborate with frontend, product, and QA teams to deliver well-tested, reliable features.
+Participate in code reviews and learn best practices for scalable, secure backend systems.
+
+Requirements:
+1-5 years of experience in backend development with Node.js and TypeScript.
+Basic understanding of REST APIs, databases (SQL/NoSQL), and version control (Git).
+Exposure to cloud platforms (AWS/GCP/Azure) and deployment pipelines is a plus.
+Familiarity with writing unit tests and debugging backend issues.
+Eagerness to learn about backend architecture, scalability, and security best practices.
+A collaborative mindset comfortable taking feedback and working with senior engineers to improve your craft.
+Passion for building useful, customer-focused products and willingness to grow into a larger role over time.

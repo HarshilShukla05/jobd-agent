@@ -211,6 +211,12 @@ func main() {
 		if !isProject {
 			techLine = resolveTechLine(r, sel.TechLines[r.ID])
 		}
+		// company, title and tech line are as ATS-critical as the bullets —
+		// a kern split in any of them is invisible to a keyword search
+		plainBullets = append(plainBullets, r.Company, r.Title, techLine)
+		if isProject {
+			plainBullets = append(plainBullets, r.Name)
+		}
 		return renderRole{
 			Company: esc(r.Company), Name: esc(r.Name), Location: esc(r.Location),
 			Title: esc(r.Title), TechLine: esc(techLine), Dates: esc(r.Dates), Bullets: texts,
@@ -236,6 +242,19 @@ func main() {
 	data.Skills.CloudInfra = resolveSkills(bank, sel, "cloud_infra")
 	data.Skills.DataStorage = resolveSkills(bank, sel, "data_storage")
 	data.Skills.Systems = resolveSkills(bank, sel, "systems")
+	// every individual skill token must survive extraction — this is where the
+	// "AWS" -> "A WS" kern split was found
+	for _, cat := range []string{"languages", "cloud_infra", "data_storage", "systems"} {
+		plainBullets = append(plainBullets, sel.Skills[cat]...)
+	}
+
+	// contact details and education: a broken email or phone costs a callback
+	plainBullets = append(plainBullets,
+		bank.Identity.Name, bank.Identity.Email, bank.Identity.Phone,
+		bank.Identity.Linkedin, bank.Identity.Github)
+	for _, e := range bank.Education {
+		plainBullets = append(plainBullets, e.School, e.Degree)
+	}
 
 	for _, a := range bank.Achievements {
 		plainBullets = append(plainBullets, a.Text)
@@ -269,7 +288,31 @@ func main() {
 	pdfPath := filepath.Join(*outDir, *name+".pdf")
 
 	// --- verify (1 page + ATS text round-trip) ---
-	expected := map[string]any{"max_pages": 1, "must_contain": plainBullets}
+	// Strict check on every capitalised/technical TOKEN inside the strings, not
+	// just whole strings without spaces. The bug that motivated this lived at
+	// "AWS" inside "AWS fundamentals (EC2, S3, IAM)": kerning split it to "A WS"
+	// in the text layer, and the whitespace-stripped compare could not see it.
+	var exact []string
+	seenTok := map[string]bool{}
+	for _, s := range plainBullets {
+		for _, w := range strings.Fields(s) {
+			w = strings.Trim(w, "(),.;:\u2019'\"/")
+			if len([]rune(w)) < 2 || seenTok[w] {
+				continue
+			}
+			// tokens an ATS would keyword-search: any internal capital or digit
+			if strings.ToLower(w) == w {
+				continue
+			}
+			seenTok[w] = true
+			exact = append(exact, w)
+		}
+	}
+	expected := map[string]any{
+		"max_pages":          1,
+		"must_contain":       plainBullets,
+		"must_contain_exact": exact,
+	}
 	expPath := filepath.Join(*outDir, *name+".expected.json")
 	eb, _ := json.Marshal(expected)
 	if err := os.WriteFile(expPath, eb, 0o644); err != nil {

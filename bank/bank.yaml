@@ -36,6 +36,9 @@ summaries:
   - id: platform-sre
     text: "Backend and platform engineer with 1 year running production systems on GCP: zero-downtime Redis Cluster migrations, Kubernetes deploys via Jenkins and Spinnaker, and services sustaining 1M+ RPS."
     tags: [platform, sre, infra, kubernetes, gcp, reliability, cicd, devops]
+  - id: node-ts-cloud
+    text: "Backend engineer with 1 year building Node.js and TypeScript services on GCP: REST APIs across microservices, SQL and NoSQL data stores, unit-tested and shipped through CI/CD."
+    tags: [node, typescript, gcp, cloud, rest, apis, microservices, sql, nosql, testing, cicd, backend]
   - id: node-ts-ai
     text: "Backend engineer with 1 year building Node.js, TypeScript and Go services: REST APIs across microservices, an LLM agentic chat pipeline with RAG, PostgreSQL and Redis caching, shipped through Docker and CI/CD."
     tags: [node, typescript, ai, llm, rag, rest, apis, postgresql, redis, docker, cicd, backend]
@@ -153,6 +156,15 @@ experience:
       - id: authz-fix
         text: "Closed unauthorized data-access paths in feed APIs exposing other users' data"
         tags: [security, apis, authorization, backend]
+      # confirmed by Harshil 2026-08-05: debug-env verification, then peer code
+      # review and merge is the required gate before staging/production
+      - id: code-review-gate
+        text: "Reviewed teammates' changes in peer code review, the required gate before staging and production"
+        tags: [code-review, quality, collaboration, process, git, standards, testing]
+      # from the FRD work summary (FRD-1466)
+      - id: swagger-docs
+        text: "Wrote Swagger API documentation so frontend teams could integrate onboarding endpoints cleanly"
+        tags: [api-documentation, swagger, openapi, rest, apis, collaboration, frontend]
       - id: webp-optimization
         text: "Cut image bandwidth platform-wide by converting uploads to WebP while preserving originals"
         tags: [performance, media, optimization, backend]
@@ -321,8 +333,13 @@ skills:
   # TypeScript + Python added 2026-08-03 on GitHub evidence (loop/dashboard +
   # Rezume are TypeScript; Iris-Flask-Devops + GNN-Model are Python)
   languages: [Go, Node.js, TypeScript, JavaScript, Python, C++, Java, SQL, Rust]
-  cloud_infra: ["GCP (Pub/Sub, Dataflow, GKE)", Kubernetes, Docker, Terraform, Jenkins, Spinnaker, "GitHub Actions", DevOps]
-  data_storage: [Spanner, PostgreSQL, Redis, MongoDB, BigQuery]
+  # "AWS fundamentals" is the honest form: Harshil works daily in GCP and knows the
+  # AWS equivalents (EC2/GKE, S3/GCS, IAM) — he must be able to defend that framing
+  # in an interview, so never upgrade it to bare "AWS" implying production use.
+  cloud_infra: ["GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)", "GCP (Pub/Sub, Dataflow, GKE)",
+                "AWS fundamentals (EC2, S3, IAM)", Kubernetes, Docker, Terraform,
+                Jenkins, Spinnaker, "GitHub Actions", DevOps]
+  data_storage: [PostgreSQL, Spanner, Redis, MongoDB, BigQuery, SQL, NoSQL]
   systems: [gRPC, REST, Protocol Buffers, Express, React, WebSockets, Microservices, Distributed Systems, Temporal]
 
 achievements:
