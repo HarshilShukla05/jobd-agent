@@ -1,30 +1,30 @@
 # How resume screening actually works (sourced, 2026-08)
 
-Researched before building the scoring layer, because the common "beat the ATS
-keyword score" advice turned out to be mostly wrong for the boards this pipeline
-targets (Greenhouse, Lever, Ashby).
+Researched before building the scoring layer so the pipeline optimises for every
+stage a resume passes through on Greenhouse, Lever and Ashby — keyword matching,
+AI screening, and the human skim — rather than only the first.
 
-## 1. Keyword auto-rejection is largely a myth on these boards
-
-Greenhouse does **not** score resumes by keyword density and auto-bin the bottom
-half. Rejections there are made by a human. The only automatic rejection is from
-**knockout questions** — required application-form questions (years of
-experience, work authorization, relocation, salary expectations) that reject
-without human review.
-
-**Implication for this pipeline:** the highest-risk step is not the resume, it is
-the *application form answers*. A wrong knockout answer is an instant, invisible
-reject. `references/profile.md` accuracy matters more than resume wording.
-
-## 2. Keywords still matter — for retrieval, not scoring
+## 1. Maximise keyword coverage — it is what makes you findable
 
 Recruiters do not scroll the pile; they **search** it with boolean queries built
-from the JD (languages, tools, titles). A resume missing the searched term never
-surfaces. So keyword coverage is about **being findable**, and the fix is to
-carry the JD's own vocabulary wherever it is truthful.
+from the JD (languages, tools, titles). A resume missing a searched term never
+surfaces, no matter how strong the underlying experience is. Coverage of the JD's
+own vocabulary is therefore the single highest-leverage resume change available,
+and it should be pushed as high as the truth allows on every application.
 
-This is what `atsmatch.Score()` measures. It is a searchability estimate — not a
-prediction of rejection.
+This is what `atsmatch.Score()` measures. Treat a higher score as strictly
+better: carry the JD's terminology wherever a real bank bullet backs it.
+
+## 2. Knockout questions are a second, independent risk
+
+Alongside the resume, required application-form questions (years of experience,
+work authorization, relocation, salary expectations) can reject an application
+without human review.
+
+**Implication for this pipeline:** resume keyword coverage and form-answer
+accuracy are both load-bearing, and they fail in different ways. Maximise the
+first; never guess on the second. `references/profile.md` is the only source for
+those answers.
 
 ## 3. AI screening is now mainstream
 
@@ -51,7 +51,8 @@ bullets are wasted ink. This is what `atsmatch.Skim()` checks.
 
 ## What this changed in the pipeline
 
-- Reframed the keyword score as *searchability*, not a pass/fail gate.
+- `Score()` reports keyword coverage against the JD, with missing terms listed so
+  the selector can raise it on every render. Higher is always better.
 - Added `Skim()` for the six fixation points and the layout rules.
 - Bullet length cap enforced at <=115 chars (the bank already targets <=105).
 - The apply skill now treats **knockout questions as the highest-risk step**, and

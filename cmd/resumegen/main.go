@@ -424,8 +424,9 @@ func reportMatch(jdPath, pdfPath string, screen bool, bank *Bank) {
 	if len(missOpt) > 0 {
 		fmt.Printf("  missing (nice-to-have): %s\n", strings.Join(missOpt, ", "))
 	}
-	fmt.Println("  -> searchability: recruiters boolean-search the ATS; a missing term means")
-	fmt.Println("     you never surface. Add only terms a real bank bullet backs.")
+	fmt.Println("  -> raise this as high as the truth allows: recruiters boolean-search the")
+	fmt.Println("     ATS, so every covered term is another query you surface in. Pull in")
+	fmt.Println("     bank bullets that carry the missing terms; never invent one.")
 
 	// Layer 2: the 7.4-second human skim — the step that actually shortlists.
 	var title, company string

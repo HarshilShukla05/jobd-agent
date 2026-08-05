@@ -8,12 +8,12 @@ import (
 
 // The real screening funnel, per sourced research (see RESEARCH.md):
 //
-//  1. KNOCKOUT QUESTIONS — the only true auto-reject in Greenhouse/Lever, and
-//     they live on the APPLICATION FORM, not the resume (YoE, work
-//     authorization, relocation, salary).
-//  2. BOOLEAN SEARCH — recruiters query the ATS by skill and title. A term the
-//     resume lacks makes it unretrievable. That is what Score() measures:
-//     searchability, NOT an auto-reject score.
+//  1. KEYWORD COVERAGE — recruiters query the ATS by skill and title, so a JD
+//     term the resume lacks makes it unretrievable. Score() measures this, and
+//     it should be pushed as high as the truth allows on every application.
+//  2. KNOCKOUT QUESTIONS — required application-form answers (YoE, work
+//     authorization, relocation, salary) can reject without human review, so
+//     they carry independent risk and must never be guessed.
 //  3. AI SCREEN — ~82% of firms now use AI to sift resumes; judges contextual fit.
 //  4. THE 7.4-SECOND HUMAN SKIM — the actual shortlist decision. Eye-tracking
 //     shows recruiters fixate on six things: name, current title, current

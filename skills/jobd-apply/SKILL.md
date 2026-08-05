@@ -81,8 +81,9 @@ Save the JD to `jds/<company>.txt` and score the render:
 ```
 
 Three layers, matching how screening actually works (see `RESEARCH.md`):
-- **ATS MATCH** — searchability. Recruiters boolean-search the ATS; a JD term you
-  lack means you never surface. Target **>=75%**.
+- **ATS MATCH** — keyword coverage against the JD. Recruiters boolean-search the
+  ATS, so a term you lack means you never surface. Target **>=75%**, and push it
+  as high as truthful bullets allow — higher is always better.
 - **7-SECOND SKIM** — the six eye-tracking fixation points and the layout rules.
   Target **8/8**; a FAIL here is a real defect.
 - **AI RECRUITER SCREEN** — verdict `advance` / `maybe` / `reject`. Target `advance`.

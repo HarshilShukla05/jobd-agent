@@ -3,9 +3,10 @@
 // weight the ones stated as requirements, then check which of them survive in
 // the resume's extracted text.
 //
-// Deterministic on purpose — no LLM. The score is a coverage measure, not a
-// prediction, and its real value is the MISSING list: it tells the resume
-// selector exactly which truthful bullets to pull in next.
+// Deterministic on purpose — no LLM. Higher coverage is always better: it is
+// what makes the resume retrievable when a recruiter boolean-searches the ATS.
+// The MISSING list is the actionable part — it names exactly which truthful
+// bullets the selector should pull in to raise the score.
 package atsmatch
 
 import (
