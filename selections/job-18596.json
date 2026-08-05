@@ -1,0 +1,40 @@
+{
+  "job_id": "18596",
+  "bullets": {
+    "clarity-se1": [
+      "bifrost-go-migration",
+      "feed-dataflow",
+      "redis-cluster-migration",
+      "temporal-webhooks",
+      "rest-apis",
+      "spanner-consistency"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-idempotency"
+    ],
+    "rusty": []
+  },
+  "tech_lines": {
+    "clarity-se1": ["Go", "Node.js", "GCP", "Redis", "Dataflow", "Pub/Sub", "gRPC", "Spanner"],
+    "clarity-intern": ["Node.js", "WebSocket", "Pub/Sub", "Redis", "GCP", "gRPC"],
+    "ibm-intern": ["Jest", "Jenkins", "Node.js", "Java", "SQL", "ESLint"]
+  },
+  "skills": {
+    "languages": ["Go", "Node.js", "JavaScript", "Java", "SQL", "C++"],
+    "cloud_infra": ["GCP (Pub/Sub, Dataflow, GKE)", "Kubernetes", "Docker", "Jenkins", "Spinnaker"],
+    "data_storage": ["Redis", "Spanner", "PostgreSQL", "MongoDB", "BigQuery"],
+    "systems": ["Distributed Systems", "Microservices", "REST", "gRPC", "WebSockets", "Temporal"]
+  },
+  "aliases": [],
+  "include_projects": ["loop"]
+}

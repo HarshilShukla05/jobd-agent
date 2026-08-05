@@ -1,0 +1,24 @@
+Backend Engineer - Zoca
+Zoca is a fast-growing local business marketing platform that helps salons, spas, and wellness businesses attract, convert, and retain more clients through AI-powered tools.
+We're looking for a Backend Engineer who is passionate about building scalable, high-performance systems and has exposure to AI, LLMs, and NLP driven projects.
+Key Responsibilities
+Design, implement, and maintain backend systems and APIs.
+Optimize system performance, reliability, and scalability.
+Collaborate with product, AI, and frontend teams to integrate LLM-based and AI-driven features.
+Work on automation workflows and intelligent agents to improve platform capabilities.
+Write clean, maintainable, and well-tested code with proper documentation.
+Diagnose and resolve complex technical issues to ensure seamless user experiences.
+Participate in peer code reviews and maintain high coding standards.
+Ensure data integrity, security, and compliance across all backend systems.
+Requirements
+2-4 years of experience in backend development.
+Strong expertise in TypeScript.
+Experience with Nx, NestJS, and Fastify (strong preference).
+Proficiency in PostgreSQL and caching mechanisms (e.g., Redis).
+Hands-on experience with AWS or similar cloud platforms.
+Exposure to LLMs, AI-powered solutions, or AI agent-based architectures.
+Solid understanding of RESTful API design principles.
+Familiarity with DevOps practices (CI/CD, GitHub Actions, Docker, Kubernetes).
+Excellent problem-solving, debugging, and performance optimization skills.
+Bachelor's degree in Computer Science or a related field (preferred).
+Skills: node js, architecture, typescript, system design, automated processes

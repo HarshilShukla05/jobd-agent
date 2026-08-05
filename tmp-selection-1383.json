@@ -1,0 +1,42 @@
+{
+  "job_id": "1383",
+  "bullets": {
+    "clarity-se1": [
+      "redis-cluster-migration",
+      "secret-rotation",
+      "payment-polling-backup",
+      "feed-dataflow",
+      "temporal-webhooks",
+      "bifrost-go-migration",
+      "spanner-consistency"
+    ],
+    "clarity-intern": [
+      "wallet-ab-cicd",
+      "at-least-once-delivery",
+      "offline-replay"
+    ],
+    "ibm-intern": [
+      "ci-quality-gates",
+      "jest-coverage",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-idempotency",
+      "loop-rate-limiter"
+    ],
+    "rusty": []
+  },
+  "tech_lines": {
+    "clarity-se1": ["GCP", "Redis", "Dataflow", "Pub/Sub", "Go", "Node.js", "Temporal", "Spanner"],
+    "clarity-intern": ["GCP", "Redis", "Pub/Sub", "Node.js", "gRPC", "WebSocket"],
+    "ibm-intern": ["Jenkins", "Jest", "ESLint", "SQL", "Node.js", "Java"]
+  },
+  "skills": {
+    "languages": ["Go", "Node.js", "SQL", "JavaScript", "Java", "C++"],
+    "cloud_infra": ["GCP (Pub/Sub, Dataflow, GKE)", "Kubernetes", "Docker", "Jenkins", "Spinnaker", "Terraform"],
+    "data_storage": ["Redis", "Spanner", "PostgreSQL", "BigQuery", "MongoDB"],
+    "systems": ["Distributed Systems", "Microservices", "Temporal", "REST", "gRPC", "WebSockets", "Protocol Buffers"]
+  },
+  "aliases": [],
+  "include_projects": ["loop"]
+}

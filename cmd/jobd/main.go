@@ -285,9 +285,9 @@ const (
 )
 
 var profileStack = []string{"go", "golang", "node", "node.js", "javascript", "java", "c++",
-	"grpc", "rest", "websocket", "redis", "postgres", "postgresql", "spanner", "sql",
+	"grpc", "rest", "gRPC", "websocket", "redis", "postgres", "postgresql", "spanner", "sql", "postgresql",
 	"gcp", "google cloud", "kubernetes", "docker", "pub/sub", "pubsub", "dataflow",
-	"apache beam", "temporal", "microservices", "distributed"}
+	"apache beam", "temporal", "microservices", "distributed systems"}
 
 // gate runs the $0 prefilter over ALL 'new' jobs, then the LLM gate over up
 // to max survivors (JD fetch -> Gemini extraction -> YoE/salary policy).

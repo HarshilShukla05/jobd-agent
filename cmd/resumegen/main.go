@@ -18,6 +18,10 @@ import (
 	"strings"
 	"text/template"
 
+	"context"
+
+	"github.com/harshil/agent/internal/atsmatch"
+	"github.com/harshil/agent/internal/llm"
 	"gopkg.in/yaml.v3"
 )
 
@@ -29,15 +33,20 @@ type Bank struct {
 		Linkedin string `yaml:"linkedin"`
 		Github   string `yaml:"github"`
 	} `yaml:"identity"`
+	Summaries []struct {
+		ID   string   `yaml:"id"`
+		Text string   `yaml:"text"`
+		Tags []string `yaml:"tags"`
+	} `yaml:"summaries"`
 	Education []struct {
 		School   string `yaml:"school"`
 		Location string `yaml:"location"`
 		Degree   string `yaml:"degree"`
 		Dates    string `yaml:"dates"`
 	} `yaml:"education"`
-	Experience []Role   `yaml:"experience"`
-	Projects   []Role   `yaml:"projects"`
-	Skills     map[string][]string `yaml:"skills"`
+	Experience   []Role              `yaml:"experience"`
+	Projects     []Role              `yaml:"projects"`
+	Skills       map[string][]string `yaml:"skills"`
 	Achievements []struct {
 		ID   string `yaml:"id"`
 		Text string `yaml:"text"`
@@ -73,12 +82,13 @@ type Bullet struct {
 // Selection is what the LLM produces per job. Everything referenced here must
 // exist in the bank; resumegen rejects anything it cannot resolve.
 type Selection struct {
-	JobID   string              `json:"job_id"`
-	Bullets map[string][]string `json:"bullets"`    // role id -> ordered bullet ids
-	TechLines map[string][]string `json:"tech_lines"` // role id -> ordered subset of tech_pool
-	Skills  map[string][]string `json:"skills"`     // category -> ordered subset of pool
-	Aliases []AliasSub          `json:"aliases"`    // approved term mirrors
-	IncludeProjects []string    `json:"include_projects"` // ordered project ids
+	JobID           string              `json:"job_id"`
+	Bullets         map[string][]string `json:"bullets"`          // role id -> ordered bullet ids
+	TechLines       map[string][]string `json:"tech_lines"`       // role id -> ordered subset of tech_pool
+	Skills          map[string][]string `json:"skills"`           // category -> ordered subset of pool
+	Aliases         []AliasSub          `json:"aliases"`          // approved term mirrors
+	IncludeProjects []string            `json:"include_projects"` // ordered project ids
+	Summary         string              `json:"summary"`          // id of a bank summary
 }
 
 type AliasSub struct {
@@ -93,11 +103,12 @@ type renderRole struct {
 }
 
 type renderData struct {
-	Identity  any
-	Education any
-	Experience []renderRole
-	Projects   []renderRole
-	Skills     struct{ Languages, CloudInfra, DataStorage, Systems string }
+	Summary      string
+	Identity     any
+	Education    any
+	Experience   []renderRole
+	Projects     []renderRole
+	Skills       struct{ Languages, CloudInfra, DataStorage, Systems string }
 	Achievements []string
 }
 
@@ -119,6 +130,8 @@ func main() {
 	tmplPath := flag.String("template", "resume/template.tex", "path to LaTeX template")
 	outDir := flag.String("out", "out", "output directory")
 	name := flag.String("name", "Harshil_Shukla_Resume", "output file base name")
+	jdPath := flag.String("jd", "", "optional: path to the job description text; prints a screening report")
+	screen := flag.Bool("screen", false, "with -jd: also run an AI recruiter screen (uses Gemini)")
 	flag.Parse()
 	if *selPath == "" {
 		fail("-selection is required")
@@ -138,10 +151,25 @@ func main() {
 
 	// --- validate + resolve ---
 	var data renderData
+	var plainBullets []string // pre-escape text for the ATS round-trip check
 	data.Identity = bank.Identity
 	data.Education = bank.Education
 
-	var plainBullets []string // pre-escape text for the ATS round-trip check
+	// the model picks a summary by id; it never supplies prose
+	if sel.Summary != "" {
+		var found bool
+		for _, sm := range bank.Summaries {
+			if sm.ID == sel.Summary {
+				plainBullets = append(plainBullets, sm.Text)
+				data.Summary = esc(sm.Text)
+				found = true
+				break
+			}
+		}
+		if !found {
+			fail("unknown summary id %q", sel.Summary)
+		}
+	}
 
 	globalSel := map[string]bool{} // conflict pairs can span roles
 	for _, ids := range sel.Bullets {
@@ -253,6 +281,10 @@ func main() {
 	}
 
 	fmt.Printf("OK %s (1 page, %d bullets verified in extracted text)\n", pdfPath, len(plainBullets))
+
+	if *jdPath != "" {
+		reportMatch(*jdPath, pdfPath, *screen, bank)
+	}
 }
 
 func mustBank(path string) *Bank {
@@ -358,4 +390,85 @@ func findBin(name, fallback string) string {
 	}
 	fail("%s not found on PATH or at %s", name, fallback)
 	return ""
+}
+
+// reportMatch scores the rendered PDF against the JD exactly as an ATS would:
+// against the text extracted from the PDF, not the LaTeX source.
+func reportMatch(jdPath, pdfPath string, screen bool, bank *Bank) {
+	jd, err := os.ReadFile(jdPath)
+	if err != nil {
+		fail("read jd: %v", err)
+	}
+	out, err := exec.Command("python3", "scripts/pdf_text.py", pdfPath).Output()
+	if err != nil {
+		fail("extract pdf text: %v", err)
+	}
+	r := atsmatch.Score(string(jd), string(out))
+	fmt.Printf("\nATS MATCH: %.0f%%  (%d/%d JD terms)  %s\n",
+		r.Score, r.Covered, r.Total, r.Verdict())
+	if len(r.MissingReq) > 0 {
+		fmt.Printf("  missing REQUIRED: %s\n", strings.Join(r.MissingReq, ", "))
+	}
+	var missOpt []string
+	for _, m := range r.Missing {
+		req := false
+		for _, mr := range r.MissingReq {
+			if mr == m {
+				req = true
+			}
+		}
+		if !req {
+			missOpt = append(missOpt, m)
+		}
+	}
+	if len(missOpt) > 0 {
+		fmt.Printf("  missing (nice-to-have): %s\n", strings.Join(missOpt, ", "))
+	}
+	fmt.Println("  -> searchability: recruiters boolean-search the ATS; a missing term means")
+	fmt.Println("     you never surface. Add only terms a real bank bullet backs.")
+
+	// Layer 2: the 7.4-second human skim — the step that actually shortlists.
+	var title, company string
+	if len(bank.Experience) > 0 {
+		title, company = bank.Experience[0].Title, bank.Experience[0].Company
+	}
+	sk := atsmatch.Skim(string(out), bank.Identity.Name, title, company)
+	fmt.Printf("\n7-SECOND SKIM: %d/%d checks passed\n", sk.Passed, sk.Total)
+	for _, c := range sk.Checks {
+		mark := "ok  "
+		if !c.OK {
+			mark = "FAIL"
+		}
+		fmt.Printf("  %s %-32s %s\n", mark, c.Name, c.Detail)
+	}
+
+	if !screen {
+		return
+	}
+	// Layer 3: the AI screen (~82% of firms now use one).
+	ctx := context.Background()
+	gem, err := llm.NewGeminiFromEnv(ctx)
+	if err != nil {
+		fmt.Printf("\nAI recruiter screen skipped: %v\n", err)
+		return
+	}
+	sc, err := gem.ScreenResume(ctx, string(jd), string(out))
+	if err != nil {
+		fmt.Printf("\nAI recruiter screen failed: %v\n", err)
+		return
+	}
+	fmt.Printf("\nAI RECRUITER SCREEN: %s (fit %d/100)\n", strings.ToUpper(sc.Verdict), sc.FitScore)
+	fmt.Printf("  10-second read: %s\n", sc.TenSecondRead)
+	for _, x := range sc.Strengths {
+		fmt.Printf("  +    %s\n", x)
+	}
+	for _, x := range sc.Concerns {
+		fmt.Printf("  -    %s\n", x)
+	}
+	for _, x := range sc.MissingVsJD {
+		fmt.Printf("  ?    missing: %s\n", x)
+	}
+	for _, x := range sc.Improvements {
+		fmt.Printf("  fix> %s\n", x)
+	}
 }

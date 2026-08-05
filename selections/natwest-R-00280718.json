@@ -1,0 +1,43 @@
+{
+  "job_id": "natwest-R-00280718",
+  "bullets": {
+    "clarity-se1": [
+      "llm-rag-pipeline",
+      "onboarding-state-machine",
+      "temporal-webhooks",
+      "feed-dataflow",
+      "rest-apis",
+      "bifrost-go-migration",
+      "secret-rotation",
+      "spanner-consistency"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "sql-migrations",
+      "jest-coverage",
+      "ci-quality-gates"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-rate-limiter",
+      "loop-idempotency"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": ["Go", "Node.js", "GCP", "Dataflow", "Pub/Sub", "Temporal", "Redis", "Spanner", "gRPC"],
+    "clarity-intern": ["Node.js", "Pub/Sub", "Redis", "WebSocket", "GCP", "gRPC"],
+    "ibm-intern": ["Node.js", "SQL", "Jest", "Jenkins", "ESLint", "Java"]
+  },
+  "skills": {
+    "languages": ["Go", "Node.js", "JavaScript", "SQL", "Java", "C++"],
+    "cloud_infra": ["GCP (Pub/Sub, Dataflow, GKE)", "Docker", "Kubernetes", "Jenkins", "Terraform", "Spinnaker"],
+    "data_storage": ["PostgreSQL", "Spanner", "Redis", "BigQuery", "MongoDB"],
+    "systems": ["REST", "gRPC", "WebSockets", "Temporal", "Microservices", "Distributed Systems", "Protocol Buffers"]
+  },
+  "aliases": [],
+  "include_projects": ["loop"]
+}

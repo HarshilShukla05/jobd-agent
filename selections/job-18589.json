@@ -1,0 +1,40 @@
+{
+  "job_id": "18589",
+  "bullets": {
+    "clarity-se1": [
+      "rest-apis",
+      "feed-index-opt",
+      "spanner-consistency",
+      "authz-fix",
+      "secret-rotation",
+      "redis-cluster-migration"
+    ],
+    "clarity-intern": [
+      "wallet-ab-cicd",
+      "at-least-once-delivery"
+    ],
+    "ibm-intern": [
+      "sql-migrations",
+      "jest-coverage",
+      "ci-quality-gates"
+    ],
+    "loop": [
+      "loop-pg-queue",
+      "loop-idempotency"
+    ],
+    "rusty": []
+  },
+  "tech_lines": {
+    "clarity-se1": ["Node.js", "Go", "GCP", "Spanner", "Redis", "Express", "Java", "gRPC"],
+    "clarity-intern": ["Node.js", "HTTP", "GCP", "Redis", "Pub/Sub", "gRPC"],
+    "ibm-intern": ["SQL", "Jest", "Jenkins", "Node.js", "Java", "ESLint"]
+  },
+  "skills": {
+    "languages": ["SQL", "JavaScript", "Node.js", "Java", "Go", "C++"],
+    "cloud_infra": ["Jenkins", "GCP (Pub/Sub, Dataflow, GKE)", "Kubernetes", "Docker"],
+    "data_storage": ["PostgreSQL", "Spanner", "Redis", "MongoDB"],
+    "systems": ["REST", "Microservices", "Distributed Systems", "gRPC", "Express", "WebSockets"]
+  },
+  "aliases": [],
+  "include_projects": ["loop"]
+}

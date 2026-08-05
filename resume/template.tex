@@ -25,10 +25,9 @@
 << .Identity.Phone >> \textbar{} \href{mailto:<< .Identity.Email >>}{<< .Identity.Email >>} \textbar{} \href{https://<< .Identity.Linkedin >>}{<< .Identity.Linkedin >>} \textbar{} \href{https://<< .Identity.Github >>}{<< .Identity.Github >>}
 \end{center}
 
-\section{Education}
-<<- range .Education >>
-\textbf{<< .School >>} \hfill << .Location >>\\
-<< .Degree >> \hfill << .Dates >>
+<<- if .Summary >>
+\section{Summary}
+<< .Summary >>
 <<- end >>
 
 \section{Experience}
@@ -52,6 +51,12 @@
 <<- end >>
 \end{itemize}
 \vspace{2pt}
+<<- end >>
+
+\section{Education}
+<<- range .Education >>
+\textbf{<< .School >>} \hfill << .Location >>\\
+<< .Degree >> \hfill << .Dates >>
 <<- end >>
 
 \section{Technologies}

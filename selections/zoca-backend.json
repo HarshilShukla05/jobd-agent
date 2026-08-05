@@ -1,0 +1,113 @@
+{
+  "job_id": "zoca-backend-engineer",
+  "summary": "node-ts-ai",
+  "bullets": {
+    "clarity-se1": [
+      "llm-rag-pipeline",
+      "rest-apis",
+      "bifrost-go-migration",
+      "redis-cluster-migration",
+      "temporal-webhooks",
+      "feed-dataflow",
+      "feed-index-opt",
+      "authz-fix",
+      "spanner-consistency",
+      "feed-rewrite",
+      "server-side-races",
+      "payment-polling-backup"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "offline-replay",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "rezume": [
+      "rezume-curator",
+      "rezume-openai",
+      "rezume-cicd"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-react-dashboard",
+      "loop-sqlc-postgres",
+      "loop-rate-limiter"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Node.js",
+      "Express",
+      "Go",
+      "GCP",
+      "Redis",
+      "Spanner",
+      "Temporal",
+      "gRPC"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "WebSocket",
+      "Pub/Sub",
+      "Redis",
+      "GCP",
+      "HTTP"
+    ],
+    "ibm-intern": [
+      "Node.js",
+      "Jest",
+      "SQL",
+      "Jenkins",
+      "ESLint",
+      "Java"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "TypeScript",
+      "Node.js",
+      "JavaScript",
+      "Go",
+      "SQL",
+      "Python",
+      "Java",
+      "C++"
+    ],
+    "cloud_infra": [
+      "Docker",
+      "Kubernetes",
+      "GitHub Actions",
+      "DevOps",
+      "GCP (Pub/Sub, Dataflow, GKE)",
+      "Jenkins",
+      "Terraform"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "Redis",
+      "Spanner",
+      "MongoDB",
+      "BigQuery"
+    ],
+    "systems": [
+      "REST",
+      "Express",
+      "Microservices",
+      "Distributed Systems",
+      "WebSockets",
+      "gRPC",
+      "React",
+      "Temporal"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "rezume",
+    "loop"
+  ]
+}

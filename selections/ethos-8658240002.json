@@ -1,0 +1,111 @@
+{
+  "job_id": "ethos-8658240002",
+  "bullets": {
+    "clarity-se1": [
+      "bifrost-go-migration",
+      "feed-dataflow",
+      "rest-apis",
+      "temporal-webhooks",
+      "redis-cluster-migration",
+      "spanner-consistency",
+      "authz-fix",
+      "feed-rewrite",
+      "server-side-races",
+      "pubsub-user-state",
+      "feed-index-opt",
+      "llm-rag-pipeline"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "offline-replay",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-react-dashboard",
+      "loop-sqlc-postgres",
+      "loop-rate-limiter",
+      "loop-idempotency"
+    ],
+    "iris-mlops": [
+      "iris-flask-api",
+      "iris-terraform"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Go",
+      "Node.js",
+      "gRPC",
+      "GCP",
+      "Redis",
+      "Spanner",
+      "Temporal",
+      "Java"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "WebSocket",
+      "Pub/Sub",
+      "Redis",
+      "GCP",
+      "gRPC"
+    ],
+    "ibm-intern": [
+      "Node.js",
+      "Jest",
+      "SQL",
+      "Jenkins",
+      "ESLint",
+      "Java"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Go",
+      "TypeScript",
+      "JavaScript",
+      "Node.js",
+      "Python",
+      "SQL",
+      "Java",
+      "C++"
+    ],
+    "cloud_infra": [
+      "Kubernetes",
+      "Docker",
+      "GCP (Pub/Sub, Dataflow, GKE)",
+      "Terraform",
+      "Jenkins",
+      "Spinnaker"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "Spanner",
+      "Redis",
+      "MongoDB",
+      "BigQuery"
+    ],
+    "systems": [
+      "REST",
+      "gRPC",
+      "React",
+      "WebSockets",
+      "Microservices",
+      "Distributed Systems",
+      "Protocol Buffers"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop",
+    "iris-mlops"
+  ],
+  "summary": "backend-fullstack-ts"
+}

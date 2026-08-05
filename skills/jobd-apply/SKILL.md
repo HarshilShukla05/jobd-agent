@@ -73,6 +73,28 @@ curl -s -X POST http://127.0.0.1:8383/api/jobs/<id>/resume -d @selection.json
   If it fails again, use the `fallback_pdf` from the response and set
   `resume_tailored = false`. Never let a resume failure block the application.
 
+### 4b. Score it, then improve it — iterate up to twice
+
+Save the JD to `jds/<company>.txt` and score the render:
+```
+./resumegen-bin -selection selections/<job>.json -out out -name <Name> -jd jds/<company>.txt -screen
+```
+
+Three layers, matching how screening actually works (see `RESEARCH.md`):
+- **ATS MATCH** — searchability. Recruiters boolean-search the ATS; a JD term you
+  lack means you never surface. Target **>=75%**.
+- **7-SECOND SKIM** — the six eye-tracking fixation points and the layout rules.
+  Target **8/8**; a FAIL here is a real defect.
+- **AI RECRUITER SCREEN** — verdict `advance` / `maybe` / `reject`. Target `advance`.
+
+If below target, revise the selection using the MISSING list — swap in bank bullets
+that legitimately carry those terms — and re-render. **Stop after two revisions.**
+A term with no truthful bullet behind it is a genuine gap: leave it missing and
+note it. Never add a term the bank cannot back.
+
+Ignore any screen comment claiming the employment dates are in the future — that is
+a model knowledge-cutoff artifact, not a defect.
+
 ### 5. Apply — IN GOOGLE CHROME, ALWAYS
 
 **Chrome is NOT Harshil's default browser.** Every application must happen in Google
@@ -114,6 +136,24 @@ Carry over these hard-won rules:
 - **SmartRecruiters** postings with a required resume upload are structurally blocked
   (shadow DOM). Spend ≤10 tool calls confirming, then report `blocked`.
 - Prefer Quick Apply / MyGreenhouse when offered.
+
+### 5b. KNOCKOUT QUESTIONS — the highest-risk step in the whole pipeline
+
+Research finding (`RESEARCH.md`): on Greenhouse/Lever the resume is **not**
+auto-scored — the only automatic, invisible rejection comes from **knockout
+questions** on the form. These are usually: years of experience, work
+authorization, willingness to relocate, and salary expectations.
+
+So slow down on those specific fields:
+- Answer **only** from `references/profile.md`. Never round up, never guess.
+- Years of experience: answer truthfully (~1 year). Do not inflate to clear a bar —
+  a false answer here is what gets caught at the recruiter screen anyway.
+- Work authorization: India roles → authorized, no sponsorship needed. Outside
+  India → sponsorship required.
+- Salary: expected ₹16–20 LPA. If a form forces a single number, use the profile's
+  expected range midpoint, never below the ₹16 LPA floor.
+- If a knockout field has no truthful answer available, **skip the job and flag it**
+  rather than guessing — a wrong answer is an instant silent reject.
 
 ### 6. HARD STOPS — report and move on, never work around
 - CAPTCHA, password login, account creation, 2FA/OTP → `blocked`

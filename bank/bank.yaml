@@ -20,6 +20,26 @@ education:
     degree: B.Tech in Mechanical Engineering, Minor in Computer Science
     dates: "2021 -- 2025"
 
+# Pre-approved summary variants. The selector picks ONE by id — it never writes
+# or edits this prose. Each must stay true against the bullets below.
+# Keep to 2 lines at 10.5pt (<= ~250 chars) so the header stays compact.
+summaries:
+  - id: backend-distributed
+    text: "Backend engineer with 1 year building distributed systems in Go and Node.js: event-driven services, Pub/Sub and Dataflow pipelines, and REST and gRPC APIs on GCP. Comfortable across PostgreSQL, Spanner, Redis, Kubernetes and CI/CD."
+    tags: [backend, distributed, go, node, grpc, rest, gcp, pipelines, kubernetes]
+  - id: backend-fullstack-ts
+    text: "Backend-focused engineer with 1 year shipping production services in Go and Node.js, scaling message queues to 1M+ RPS and feed pipelines to sub-20ms p99. Also build full stack with TypeScript, React and PostgreSQL."
+    tags: [backend, full-stack, typescript, react, postgresql, go, node, scale]
+  - id: ai-platform
+    text: "Backend engineer with 1 year building AI-enabled services: an LLM agentic chat pipeline on Apache Beam with Pinecone RAG, durable Temporal workflows, and event-driven Pub/Sub systems in Go and Node.js on GCP."
+    tags: [ai, llm, rag, vector-db, workflows, temporal, backend, orchestration]
+  - id: platform-sre
+    text: "Backend and platform engineer with 1 year running production systems on GCP: zero-downtime Redis Cluster migrations, Kubernetes deploys via Jenkins and Spinnaker, and services sustaining 1M+ RPS."
+    tags: [platform, sre, infra, kubernetes, gcp, reliability, cicd, devops]
+  - id: node-ts-ai
+    text: "Backend engineer with 1 year building Node.js, TypeScript and Go services: REST APIs across microservices, an LLM agentic chat pipeline with RAG, PostgreSQL and Redis caching, shipped through Docker and CI/CD."
+    tags: [node, typescript, ai, llm, rag, rest, apis, postgresql, redis, docker, cicd, backend]
+
 experience:
   - id: clarity-se1
     company: Clarity App
@@ -29,7 +49,7 @@ experience:
     # tech line is assembled per-JD from this pool (order = selection order)
     tech_pool: [Go, Node.js, Express, Java, C++, gRPC, GCP, Redis, Temporal, Spanner, Dataflow, Pub/Sub]
     min_bullets: 4
-    max_bullets: 8
+    max_bullets: 12
     bullets:
       - id: llm-rag-pipeline
         text: "Optimized an LLM-driven agentic chat pipeline on Apache Beam with Pinecone RAG"
@@ -206,10 +226,13 @@ experience:
 projects:
   - id: loop
     name: Loop
-    tech_line: "Go, PostgreSQL, Webhooks, Meta API"
-    dates: "2025 -- 2026"
+    # verified from github.com/HarshilShukla05/loop (2026-08-03): server/ is Go +
+    # sqlc + PostgreSQL + Docker Compose; dashboard/ is React + TypeScript + Vite
+    # + Tailwind + Radix UI + openapi-fetch; landing_page/ + contract/ (OpenAPI)
+    tech_line: "Go, TypeScript, React, PostgreSQL, Webhooks, Meta API"
     min_bullets: 2
-    max_bullets: 4
+    max_bullets: 5
+    dates: "2025 -- 2026"
     bullets:
       - id: loop-webhook-engine
         text: "Architected an async comment-to-DM automation engine in Go scaling 1M+ daily webhook events"
@@ -225,6 +248,58 @@ projects:
       - id: loop-idempotency
         text: "Added per-comment idempotency, exponential backoff, and dead-letter queue for reliability"
         tags: [reliability, idempotency, queues, distributed]
+      - id: loop-react-dashboard
+        text: "Built the React and TypeScript dashboard on Vite, typed against an OpenAPI contract"
+        tags: [react, typescript, frontend, full-stack, openapi, vite, javascript]
+      - id: loop-sqlc-postgres
+        text: "Modelled the PostgreSQL schema with sqlc for type-safe queries, containerised via Docker Compose"
+        tags: [postgresql, sql, databases, docker, go, type-safety]
+
+  # verified from github.com/HarshilShukla05/Rezume (2026-08-03): backend/ is
+  # TypeScript + Express + OpenAI + pdf-parse + puppeteer, with a Dockerfile and
+  # .github/workflows/{deploy-backend.yaml,deploy-frontend.yml}
+  - id: rezume
+    name: Rezume
+    tech_line: "TypeScript, Express, OpenAI, Docker, GitHub Actions"
+    dates: "2025"
+    min_bullets: 0
+    max_bullets: 3
+    bullets:
+      - id: rezume-curator
+        text: "Built an AI resume curator: a TypeScript and Express API that tailors a CV to a job description"
+        tags: [typescript, llm, ai, node, express, rest, apis, backend, javascript]
+      - id: rezume-openai
+        text: "Integrated the OpenAI API to match resume content against parsed job descriptions"
+        tags: [llm, openai, ai, typescript, apis, nlp]
+      - id: rezume-cicd
+        text: "Containerised the service with Docker and automated deploys with GitHub Actions workflows"
+        tags: [docker, cicd, github-actions, devops, typescript, automation]
+
+  # verified from github.com/HarshilShukla05/Iris-Flask-Devops (Python + HCL + Dockerfile)
+  - id: iris-mlops
+    name: Iris Prediction API
+    tech_line: "Python, Flask, Docker, Terraform"
+    dates: "2025"
+    min_bullets: 0
+    max_bullets: 2
+    bullets:
+      - id: iris-flask-api
+        text: "Built a Python Flask REST API serving a trained scikit-learn model behind JSON endpoints"
+        tags: [python, flask, rest, apis, ml, backend]
+      - id: iris-terraform
+        text: "Containerised the service with Docker and provisioned its infrastructure using Terraform"
+        tags: [docker, terraform, devops, infrastructure, iac, python]
+
+  - id: pulse
+    name: Pulse
+    tech_line: "Go, Redis, Docker"
+    dates: "2026"
+    min_bullets: 0
+    max_bullets: 1
+    bullets:
+      - id: pulse-realtime
+        text: "Building a Go realtime server-to-client event delivery system backed by Redis"
+        tags: [go, realtime, redis, events, distributed, websocket]
 
   - id: rusty
     name: Rusty
@@ -243,10 +318,12 @@ projects:
 # Skills line is assembled per-JD from these pools only. Order within a category is
 # selection order (lead with JD-matching items).
 skills:
-  languages: [Go, Node.js, JavaScript, C++, Java, SQL]
-  cloud_infra: ["GCP (Pub/Sub, Dataflow, GKE)", Kubernetes, Docker, Terraform, Jenkins, Spinnaker]
+  # TypeScript + Python added 2026-08-03 on GitHub evidence (loop/dashboard +
+  # Rezume are TypeScript; Iris-Flask-Devops + GNN-Model are Python)
+  languages: [Go, Node.js, TypeScript, JavaScript, Python, C++, Java, SQL, Rust]
+  cloud_infra: ["GCP (Pub/Sub, Dataflow, GKE)", Kubernetes, Docker, Terraform, Jenkins, Spinnaker, "GitHub Actions", DevOps]
   data_storage: [Spanner, PostgreSQL, Redis, MongoDB, BigQuery]
-  systems: [gRPC, REST, Protocol Buffers, Express, WebSockets, Microservices, Distributed Systems, Temporal]
+  systems: [gRPC, REST, Protocol Buffers, Express, React, WebSockets, Microservices, Distributed Systems, Temporal]
 
 achievements:
   - id: jee
