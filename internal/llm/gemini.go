@@ -9,6 +9,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"math/rand"
@@ -36,6 +37,17 @@ type Client interface {
 	GateJD(ctx context.Context, title, jdText string) (Verdict, string, error)
 }
 
+// ErrValidation marks the one gate failure that re-running will not fix: the
+// model answered twice and neither answer survived schema and evidence-quote
+// validation. That is a property of this JD (or the prompt), so the job needs a
+// human, not a retry.
+//
+// Every other gate failure — a 403 before an IAM grant propagates, an expired
+// login, a quota wall, a dropped connection — is a property of the machine and
+// the moment, and callers should leave the job queued for the next run rather
+// than burying it. Callers distinguish with errors.Is.
+var ErrValidation = errors.New("gate failed validation twice")
+
 // Gemini calls Vertex AI generateContent with a service-account token.
 type Gemini struct {
 	Project string
@@ -60,20 +72,58 @@ func LoadEnvFile() {
 	}
 }
 
+// Project and model are not secrets — they are the same for everyone who runs
+// this — so they default here rather than requiring an env file. Either can
+// still be overridden through the environment.
+const (
+	defaultProject = "jobd-agent-hs"
+	defaultModel   = "gemini-2.5-flash-lite"
+	cloudPlatform  = "https://www.googleapis.com/auth/cloud-platform"
+)
+
+func envOr(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
+
+// NewGeminiFromEnv resolves credentials through Application Default
+// Credentials, which tries, in order: an explicit service-account key at
+// GOOGLE_APPLICATION_CREDENTIALS, a gcloud user login, then GCE metadata.
+//
+// The gcloud path is the one that matters for anyone other than Harshil. It
+// means a second operator never holds a copy of his service-account key: they
+// run `gcloud auth application-default login` as themselves, he grants that
+// Google account roles/aiplatform.user on the project, and he can revoke one
+// person without rotating anything. A key file copied onto someone's laptop
+// bills his credits forever and cannot be un-copied.
 func NewGeminiFromEnv(ctx context.Context) (*Gemini, error) {
 	LoadEnvFile()
-	project, model := os.Getenv("GCP_PROJECT"), os.Getenv("GEMINI_MODEL")
-	if project == "" || model == "" {
-		return nil, fmt.Errorf("GCP_PROJECT / GEMINI_MODEL not set (see ~/.config/jobd/env)")
+	project := envOr("GCP_PROJECT", defaultProject)
+	model := envOr("GEMINI_MODEL", defaultModel)
+
+	// A stale GOOGLE_APPLICATION_CREDENTIALS is worse than none at all: ADC
+	// treats the variable as authoritative and fails outright rather than
+	// trying the gcloud login sitting right beside it. That is exactly what
+	// happens when someone copies Harshil's ~/.config/jobd/env onto their own
+	// laptop, where that key path does not exist. Drop it and let ADC continue
+	// down its chain instead of dying on a path that was never theirs.
+	if p := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS"); p != "" {
+		if _, statErr := os.Stat(p); statErr != nil {
+			os.Unsetenv("GOOGLE_APPLICATION_CREDENTIALS")
+		}
 	}
-	saPath := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
-	b, err := os.ReadFile(saPath)
+
+	creds, err := google.FindDefaultCredentials(ctx, cloudPlatform)
 	if err != nil {
-		return nil, fmt.Errorf("read service account key: %w", err)
+		return nil, fmt.Errorf("no Google credentials found — run "+
+			"`gcloud auth application-default login`, and ask Harshil to grant your "+
+			"account roles/aiplatform.user on project %s: %w", project, err)
 	}
-	creds, err := google.CredentialsFromJSON(ctx, b, "https://www.googleapis.com/auth/cloud-platform")
-	if err != nil {
-		return nil, fmt.Errorf("parse service account key: %w", err)
+	if creds.ProjectID != "" && os.Getenv("GCP_PROJECT") == "" {
+		// a user login carries no project; only trust this when it has one
+		project = creds.ProjectID
 	}
 	return &Gemini{Project: project, Model: model, ts: creds.TokenSource,
 		http: &http.Client{Timeout: 60 * time.Second}}, nil
@@ -130,7 +180,7 @@ func (g *Gemini) GateJD(ctx context.Context, title, jdText string) (Verdict, str
 		}
 		return v, raw, nil
 	}
-	return Verdict{}, "", fmt.Errorf("gate failed validation twice: %w", lastErr)
+	return Verdict{}, "", fmt.Errorf("%w: %w", ErrValidation, lastErr)
 }
 
 // generate calls Vertex with backoff on 429/5xx — rate limits are transient

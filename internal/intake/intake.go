@@ -232,10 +232,15 @@ func Submit(ctx context.Context, d Deps, req Request) (Result, error) {
 		return d.finish(req, res, row, "shortlisted", 0, "")
 	}
 	if d.Gate == nil {
-		note := "LLM gate unavailable (no Gemini credentials)"
+		// Park it as 'new', not 'deferred'. Missing credentials is a property of
+		// THIS machine, not of the job — someone submitting from a laptop with no
+		// Google login has told us about a real posting, and the next gate run on
+		// a machine that does have credentials should pick it up by itself.
+		// 'deferred' would strand it: gate() only ever reads status='new'.
+		note := "awaiting gate — no Gemini credentials on the machine that submitted it"
 		if !req.Force {
-			res.Decision, res.Stage, res.Note = "deferred", "gate", note
-			return d.finish(req, res, row, "deferred", 0, "")
+			res.Decision, res.Stage, res.Note = "pending_gate", "gate", note
+			return d.finish(req, res, row, "new", 0, "")
 		}
 		res.Note += "forced past ungated JD: " + note + "; "
 		res.Decision, res.Stage = "queued", "forced"
@@ -245,6 +250,16 @@ func Submit(ctx context.Context, d Deps, req Request) (Result, error) {
 	if err != nil {
 		note := "gate escalation: " + err.Error()
 		if !req.Force {
+			// Only schema drift is the job's own fault and needs a human. A 403
+			// waiting on an IAM grant, an expired login, a quota wall — those are
+			// this machine at this moment, so park the job as 'new' and let the
+			// next gate run have it. Anything else strands a real posting a
+			// collaborator just contributed.
+			if !errors.Is(err, llm.ErrValidation) {
+				res.Decision, res.Stage, res.Note = "pending_gate", "gate",
+					"awaiting gate — "+err.Error()
+				return d.finish(req, res, row, "new", 0, "")
+			}
 			res.Decision, res.Stage, res.Note = "deferred", "gate", note
 			return d.finish(req, res, row, "deferred", 0, "")
 		}

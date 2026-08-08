@@ -292,6 +292,35 @@ func daemon(st *store.Store, listen string, gateMax, intervalMin, intervalMax in
 	}
 }
 
+// gateJDText gets the JD body for one job. Postings on a tracked board are
+// re-fetched live, because between sweep and gate is exactly when a posting
+// gets pulled and a stale copy would send us applying to a dead role.
+//
+// A manually-added posting off a board jobd cannot read has no live source at
+// all — its JD was captured at intake and stored on the row. Without this,
+// jd.Fetch returns "unknown ats" for those and the gate buries them as dead.
+func gateJDText(ctx context.Context, st *store.Store, client *http.Client, j store.Job) (string, error) {
+	if j.ATS == "manual" {
+		text, err := st.JobJD(j.ID)
+		if err != nil {
+			return "", err
+		}
+		if text == "" {
+			return "", fmt.Errorf("manual posting has no stored JD text")
+		}
+		return text, nil
+	}
+	text, err := jd.Fetch(ctx, client, j.ATS, j.Token, j.ReqID)
+	if err != nil {
+		// last resort: a copy captured at intake, if there is one
+		if stored, e := st.JobJD(j.ID); e == nil && stored != "" {
+			return stored, nil
+		}
+		return "", err
+	}
+	return text, nil
+}
+
 // gate runs the $0 prefilter over ALL 'new' jobs, then the LLM gate over up
 // to max survivors (JD fetch -> Gemini extraction -> YoE/salary policy).
 func gate(st *store.Store, max int) (gatedN, shortlistedN int) {
@@ -332,7 +361,7 @@ func gate(st *store.Store, max int) (gatedN, shortlistedN int) {
 			break
 		}
 		time.Sleep(500*time.Millisecond + time.Duration(rand.Intn(1000))*time.Millisecond)
-		text, err := jd.Fetch(ctx, client, j.ATS, j.Token, j.ReqID)
+		text, err := gateJDText(ctx, st, client, j)
 		if err != nil {
 			if err := st.SetJobStatus(j.ID, "dead", "jd fetch: "+err.Error()); err != nil {
 				die("mark dead: %v", err)

@@ -3,6 +3,7 @@ package intake
 import (
 	"context"
 	"errors"
+	"fmt"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -164,6 +165,50 @@ func TestSubmitRejectsOnYoEAndForceOverrides(t *testing.T) {
 	}
 }
 
+// A gate failure that is about the machine, not the job, must stay retryable.
+// Learned from a real 403: revoking the IAM grant buried a perfectly good
+// posting in 'deferred', which gate() never revisits — so a collaborator whose
+// grant had not propagated yet would strand every job they contributed.
+func TestSubmitParksOnEnvironmentalGateFailure(t *testing.T) {
+	denied := fakeGate{err: fmt.Errorf("vertex status 403: Permission " +
+		"'aiplatform.endpoints.predict' denied on resource")}
+	d := testDeps(t, denied)
+	res, err := Submit(context.Background(), d, Request{
+		URL: "https://careers.acme.com/jobs/403", Title: "Backend Engineer",
+		Company: "Acme", Location: "Bengaluru, India", JDText: jdBody,
+	})
+	if err != nil {
+		t.Fatalf("submit: %v", err)
+	}
+	if res.Decision != "pending_gate" || res.Status != "new" {
+		t.Fatalf("decision=%q status=%q, want pending_gate/new so the next gate run retries it",
+			res.Decision, res.Status)
+	}
+	if q, _ := d.Store.JobRows("shortlisted", 10); len(q) != 0 {
+		t.Fatal("an ungated job reached the apply queue")
+	}
+}
+
+// Schema drift is the opposite case: the model answered twice and neither
+// answer validated. Re-running will not fix that, so it must NOT be parked for
+// an infinite retry — it goes to a human.
+func TestSubmitDefersOnSchemaDrift(t *testing.T) {
+	drift := fakeGate{err: fmt.Errorf("%w: %v", llm.ErrValidation,
+		"yoe_evidence is not a verbatim quote from the JD")}
+	d := testDeps(t, drift)
+	res, err := Submit(context.Background(), d, Request{
+		URL: "https://careers.acme.com/jobs/drift", Title: "Backend Engineer",
+		Company: "Acme", Location: "Bengaluru, India", JDText: jdBody,
+	})
+	if err != nil {
+		t.Fatalf("submit: %v", err)
+	}
+	if res.Decision != "deferred" || res.Status != "deferred" {
+		t.Fatalf("decision=%q status=%q, want deferred — a JD the model cannot parse needs a human",
+			res.Decision, res.Status)
+	}
+}
+
 func TestSubmitNeverReopensAnAppliedJob(t *testing.T) {
 	d := testDeps(t, goodGate())
 	req := Request{URL: "https://careers.acme.com/jobs/1", Title: "Backend Engineer",
@@ -213,7 +258,11 @@ func TestSubmitDedupesAQueuedJob(t *testing.T) {
 	}
 }
 
-func TestSubmitDefersWhenTheGateIsUnavailable(t *testing.T) {
+// A machine with no Google credentials (a friend's laptop) must not queue the
+// job — but must not strand it either. It parks as 'new', which is the status
+// the gate stage picks up, so the next run on a credentialled machine gates it
+// without anyone touching the database by hand.
+func TestSubmitParksForLaterWhenTheGateIsUnavailable(t *testing.T) {
 	d := testDeps(t, nil) // no LLM configured
 	res, err := Submit(context.Background(), d, Request{
 		URL: "https://careers.acme.com/jobs/3", Title: "Backend Engineer",
@@ -222,8 +271,21 @@ func TestSubmitDefersWhenTheGateIsUnavailable(t *testing.T) {
 	if err != nil {
 		t.Fatalf("submit: %v", err)
 	}
-	if res.Decision != "deferred" || res.Status != "deferred" {
-		t.Fatalf("decision=%q status=%q, want deferred — an ungated job must never queue itself",
-			res.Decision, res.Status)
+	if res.Decision != "pending_gate" || res.Status != "new" {
+		t.Fatalf("decision=%q status=%q, want pending_gate/new", res.Decision, res.Status)
+	}
+	// the invariant that actually matters: ungated work never reaches the queue
+	if q, _ := d.Store.JobRows("shortlisted", 10); len(q) != 0 {
+		t.Fatal("an ungated job reached the apply queue")
+	}
+	// and it must be visible to the gate stage, which only reads status='new'
+	pending, err := d.Store.JobsByStatus("new", 10)
+	if err != nil || len(pending) != 1 {
+		t.Fatalf("JobsByStatus(new) = %d, %v; want the parked job so gate() retries it",
+			len(pending), err)
+	}
+	// the stored JD must survive, or the retry has nothing to gate against
+	if text, _ := d.Store.JobJD(res.JobID); text == "" {
+		t.Error("stored JD text lost — the later gate run would mark this dead")
 	}
 }

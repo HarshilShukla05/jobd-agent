@@ -52,12 +52,44 @@ git clone <this repo> && cd agent
 go build -o jobd-bin ./cmd/jobd && go build -o resumegen-bin ./cmd/resumegen
 ```
 
-Two things are deliberately not in the repo and must be obtained from Harshil:
+One thing is deliberately not in the repo and must come from Harshil:
 
 | what | where it goes | needed for |
 |---|---|---|
 | `jobd.db` | repo root | the dedupe ledger — **do not start without it** |
-| GCP service-account key + `GCP_PROJECT`/`GEMINI_MODEL` | `~/.config/jobd/` | the LLM gate (`jobd gate`, and screening submissions) |
+
+### Credentials for the LLM gate
+
+Screening a submission calls Vertex AI on Harshil's GCP project. You do **not** need a
+copy of his key, and you should not ask for one — a service-account key cannot be
+revoked for one person without rotating it for everybody, and it carries no record of
+who used it. Authenticate as yourself instead:
+
+```bash
+gcloud auth application-default login
+```
+
+and ask Harshil to run, once, for your Google account:
+
+```bash
+gcloud projects add-iam-policy-binding jobd-agent-hs \
+  --member="user:you@example.com" --role="roles/aiplatform.user"
+```
+
+No env file is needed — the project and model are defaults in
+[internal/llm](internal/llm/gemini.go), and neither is a secret. Credentials resolve
+through Application Default Credentials, which also accepts an explicit
+`GOOGLE_APPLICATION_CREDENTIALS` key for Harshil's own machine and the deploy box.
+
+**Do not copy his `~/.config/jobd/env`.** It points at a key path that does not exist on
+your machine, and it also carries his Gmail app password, which the gate has no use for.
+
+### Without any credentials at all
+
+This still works, by design. A submission from a machine with no Google login is parked
+as `new` — stored, with its JD text kept — rather than queued or thrown away. Harshil's
+next `jobd gate` run picks it up and shortlists it with no manual step. You lose the
+immediate verdict on your own screen; nothing else is lost.
 
 Also needed locally: Go, `python3` + `pypdf`, and tectonic (vendored under `tools/`,
 fetched per machine — see [DEPLOY.md](DEPLOY.md)).
