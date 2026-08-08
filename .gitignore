@@ -22,5 +22,16 @@ out/
 *token.json
 *client.json
 .env
-resumegen
-jobd
+# anchored to the repo root: unanchored, these also matched cmd/jobd/ and
+# cmd/resumegen/, silently ignoring the source directories they are built from
+/resumegen
+/jobd
+
+# macOS noise
+.DS_Store
+
+# stray/typo databases and scratch selections
+jobp
+jobp-shm
+jobp-wal
+tmp-selection-*.json
