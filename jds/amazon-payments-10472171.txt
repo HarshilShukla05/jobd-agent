@@ -1,0 +1,42 @@
+Software Development Engineer I, Amazon Payments — IND, TS, Hyderabad
+Job ID: 10472171
+https://www.amazon.jobs/en/jobs/10472171/software-development-engineer-i-amazon-payments
+
+DESCRIPTION
+
+It's still Day 1 at Amazon IN Payments, and we're at the beginning of building out an
+entire suite of rendering technologies that can standardize the way UX components
+interact and their look and feel on Amazon Pay pages. PayUI is a greenfield initiative in
+Amazon Pay org, offering a rare opportunity to build standardized UX components that have
+to be reused across all Amazon Pay pages.
+
+You will be part of a new team building a large scale tier-1 rendering platform that
+supports as the skeleton for all the payment pages to depend, host and render on, in
+Amazon Pay. This new system will be utilized by thousands of customers every day. You and
+a team of developers will work through all phases of the project life-cycle, including
+reviewing requirements, designing services that lay the foundation for the new technology
+platform, building from the basic blocks of the new UX components and their interfaces,
+developing and testing code, and delivering seamless implementations for our customers.
+You will help define, design, prototype, and build these experiences. To achieve this, you
+will collaborate closely with product managers, UX designers, Software developers and
+multiple client teams.
+
+Our team is looking for a seasoned engineer to design and build customer experiences that
+span multiple customer use cases in Amazon Pay space. The ability to work within a
+creative and positive team environment are key to the role.
+
+BASIC QUALIFICATIONS
+
+- 1+ years of non-internship professional software development experience
+- Experience programming with at least one software programming language
+
+PREFERRED QUALIFICATIONS
+
+- Bachelor's degree in computer science or equivalent
+
+Our inclusive culture empowers Amazonians to deliver the best results for our customers.
+If you have a disability and need a workplace accommodation or adjustment during the
+application and hiring process, including support for the interview or onboarding process,
+please visit https://amazon.jobs/content/en/how-we-hire/accommodations for more
+information. If the country/region you're applying in isn't listed, please contact your
+Recruiting Partner.

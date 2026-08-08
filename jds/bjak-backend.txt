@@ -1,0 +1,50 @@
+Backend Engineer — BJAK — Remote (candidates must be based in India)
+Team: AI Neobank / core backend
+
+About BJAK
+Started in 2019, BJAK built the first mobile-first insurance platform in Southeast Asia and is now
+the leading insurance platform in the region. It is expanding into spending, saving, investing,
+exchanging and travel. Mission: help people get more from their money every day. Teams work
+remotely across 20+ nationalities.
+
+The Role
+Build the core systems behind BJAK's AI Neobank app: reliable APIs, workflows and financial
+product infrastructure that scale across markets, partners and millions of users.
+
+What You'll Own
+- Build backend services and APIs for onboarding, accounts, payments, cards, transfers, rewards,
+  travel, FX, KYC and risk flows.
+- Design reliable systems supporting real customer transactions, operational workflows and future
+  financial products.
+- Integrate with internal systems, financial partners, payment providers, AI services and
+  third-party platforms.
+- Own backend quality across reliability, security, latency, observability, data integrity and
+  incident handling.
+- Work with product, frontend, mobile and AI teams to launch features quickly and safely.
+- Improve existing systems by simplifying flows, removing manual work and automating repeatable
+  processes.
+
+What We're Looking For
+- Strong backend engineering experience in production systems.
+- Good understanding of APIs, databases, authentication, authorization, queues, jobs, events and
+  integrations.
+- Experience building services used by real customers or internal operations at meaningful scale.
+- Strong debugging, reliability, security and data quality mindset.
+- Able to make practical trade-offs between speed, correctness, scalability and maintainability.
+- Fintech, payments, banking, wallet, KYC, fraud or risk experience is a strong plus, but not
+  required if fundamentals are strong.
+
+This Role Is Not For
+- Engineers who only want isolated backend tasks.
+- People who ignore security, data consistency, monitoring or operational risk.
+- Developers who cannot work with fast-changing product requirements.
+- Candidates who talk about scale but have not handled production systems.
+- People who exaggerate impact without being clear on ownership.
+
+The Bar
+Engineers with real technology career highlights — personally helped build, ship or scale a
+serious product, platform or system.
+
+Location: Remote, must already be based in India.
+Language: English is the main working language; strong English communication required.
+Interview process: online assessment or practical task, technical interview, CEO / final round.

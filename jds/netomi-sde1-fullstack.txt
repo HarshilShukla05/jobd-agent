@@ -1,0 +1,37 @@
+About the Company:
+Netomi is the leading agentic AI platform for enterprise customer experience. We work with the largest global brands like Delta Airlines, MetLife, MGM, United, and others to enable agentic automation at scale across the entire customer journey. Our no-code platform delivers the fastest time to market, lowest total cost of ownership, and simple, scalable management of AI agents for any CX use case. Backed by WndrCo, Y Combinator, and Index Ventures, we help enterprises drive efficiency, lower costs, and deliver higher quality customer experiences. 
+
+Want to be part of the AI revolution and transform how the world’s largest global brands do business? Join us!
+
+
+We are looking for a Software Engineer with experience in Full-stack development. We are looking for someone who brings in experience of coding, fixing, executing and versioning existing code for applications. We are looking for someone who is ready to think beyond and is ready to take bigger responsibilities. If you're passionate to solve real time fundamental problems, explore, learn and work on technologies out of scope, Netomi is the perfect place for you.
+
+
+Responsibilities
+* Build and maintain full-stack features using Node.js (backend) and React/Vue (frontend). 
+* Develop and integrate REST APIs, ensuring performance and reliability. 
+* Collaborate with product, design, and QA to deliver features end-to-end. 
+* Debug issues, fix bugs, and ensure code quality through testing and reviews. 
+* Contribute to deployments, monitoring, and basic cloud (AWS) workflows.
+
+Requirements
+* 2–3 years of experience in software development. 
+* Working knowledge of Node.js and building backend APIs. 
+* Experience with React and/or Vue.js (components, state management, API integration). 
+* Understanding of REST APIs, basic system design, and data structures. 
+* Familiarity with Git, debugging, and collaborative development workflows.
+
+Nice to Have
+* Experience with TypeScript. 
+* Basic exposure to AWS or cloud platforms. 
+* Familiarity with Docker or CI/CD pipelines. 
+* Understanding of testing frameworks (unit/integration). 
+* Awareness of performance and security best practices.
+
+What We Value
+* Ownership and willingness to learn 
+* Ability to work in a fast-paced environment 
+* Writing clean, maintainable code 
+* Strong problem-solving mindset 
+* Good collaboration and communication
+Netomi is an equal opportunity employer committed to diversity in the workplace. We evaluate qualified applicants without regard to race, color, religion, sex, sexual orientation, disability, veteran status, and other protected characteristics.

@@ -1,0 +1,121 @@
+{
+  "job_id": "amazon-payments-10472171-sde1-payui",
+  "summary": "backend-platform-breadth",
+  "bullets": {
+    "clarity-se1": [
+      "pricing-ssot",
+      "pricing-rate-cache",
+      "wallet-live-balance",
+      "bifrost-go-migration",
+      "temporal-webhooks",
+      "late-webhook-guard",
+      "short-session-guard",
+      "rest-apis",
+      "feed-rewrite",
+      "redis-cluster-migration",
+      "swagger-docs",
+      "feed-dataflow"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "wallet-ab-cicd",
+      "at-least-once-delivery"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "argus": [
+      "argus-dyad-features",
+      "argus-torso-normalization",
+      "argus-dual-head-gru"
+    ],
+    "loop": [
+      "loop-react-dashboard",
+      "loop-webhook-engine"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Go",
+      "Java",
+      "Node.js",
+      "Express",
+      "gRPC",
+      "GCP",
+      "Redis",
+      "Spanner"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "WebSocket",
+      "Pub/Sub",
+      "Redis",
+      "GCP",
+      "gRPC"
+    ],
+    "ibm-intern": [
+      "Java",
+      "Node.js",
+      "Jest",
+      "SQL",
+      "Jenkins",
+      "ESLint"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Go",
+      "Java",
+      "Node.js",
+      "TypeScript",
+      "JavaScript",
+      "Python",
+      "C++",
+      "SQL"
+    ],
+    "cloud_infra": [
+      "AWS (EC2, S3, IAM)",
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "Kubernetes",
+      "Docker",
+      "Jenkins",
+      "GitHub Actions",
+      "Terraform"
+    ],
+    "data_storage": [
+      "SQL",
+      "PostgreSQL",
+      "Redis",
+      "Spanner",
+      "MongoDB",
+      "NoSQL",
+      "BigQuery"
+    ],
+    "systems": [
+      "REST",
+      "Express",
+      "Microservices",
+      "Distributed Systems",
+      "gRPC",
+      "WebSockets",
+      "WebRTC",
+      "OOP",
+      "Performance Optimization",
+      "React",
+      "Git"
+    ]
+  },
+  "aliases": [
+    {
+      "bullet_id": "temporal-webhooks",
+      "from": "Razorpay",
+      "to": "payment gateway"
+    }
+  ],
+  "include_projects": [
+    "argus",
+    "loop"
+  ]
+}

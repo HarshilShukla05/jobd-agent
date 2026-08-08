@@ -1,0 +1,107 @@
+{
+  "job_id": "netomi-19798-sde1-fullstack",
+  "summary": "backend-fullstack-ts",
+  "bullets": {
+    "clarity-se1": [
+      "rest-apis",
+      "swagger-docs",
+      "feed-rewrite",
+      "pricing-ssot",
+      "feed-index-opt",
+      "llm-rag-pipeline",
+      "authz-fix",
+      "secret-rotation",
+      "server-side-races",
+      "bifrost-go-migration",
+      "code-review-gate"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-react-dashboard",
+      "loop-webhook-engine",
+      "loop-sqlc-postgres",
+      "loop-idempotency"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Node.js",
+      "Express",
+      "Go",
+      "Java",
+      "GCP",
+      "Redis",
+      "gRPC",
+      "Spanner"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "WebSocket",
+      "HTTP",
+      "Redis",
+      "GCP"
+    ],
+    "ibm-intern": [
+      "Node.js",
+      "Jest",
+      "ESLint",
+      "Java",
+      "SQL",
+      "Jenkins"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Node.js",
+      "TypeScript",
+      "JavaScript",
+      "Java",
+      "Python",
+      "Go",
+      "SQL"
+    ],
+    "cloud_infra": [
+      "AWS (EC2, S3, IAM)",
+      "Docker",
+      "GitHub Actions",
+      "Jenkins",
+      "Kubernetes",
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "Terraform",
+      "DevOps"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "Redis",
+      "MongoDB",
+      "SQL",
+      "NoSQL",
+      "Spanner"
+    ],
+    "systems": [
+      "REST",
+      "React",
+      "Express",
+      "Microservices",
+      "Git",
+      "Security",
+      "Performance Optimization",
+      "OOP",
+      "WebSockets",
+      "Distributed Systems"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop"
+  ]
+}

@@ -1,0 +1,20 @@
+What you’ll own as SDE I at Hevo:
+ 
+. Implement SaaS connectors for assigned applications, learning application specific nuances like basic auth and data extraction.
+. Assist in building simple REST API components, focusing on clean implementation and testing.
+. Debug and optimize code for data pipeline efficiency under mentorship.
+. Contribute to feature breakdown, coding, and documentation for smaller tasks.
+. Apply logical thinking to solve integration issues and improve component quality.
+ 
+What you’ll bring to the table:
+ 
+. Basic object-oriented programming skills and familiarity with design principles.
+. Exposure to data pipelines or APIs; eagerness to learn concurrency and performance basics.
+. Foundational knowledge of REST APIs (e.g., making calls, handling JSON) – no deep expertise needed.
+. Proficiency in Java/TypeScript/Python, good problem-solving with data structures and algorithms.
+. Strong analytical and logical thinking for real-world challenges.
+ 
+Candidate Persona:
+ 
+. 0-1 years in software development, ideally with internships in integrations or data tools.
+. B Tech in Computer Science or equivalent from a reputed college.

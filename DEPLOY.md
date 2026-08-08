@@ -5,7 +5,7 @@ except a LaTeX engine (tectonic) and python3+pypdf for the ATS check.
 
 ## 1. Build for Linux (on the Mac)
 
-    cd ~/agent
+    cd ~/projects/agent
     GOOS=linux GOARCH=amd64 go build -o jobd-linux ./cmd/jobd
     GOOS=linux GOARCH=amd64 go build -o resumegen-linux ./cmd/resumegen
 
@@ -14,7 +14,7 @@ except a LaTeX engine (tectonic) and python3+pypdf for the ATS check.
 ## 2. Copy to the laptop
 
     rsync -av --exclude out --exclude '*.db' --exclude tools \
-      ~/agent/ harshil@<laptop>:~/agent/
+      ~/projects/agent/ harshil@<laptop>:~/projects/agent/
     rsync -av ~/.config/jobd/ harshil@<laptop>:~/.config/jobd/
 
 On the laptop: rename `jobd-linux` → `jobd-bin`, `resumegen-linux` → `resumegen-bin`,
@@ -108,7 +108,7 @@ blacklists that domain for every future run.
     systemctl status jobd
     journalctl -u jobd -f
     journalctl -u jobd --since "1 hour ago" | grep -E "SHOR|applied|FAIL"
-    sqlite3 ~/agent/jobd.db "SELECT applied_at, title, token FROM jobs WHERE status='applied' ORDER BY applied_at DESC LIMIT 20"
+    sqlite3 ~/projects/agent/jobd.db "SELECT applied_at, title, token FROM jobs WHERE status='applied' ORDER BY applied_at DESC LIMIT 20"
 
 Cost: `https://console.cloud.google.com/billing?project=jobd-agent-hs` — expect
 low single-digit dollars/month against your $300 credits.

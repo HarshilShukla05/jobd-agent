@@ -1,0 +1,105 @@
+{
+  "job_id": "target-R0000446296-india-backend",
+  "summary": "backend-distributed",
+  "bullets": {
+    "clarity-se1": [
+      "bifrost-go-migration",
+      "feed-dataflow",
+      "wal-cpp",
+      "redis-cluster-migration",
+      "turn-stun-failover",
+      "spanner-consistency",
+      "temporal-webhooks",
+      "server-side-races",
+      "feed-index-opt",
+      "rest-apis",
+      "code-review-gate",
+      "secret-rotation"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "offline-replay",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-idempotency",
+      "loop-rate-limiter",
+      "loop-pg-queue"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Go",
+      "Node.js",
+      "C++",
+      "gRPC",
+      "GCP",
+      "Redis",
+      "Spanner",
+      "Temporal"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "GCP",
+      "Redis",
+      "Pub/Sub",
+      "WebSocket"
+    ],
+    "ibm-intern": [
+      "Jest",
+      "Jenkins",
+      "Node.js",
+      "Java",
+      "SQL"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Go",
+      "Node.js",
+      "TypeScript",
+      "Java",
+      "Python",
+      "C++",
+      "SQL"
+    ],
+    "cloud_infra": [
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "AWS (EC2, S3, IAM)",
+      "Kubernetes",
+      "Docker",
+      "Jenkins",
+      "Terraform",
+      "GitHub Actions"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "Spanner",
+      "Redis",
+      "MongoDB",
+      "SQL",
+      "NoSQL"
+    ],
+    "systems": [
+      "Distributed Systems",
+      "REST",
+      "gRPC",
+      "Microservices",
+      "Security",
+      "Performance Optimization",
+      "OOP",
+      "Git"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop"
+  ]
+}

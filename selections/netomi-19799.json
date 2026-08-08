@@ -1,0 +1,107 @@
+{
+  "job_id": "netomi-19799-sde2-backend",
+  "summary": "backend-distributed",
+  "bullets": {
+    "clarity-se1": [
+      "rest-apis",
+      "bifrost-go-migration",
+      "redis-cluster-migration",
+      "pricing-ssot",
+      "pricing-config-switch",
+      "feed-index-opt",
+      "spanner-consistency",
+      "payment-polling-backup",
+      "feed-dataflow",
+      "llm-rag-pipeline",
+      "code-review-gate"
+    ],
+    "clarity-intern": [
+      "at-least-once-delivery",
+      "bifrost-design",
+      "offline-replay",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-pg-queue",
+      "loop-rate-limiter",
+      "loop-idempotency"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Java",
+      "Node.js",
+      "Express",
+      "Go",
+      "Redis",
+      "GCP",
+      "Spanner",
+      "Pub/Sub"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "Redis",
+      "Pub/Sub",
+      "GCP",
+      "WebSocket"
+    ],
+    "ibm-intern": [
+      "Java",
+      "SQL",
+      "Jest",
+      "Jenkins",
+      "Node.js"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Java",
+      "SQL",
+      "Go",
+      "Node.js",
+      "TypeScript",
+      "JavaScript",
+      "Python"
+    ],
+    "cloud_infra": [
+      "Kubernetes",
+      "Docker",
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "AWS (EC2, S3, IAM)",
+      "Jenkins",
+      "GitHub Actions",
+      "Terraform",
+      "DevOps"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "Redis",
+      "MongoDB",
+      "SQL",
+      "NoSQL",
+      "Spanner",
+      "BigQuery"
+    ],
+    "systems": [
+      "Microservices",
+      "REST",
+      "Distributed Systems",
+      "Performance Optimization",
+      "OOP",
+      "gRPC",
+      "Express",
+      "Git",
+      "Security"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop"
+  ]
+}

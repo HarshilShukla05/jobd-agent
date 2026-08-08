@@ -1,0 +1,104 @@
+{
+  "job_id": "crunchyroll-6696781-service-monetization",
+  "summary": "backend-distributed",
+  "bullets": {
+    "clarity-se1": [
+      "temporal-webhooks",
+      "late-webhook-guard",
+      "payment-polling-backup",
+      "mid-session-rates",
+      "gst-ab-rollout",
+      "pricing-ssot",
+      "bifrost-go-migration",
+      "redis-cluster-migration",
+      "spanner-consistency",
+      "secret-rotation"
+    ],
+    "clarity-intern": [
+      "wallet-ab-cicd",
+      "bifrost-design",
+      "at-least-once-delivery"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-idempotency",
+      "loop-rate-limiter",
+      "loop-pg-queue"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Go",
+      "Node.js",
+      "Java",
+      "Temporal",
+      "GCP",
+      "Redis",
+      "Spanner",
+      "gRPC"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "Redis",
+      "Pub/Sub",
+      "GCP",
+      "WebSocket"
+    ],
+    "ibm-intern": [
+      "Java",
+      "Node.js",
+      "SQL",
+      "Jenkins",
+      "Jest"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Go",
+      "Java",
+      "Python",
+      "TypeScript",
+      "Node.js",
+      "JavaScript",
+      "SQL",
+      "C++"
+    ],
+    "cloud_infra": [
+      "AWS (EC2, S3, IAM)",
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "Kubernetes",
+      "Docker",
+      "Jenkins",
+      "Terraform",
+      "GitHub Actions"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "MongoDB",
+      "Redis",
+      "Spanner",
+      "SQL",
+      "NoSQL",
+      "BigQuery"
+    ],
+    "systems": [
+      "REST",
+      "Microservices",
+      "Distributed Systems",
+      "Security",
+      "Performance Optimization",
+      "Temporal",
+      "gRPC",
+      "Git"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop"
+  ]
+}

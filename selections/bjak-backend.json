@@ -1,0 +1,106 @@
+{
+  "job_id": "bjak-backend-ai-neobank",
+  "summary": "backend-distributed",
+  "bullets": {
+    "clarity-se1": [
+      "onboarding-state-machine",
+      "temporal-webhooks",
+      "payment-polling-backup",
+      "late-webhook-guard",
+      "mid-session-rates",
+      "negative-wallet-flow",
+      "auto-wallet-credit",
+      "rest-apis",
+      "bifrost-go-migration",
+      "spanner-consistency",
+      "secret-rotation",
+      "authz-fix"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "offline-replay",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-rate-limiter",
+      "loop-idempotency",
+      "loop-pg-queue"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Go",
+      "Node.js",
+      "Express",
+      "Temporal",
+      "GCP",
+      "Redis",
+      "Spanner",
+      "Pub/Sub"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "GCP",
+      "Redis",
+      "Pub/Sub",
+      "WebSocket"
+    ],
+    "ibm-intern": [
+      "Node.js",
+      "Java",
+      "SQL",
+      "Jenkins",
+      "Jest"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Go",
+      "Node.js",
+      "TypeScript",
+      "JavaScript",
+      "Python",
+      "Java",
+      "SQL"
+    ],
+    "cloud_infra": [
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "AWS (EC2, S3, IAM)",
+      "Kubernetes",
+      "Docker",
+      "Terraform",
+      "Jenkins",
+      "GitHub Actions"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "Redis",
+      "Spanner",
+      "MongoDB",
+      "SQL",
+      "NoSQL"
+    ],
+    "systems": [
+      "REST",
+      "gRPC",
+      "Microservices",
+      "Distributed Systems",
+      "Security",
+      "Performance Optimization",
+      "Temporal",
+      "WebSockets",
+      "Git"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop"
+  ]
+}

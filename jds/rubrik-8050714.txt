@@ -1,0 +1,39 @@
+Software Engineer - Hypervisor — Rubrik — Bangalore 
+Req ID: 8050714   Updated: 2026-07-27   URL: https://www.rubrik.com/company/careers/departments/job.8050714?gh_jid=8050714
+
+About Team & About Role
+Hypervisors are currently the most widely protected workload on the Rubrik platform. You and the team's work will make a huge impact for our customers and for Rubrik as we are building a world class data management platform to help manage and protect customer data on hypervisor and host.
+You will be part of a dynamic team that is solving the toughest engineering problems in building large scale distributed systems that are serving both cloud and on-prem protection. In your day-to-day work, you will leverage your past experience in developing large software systems to design, develop, test, deploy, maintain, and improve Rubrik’s products. You will have the opportunity to manage and drive large projects end to end with your technical expertise. To be successful in the role, one will need to be self motivated and be able to work independently or partner closely with other engineers on a project.  This person will work alongside a diverse team of engineers that all bring a unique perspective to Rubrik.  In addition this role provides great opportunities for personal growth as well as the support for professional development.
+What You’ll Do
+As a Software Engineer, you will be responsible for:
+Full stack ownership including design, implementation, and testing of new features protecting customers’ virtual machine deployments in data centers and in the cloud
+Troubleshooting issues experienced by customers or internal product test, and providing remedial solutions
+Analyzing field and internal data, and developing product improvements.
+You will collaborate with partner teams such as Product Management, Support.
+Experience You’ll Need:
+You are passionate about working with complex distributed systems that serve business and enterprise customers:
+2-5 years of software development expereince
+BS/MS/PhD in Computer Science or in any related field
+2+ years of product development experience
+Ability to identify scalable and elegant solutions to complex problems
+Strong interest and ability to learn new technologies
+Proficient in one of C++, Java, Go, Scala or Python
+Full stack development experience is a plus
+Distributed systems design and development experience is preferred
+Experience with popular workload such as Virtual Machines is a bonus
+Join Us in Securing and Accelerating the World's AI Transformation
+Rubrik (RBRK), the Security and AI Operations Company, leads at the intersection of data protection, cyber resilience, and enterprise AI acceleration. Rubrik Security Cloud delivers complete cyber resilience by securing, monitoring, and recovering data, identities, and workloads across clouds. Rubrik Agent Cloud accelerates trusted AI agent deployments at scale by monitoring and auditing agentic actions, enforcing real-time guardrails, fine-tuning for accuracy and undoing agentic mistakes.
+Linkedin | X (formerly Twitter) | Instagram | Rubrik.com
+Inclusion @ Rubrik
+At Rubrik, we are dedicated to fostering a culture where people from all backgrounds are valued, feel they belong, and believe they can succeed. Our commitment to inclusion is at the heart of our mission to secure the world’s data.
+Our goal is to hire and promote the best talent, regardless of background. We continually review our hiring practices to ensure fairness and strive to create an environment where every employee has equal access to opportunities for growth and excellence. We believe in empowering everyone to bring their authentic selves to work and achieve their fullest potential.
+Our inclusion strategy focuses on three core areas of our business and culture:
+Our Company: We are committed to building a merit-based organization that offers equal access to growth and success for all employees globally. Your potential is limitless here.
+Our Culture: We strive to create an inclusive atmosphere where individuals from all backgrounds feel a strong sense of belonging, can thrive, and do their best work. Your contributions help us innovate and break boundaries.
+Our Communities: We are dedicated to expanding our engagement with the communities we operate in, creating opportunities for underrepresented talent and driving greater innovation for our clients. Your impact extends beyond Rubrik, contributing to safer and stronger communities.
+Equal Opportunity Employer/Veterans/Disabled
+Rubrik is an Equal Opportunity Employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, sex, sexual orientation, gender identity, national origin, or protected veteran status and will not be discriminated against on the basis of disability.
+Rubrik provides equal employment opportunities (EEO) to all employees and applicants for employment without regard to race, color, religion, sex, national origin, age, disability or genetics. In addition to federal law requirements, Rubrik complies with applicable state and local laws governing nondiscrimination in employment in every location in which the company has facilities. This policy applies to all terms and conditions of employment, including recruiting, hiring, placement, promotion, termination, layoff, recall, transfer, leaves of absence, compensation and training.
+Federal law requires employers to provide reasonable accommodation to qualified individuals with disabilities. Please contact us at hr@rubrik.com if you require a reasonable accommodation to apply for a job or to perform your job. Examples of reasonable accommodation include making a change to the application process or work procedures, providing documents in an alternate format, using a sign language interpreter, or using specialized equipment.
+EEO IS THE LAW
+NOTIFICATION OF EMPLOYEE RIGHTS UNDER FEDERAL LABOR LAWS

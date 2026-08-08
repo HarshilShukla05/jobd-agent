@@ -1,0 +1,103 @@
+{
+  "job_id": "rubrik-8050714-hypervisor",
+  "summary": "backend-distributed",
+  "bullets": {
+    "clarity-se1": [
+      "wal-cpp",
+      "bifrost-go-migration",
+      "spanner-consistency",
+      "redis-cluster-migration",
+      "feed-dataflow",
+      "turn-stun-failover",
+      "server-side-races",
+      "user-state-loss-proof",
+      "temporal-webhooks",
+      "feed-rewrite",
+      "secret-rotation",
+      "llm-rag-pipeline"
+    ],
+    "clarity-intern": [
+      "bifrost-design",
+      "at-least-once-delivery",
+      "offline-replay"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-pg-queue",
+      "loop-idempotency"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "C++",
+      "Go",
+      "Node.js",
+      "gRPC",
+      "Spanner",
+      "Redis",
+      "GCP",
+      "Dataflow"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "GCP",
+      "Redis",
+      "Pub/Sub",
+      "WebSocket"
+    ],
+    "ibm-intern": [
+      "Java",
+      "Node.js",
+      "SQL",
+      "Jest",
+      "Jenkins"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "C++",
+      "Go",
+      "Java",
+      "Python",
+      "Node.js",
+      "TypeScript",
+      "SQL"
+    ],
+    "cloud_infra": [
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "Kubernetes",
+      "Docker",
+      "AWS (EC2, S3, IAM)",
+      "Terraform",
+      "Jenkins",
+      "GitHub Actions"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "Spanner",
+      "Redis",
+      "MongoDB",
+      "SQL",
+      "NoSQL"
+    ],
+    "systems": [
+      "Distributed Systems",
+      "gRPC",
+      "REST",
+      "Microservices",
+      "Security",
+      "Performance Optimization",
+      "OOP",
+      "Git"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop"
+  ]
+}

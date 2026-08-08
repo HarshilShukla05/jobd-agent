@@ -1,0 +1,71 @@
+Job Title: Python Backend Developer 
+
+ About Us 
+
+ “Capco, a Wipro company, is a global technology and management consulting firm. Awarded with Consultancy of the year in the&nbsp; British Bank Award and has been ranked Top 100 Best Companies for Women in India 2022 by Avtar &amp; Seramount . With our presence across 32 cities across globe, we support 100+ clients across&nbsp;banking, financial and Energy sectors. We are recognized for our deep transformation execution and delivery.&nbsp; 
+
+ WHY JOIN CAPCO? 
+
+ You will work on engaging projects with the largest international and local banks, insurance companies, payment service providers and other key players in the industry. The projects that will transform the financial services industry.
+
+ MAKE AN IMPACT 
+
+ Innovative thinking, delivery excellence and thought leadership to help our clients transform their business. Together with our clients and industry partners, we deliver disruptive work that is changing energy and financial services.
+
+ #BEYOURSELFATWORK 
+
+ Capco has a tolerant, open culture that values diversity, inclusivity, and creativity.
+
+ CAREER ADVANCEMENT 
+
+ With no forced hierarchy at Capco, everyone has the opportunity to grow as we grow, taking their career into their own hands. 
+
+ DIVERSITY &amp; INCLUSION 
+
+ We believe that diversity of people and perspective gives us a competitive advantage. 
+
+ &nbsp;
+
+ Job Description 
+
+ Python Backend Developer 
+
+ Job Summary 
+
+ Job Summary: We are seeking a skilled Python backend developer with strong expertise in backend application development to join our team. The role involves managing development of FastAPI based applications to run large data modeling, and leveraging the Databricks platform. The ideal candidate will have a robust background in backend development, Data science model basics, and cloud-based solutions to drive data-driven decision-making and innovation within our portfolio.
+
+ &nbsp;
+
+ Key skills - Python, FastAPI Framework, REST API design, Pydantic models, Async programming, Modular implementation, Authentication &amp; Autherization, Error handling &amp; Logging, Documentation, Azure DevOps, Git versioning, Agile delivery, Scrum, Azure cloud, Databricks, Delta Lake
+
+ &nbsp;
+
+ Key Responsibilities:
+
+ Design, develop, and maintain scalable backend services and RESTful APIs using Python and FastAPI.
+
+ Build and integrate APIs that expose statistical models, analytical services, and machine learning solutions to front end and external systems.
+
+ Collaborate with data scientists and business stakeholders to operationalize computational and statistical models in production environment.
+
+ Integrate backend services with Azure cloud components, including Azure Data Lake Storage, Databricks Delta Lake, and Azure DevOps.
+
+ Design and implement secure authentication and authorization, and API security mechanism.
+
+ Develop reusable, modular, and maintainable code following software engineering best practices and coding standard.
+
+ Optimize application performance, scalability, and reliability for high-volume data processing workloads.
+
+ Implement automated testing, including unit test cases using pytest.
+
+ Collaborate with front end developers to support seamless integration between React - based user interfaces and backend services.
+
+ Develop and maintain CI/CD pipelines to automate application deployment and release processes.
+
+ Work with ML flow and MLOps frameworks to support model deployment, versioning, monitoring, and life cycle management.
+
+ Participate in code reviews, technical design discussions, and architecture planning activities.
+
+ Create and maintain technical documentation, API specifications, and operational runbook.
+
+ If you are keen to join us, you will be part of an organization that values your contributions, recognizes your potential, and provides ample opportunities for growth. For more information, visit www.capco.com. Follow us on Twitter, Facebook, LinkedIn, and YouTube.

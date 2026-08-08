@@ -2,6 +2,84 @@
 
 Deterministic spine for Harshil's job-hunt system. Architecture: [DESIGN.md](DESIGN.md).
 
+> **This repository is private and contains Harshil's personal data**, including his date
+> of birth, home address, phone number and current compensation
+> ([references/profile.md](references/profile.md), [references/answers-bank.md](references/answers-bank.md),
+> [bank/bank.yaml](bank/bank.yaml)). Anyone with access to this repo can read all of it.
+> Do not make it public, do not fork it to a public namespace, and do not add a
+> collaborator you would not tell those things to in person.
+
+## Running this on Harshil's behalf
+
+The point of this repo is that someone else can work the queue while he is at his day
+job. Read this whole section before your first run.
+
+**What you can do without him:** discovery (sweep + gate), reading the dashboard, adding
+a job you found ([skills/jobd-add](skills/jobd-add/SKILL.md)), and tailoring resumes.
+
+**What needs his machine or his help:** actually submitting an application. The apply
+stage drives **Google Chrome signed into his accounts** — his Google login, his existing
+profiles on Greenhouse/Amazon/etc. That session lives on his machine and it is not
+something to reproduce on yours. Never ask him for a password, and never enter one for
+him: if a form needs a login he does not already have in that browser, stop and report
+`deferred`. Same for OTPs, 2FA and email security codes — those are his to enter.
+
+### ⚠️ Only one person runs the pipeline at a time
+
+The guarantee that he never applies to the same job twice comes from **one SQLite file**:
+`jobd.db` holds both the atomic claim (`UPDATE ... WHERE status='shortlisted'`, exactly
+one winner) and the permanent ledger. That file is **not** in this repo — it is
+gitignored, because it is state, not code.
+
+So if two people clone this and each run their own `jobd.db`, **there is no shared claim
+and no shared ledger, and you can both apply to the same job.** A duplicate application
+is the one failure this system exists to prevent; it costs him the role, not just the
+slot.
+
+Until a shared instance is set up (see below), the rule is simply: **agree who is running
+it before anyone starts**, and get the current `jobd.db` from him rather than starting a
+fresh one. `./jobd-bin stats -db jobd.db` should show thousands of jobs and a non-empty
+ledger — if it shows zeros you are on a fresh database and you must stop.
+
+*Planned fix:* one daemon on his machine or a small VM, with everyone else pointing the
+apply skill at that API over Tailscale. One database, and the atomic claim works exactly
+as designed again. Not built yet.
+
+### Setup
+
+```bash
+git clone <this repo> && cd agent
+go build -o jobd-bin ./cmd/jobd && go build -o resumegen-bin ./cmd/resumegen
+```
+
+Two things are deliberately not in the repo and must be obtained from Harshil:
+
+| what | where it goes | needed for |
+|---|---|---|
+| `jobd.db` | repo root | the dedupe ledger — **do not start without it** |
+| GCP service-account key + `GCP_PROJECT`/`GEMINI_MODEL` | `~/.config/jobd/` | the LLM gate (`jobd gate`, and screening submissions) |
+
+Also needed locally: Go, `python3` + `pypdf`, and tectonic (vendored under `tools/`,
+fetched per machine — see [DEPLOY.md](DEPLOY.md)).
+
+Then read [RUNBOOK.md](RUNBOOK.md), which is the operational guide: what a normal run
+looks like, what is a real fault, and how to recover a wedged job.
+
+### The rules that are not negotiable
+
+These are enforced in code where possible and by the skills otherwise. If you find
+yourself working around one, stop and ask him.
+
+- **Never invent a fact.** Every claim on a resume comes from `bank/bank.yaml`; the
+  renderer rejects anything else. Every form answer comes from `references/profile.md`
+  or `references/answers-bank.md`. If a required field is covered by neither, skip the
+  job and flag it — do not guess a date, a number or a preference.
+- **Never report `applied` without an on-screen confirmation.**
+- **Never skip the claim.** A `409` means someone else has the job; move on.
+- **Always report an outcome**, including failures — an unreported claim strands the job
+  for an hour.
+- Outreach **drafts only**. Sending is his approval on the dashboard, never yours.
+
 ## Step 1 (done): experience bank + resume compiler
 
 ```

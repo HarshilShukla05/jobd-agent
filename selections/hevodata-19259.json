@@ -1,0 +1,111 @@
+{
+  "job_id": "hevodata-19259-sde1",
+  "summary": "node-express-api",
+  "bullets": {
+    "clarity-se1": [
+      "rest-apis",
+      "swagger-docs",
+      "feed-dataflow",
+      "llm-rag-pipeline",
+      "payment-polling-backup",
+      "pricing-ssot",
+      "pricing-fanout",
+      "feed-index-opt",
+      "spanner-consistency",
+      "meta-capi-events",
+      "code-review-gate"
+    ],
+    "clarity-intern": [
+      "at-least-once-delivery",
+      "bifrost-design",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-rate-limiter",
+      "loop-pg-queue",
+      "loop-react-dashboard"
+    ],
+    "iris-mlops": [
+      "iris-flask-api",
+      "iris-terraform"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Java",
+      "Node.js",
+      "Express",
+      "Dataflow",
+      "Pub/Sub",
+      "GCP",
+      "Redis",
+      "Go"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "HTTP",
+      "Pub/Sub",
+      "Redis",
+      "GCP"
+    ],
+    "ibm-intern": [
+      "Java",
+      "SQL",
+      "Jest",
+      "Node.js",
+      "Jenkins"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Java",
+      "TypeScript",
+      "Python",
+      "JavaScript",
+      "Node.js",
+      "Go",
+      "SQL"
+    ],
+    "cloud_infra": [
+      "Docker",
+      "Kubernetes",
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "AWS (EC2, S3, IAM)",
+      "Jenkins",
+      "GitHub Actions",
+      "Terraform",
+      "DevOps"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "SQL",
+      "NoSQL",
+      "MongoDB",
+      "Redis",
+      "Spanner",
+      "BigQuery"
+    ],
+    "systems": [
+      "REST",
+      "OOP",
+      "Microservices",
+      "Distributed Systems",
+      "Performance Optimization",
+      "Git",
+      "Postman",
+      "Express",
+      "gRPC"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "loop",
+    "iris-mlops"
+  ]
+}

@@ -1,0 +1,73 @@
+About the Company:
+Netomi is the leading agentic AI platform for enterprise customer experience. We work with the largest global brands like Delta Airlines, MetLife, MGM, United, and others to enable agentic automation at scale across the entire customer journey. Our no-code platform delivers the fastest time to market, lowest total cost of ownership, and simple, scalable management of AI agents for any CX use case. Backed by WndrCo, Y Combinator, and Index Ventures, we help enterprises drive efficiency, lower costs, and deliver higher quality customer experiences. 
+
+Want to be part of the AI revolution and transform how the world’s largest global brands do business? Join us!
+
+
+We’re looking for a highly motivated SDE 2 – Backend Engineer to join our core engineering team. In this role, you will be a key player in designing, developing, and optimizing high-performance backend systems. You’ll work closely with cross-functional teams to build scalable, secure, and reliable services that power our core platforms. This is a high-impact opportunity to shape technology in a startup-like, fast-paced environment.
+
+
+Responsibilities:
+System Design & Development:  Architect and implement clean, modular, and scalable backend services using  Java ,  Spring Boot , and modern microservice principles.
+
+ 
+ Database Management:  Design efficient database schemas and write optimized queries for  RDS (MySQL/PostgreSQL)  and, optionally,  NoSQL  databases like  Elasticsearch ,  MongoDB , or  DynamoDB .
+
+ 
+ Messaging & Event-Driven Systems:  Integrate  Kafka  or  RabbitMQ  to build robust and loosely-coupled event-driven architectures.
+
+ 
+ Caching Strategies:  Leverage  Redis  or  Memcached  to implement high-performance caching strategies for scalable and low-latency systems.
+
+ 
+ Distributed Systems:  Contribute to the design of distributed, resilient systems that can handle high throughput and concurrency.
+
+ 
+ Performance Optimization:  Profile and tune backend performance across databases, APIs, and infrastructure.
+
+ 
+ Testing & Code Quality:  Write clean, maintainable code with  comprehensive unit and integration tests  to ensure reliability and stability.
+
+ 
+ Startup Environment:  Thrive in an agile, collaborative environment and take ownership of end-to-end feature delivery.
+
+Requirements:
+2-4 years of hands-on backend development experience in a product-based company (preferably SaaS).
+
+ 
+ Strong expertise in Java and Spring Boot ecosystem.
+
+ 
+ Solid understanding of Relational Databases (RDS, MySQL, PostgreSQL).
+
+ 
+ Experience with Apache Kafka or RabbitMQ for building asynchronous, decoupled systems.
+
+ 
+ Proficiency with Redis or Memcached for performance tuning and data caching.
+
+ 
+ Strong problem-solving skills and ability to work independently in a fast-paced, startup-like environment.
+
+ 
+ Passion for writing clean, readable, and efficient code with strong testing discipline
+
+ 
+ Hands-on experience with RESTful API design, microservices architecture, and integration of third-party services.
+
+ 
+ Strong cross-team collaboration skills, with the ability to work effectively with product, frontend, QA, and DevOps teams to deliver reliable features end to end.
+
+Additional Skills: 
+Prior experience working in a  high-growth startup  for 2+ years.
+
+ Exposure to  AI/ML-integrated solutions  or interest in working alongside data science teams.
+
+ Experience with infrastructure automation, monitoring tools, or observability stacks.
+
+ Familiarity with  NoSQL  systems like  Elasticsearch ,  MongoDB , or  DynamoDB .
+
+ Knowledge of  CI/CD pipelines ,  Git , and modern development practices.
+
+ Hands-on experience in  containerization  technologies:  Docker ,  Kubernetes , or  AWS ECS/GKE .
+Netomi is an equal opportunity employer committed to diversity in the workplace. We evaluate qualified applicants without regard to race, color, religion, sex, sexual orientation, disability, veteran status, and other protected characteristics.

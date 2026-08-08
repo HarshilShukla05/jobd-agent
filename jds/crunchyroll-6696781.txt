@@ -1,0 +1,77 @@
+Job Application for Software Engineer at Crunchyroll, LLCBack to jobsSoftware EngineerHyderabad, Telangana, IndiaApplyAbout Crunchyroll
+Founded by fans, Crunchyroll delivers the art and culture of anime to a passionate community. We super-serve over 100 million anime and manga fans across 200+ countries and territories, and help them connect with the stories and characters they crave. Whether that experience is online or in-person, streaming video, theatrical, games, merchandise, events and more, it’s powered by the anime content we all love.
+Join our team, and help us shape the future of anime!Crunchyroll Engineering 
+Crunchyroll’s Engineering teams thrive on action, impact, ownership, curiosity, and fan obsession. We embrace evolution, concise documentation, excellence, and empowering engineers. As part of our team, you’ll take ownership of tasks, delivering high-quality results on time, exceeding fans’ expectations. We foster collaboration, fearlessly exploring innovative solutions and challenging the status quo. Our commitment to learning and curiosity drives us to embrace change and tackle complex challenges head-on, revolutionizing the anime streaming experience for our community.
+About the role
+As a Software Engineer on the Service Monetization Team, you will help shape the future of our Service Monetization Platform. You will architect, build and optimize our subscriptions and payments platform that enables membership and powers revenue collection for Crunchyroll. Working with design, product, quality and data teams, you will solve complex challenges, optimize performance, and enhance user experience, directly contributing to the growth of the Crunchyroll fanbase. 
+In the role of Software Engineer, you will report to the Engineering Manager in the Service Monetization organization.
+About You
+We get excited about candidates, like you, because 
+You’re an experienced and passionate Software Engineer with experience building robust and reliable backend services (2+ years of relevant experience in the software industry) 
+You’re experienced in Java, GoLang, Python, PHP, Typescript or Node.js
+You’re experienced with cloud technologies (API Gateway, Lambda, EC2, RDS, ECS)
+You’re experienced with databases (PostgresDB/MariaDB, DynamoDB/MongoDB)
+You’re experienced in operational excellence (on-call rotations, incident management)
+You excel in an Agile and collaborative environment, where your insights and expertise will help create technical solutions loved by our fans.
+About the Team
+The Service Monetization organization is responsible for building, maintaining, and securing systems that enable membership and collect payments information for Crunchyroll users. We are directly tied to many streams of revenue and pride ourselves on quality code, service reliability, and teamwork. Our day to day work includes integrations with payment providers, payments fraud detection and prevention, optimizations to reduce passive churn while maintaining PCI compliance. Our services process millions of payments in a highly secure, distributed, and scalable environment that is constantly evolving to meet the needs of both our fans and growing Crunchyroll business!About our Values
+We want to be everything for someone rather than something for everyone and we do this by living and modeling our values in all that we do. We value
+Courage. We believe that when we overcome fear, we enable our best selves.
+Curiosity. We are curious, which is the gateway to empathy, inclusion, and understanding.
+Kaizen. We have a growth mindset committed to constant forward progress.
+Service. We serve our community with humility, enabling joy and belonging for others.
+Our commitment to diversity and inclusion
+Our mission of helping people belong reflects our commitment to diversity & inclusion. It's just the way we do business.
+We are an equal opportunity employer and value diversity at Crunchyroll. Pursuant to applicable law, we do not discriminate on the basis of race, religion, color, national origin, gender, sexual orientation, age, marital status, veteran status, or disability status.
+Crunchyroll, LLC is an independently operated joint venture between US-based Sony Pictures Entertainment, and Japan's Aniplex, a subsidiary of Sony Music Entertainment (Japan) Inc., both subsidiaries of Tokyo-based Sony Group Corporation.
+Questions about Crunchyroll’s hiring process? Please check out our Hiring FAQs: https://help.crunchyroll.com/hc/en-us/articles/360040471712-Crunchyroll-Hiring-FAQs
+Please refer to our Candidate Privacy Policy for more information about how we process your personal information, and your data protection rights: https://tbcdn.talentbrew.com/company/22978/v1_0/docs/spe-jobs-privacy-policy-update-for-crpa-dec-21-22.pdf
+Please beware of recent scams to online job seekers. Those applying to our job openings will only be contacted directly from @crunchyroll.com email account.Apply for this job*indicates a required fieldFirst Name*Last Name*Email*PhoneCountry*.remix-css-b62m3t-container{position:relative;box-sizing:border-box;}.remix-css-7pg0cj-a11yText{z-index:9999;border:0;clip:rect(1px, 1px, 1px, 1px);height:1px;width:1px;position:absolute;overflow:hidden;padding:0;white-space:nowrap;}.remix-css-13cymwt-control{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;cursor:default;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-pack:justify;-webkit-justify-content:space-between;justify-content:space-between;min-height:38px;outline:0!important;position:relative;-webkit-transition:all 100ms;transition:all 100ms;background-color:hsl(0, 0%, 100%);border-color:hsl(0, 0%, 80%);border-radius:4px;border-style:solid;border-width:1px;box-sizing:border-box;}.remix-css-13cymwt-control:hover{border-color:hsl(0, 0%, 70%);}.remix-css-hlgwow{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:grid;-webkit-flex:1;-ms-flex:1;flex:1;-webkit-box-flex-wrap:wrap;-webkit-flex-wrap:wrap;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-overflow-scrolling:touch;position:relative;overflow:hidden;padding:2px 8px;box-sizing:border-box;}.remix-css-1jqq78o-placeholder{grid-area:1/1/2/3;color:hsl(0, 0%, 50%);margin-left:2px;margin-right:2px;box-sizing:border-box;}.remix-css-19bb58m{visibility:visible;-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;display:inline-grid;grid-area:1/1/2/3;grid-template-columns:0 min-content;margin:2px;padding-bottom:2px;padding-top:2px;color:hsl(0, 0%, 20%);box-sizing:border-box;}.remix-css-19bb58m:after{content:attr(data-value) " ";visibility:hidden;white-space:pre;grid-area:1/2;font:inherit;min-width:2px;border:0;margin:0;outline:0;padding:0;}.remix-css-1wy0on6{-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-align-self:stretch;-ms-flex-item-align:stretch;align-self:stretch;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-flex-shrink:0;-ms-flex-negative:0;flex-shrink:0;box-sizing:border-box;}.remix-css-1a0ro4n-requiredInput{opacity:0;pointer-events:none;position:absolute;bottom:0;left:0;right:0;width:100%;}Phone*Location (City)*Locate meResume/CV*AttachAttachDropboxGoogle DriveEnter manuallyEnter manuallyAccepted file types: pdf, doc, docx, txt, rtfCover LetterAttachAttachDropboxGoogle DriveEnter manuallyEnter manuallyAccepted file types: pdf, doc, docx, txt, rtfLinkedIn ProfilePlease provide the URL to your LinkedIn profile. Are you subject to a non-competition agreement or other agreement that would preclude or restrict your employment with Crunchyroll?*Select...Do you currently, or will you in the future, require any immigration-related support or sponsorship from Crunchyroll in order to begin or continue employment with Crunchyroll?*Select...If you answered yes to the above question, and you are currently located in the U.S., please indicate your current U.S. immigration status/visa and type of sponsorship required (if known):Please describe your Total Rewards expectations in order to consider a new role with Crunchyroll.This question is optional and it is a private field. Answers may only be viewed by members of our Talent Attraction team. Are you comfortable to work from Hyderabad? This is a Hybrid role with 2 days office and 3 days Work from home.*Select...How many years of engineering experience do you have?*Select...Submit applicationPowered byGreenhouse<path fill="#23a47f" d="M44.9,43.3c0,5.2-2.2,9.8-5.8,13.4c-4,4-9.8,5-9.8,8.4c0,4.6,7.4,3.2,14.5,10.3c4.7,4.7,7.6,10.9,7.6,18.1
+c0,14.2-11.4,25.5-25.7,25.5S0,107.71,0,93.51c0-7.2,2.9-13.4,7.6-18.1c7.1-7.1,14.5-5.7,14.5-10.3c0-3.4-5.8-4.4-9.8-8.4
+c-3.6-3.6-5.8-8.2-5.8-13.6c0-10.4,8.5-18.8,18.9-18.8c2,0,3.8,0.3,5.3,0.3c2.7,0,4.1-1.2,4.1-3.1c0-1.1-0.5-2.5-0.5-4
+c0-3.4,2.9-6.2,6.4-6.2c3.5,0,6.3,2.9,6.3,6.4c0,3.7-2.9,5.4-5.1,6.2c-1.8,0.6-3.2,1.4-3.2,3.2C38.7,30.5,44.9,33.8,44.9,43.3z
+M42.9,93.51c0-9.9-7.3-17.9-17.2-17.9c-9.9,0-17.2,8-17.2,17.9c0,9.8,7.3,17.9,17.2,17.9C35.6,111.41,42.9,103.3,42.9,93.51z
+M37,43.1c0-6.3-5.1-11.5-11.3-11.5s-11.3,5.2-11.3,11.5s5.1,11.5,11.3,11.5S37,49.4,37,43.1z"><path fill="#23a47f" d="M80.9,25.3c3.2,0,5.6,2.4,5.6,5.4s-2.3,5.4-5.5,5.4c-3.3,0-5.1-2.1-8.4-2.1c-3.2,0-5.7,2.3-5.7,6.2v31.5
+c0,2.4-1.9,4.3-4.3,4.3c-2.3,0-4.2-1.9-4.2-4.3V29.3c0-2.4,1.9-4.3,4.2-4.3c4.3,0,3.5,4.1,7.8,4.1C74.5,29.1,76,25.3,80.9,25.3z"><path fill="#23a47f" d="M90.2,50.5c0-15.1,10.4-26,24.7-26c13.1,0,23.5,9.6,23.5,22.7c0,3.1-2,5.2-4.9,5.2H101c-1.4,0-1.9,0.5-1.9,1.6
+c0,2.5,2,7.1,5,10.1s7.1,4.8,12.9,4.8c4.3,0,8.1-1.6,11-3.7c0.9-0.7,1.9-1.1,2.9-1.1c2.1,0,3.8,1.9,3.8,3.9c0,1.2-0.4,2.2-1.4,3.1
+c-4.2,3.5-10.1,5.4-16.5,5.4C101.3,76.5,90.2,65.3,90.2,50.5z M125.6,36.1c-2.8-2.8-6.4-4.2-10.7-4.2c-4.3,0-8.3,1.7-11.2,4.6
+c-2.3,2.3-3.9,5.3-3.9,7.3c0,1,0.6,1.4,1.9,1.4h26c1.2,0,1.8-0.4,1.8-1.4C129.5,41.4,127.6,38.1,125.6,36.1z"><path fill="#23a47f" d="M147,50.5c0-15.1,10.4-26,24.7-26c13.1,0,23.5,9.6,23.5,22.7c0,3.1-2,5.2-4.9,5.2h-32.5
+c-1.4,0-1.9,0.5-1.9,1.6c0,2.5,2,7.1,5,10.1s7.1,4.8,12.9,4.8c4.3,0,8.1-1.6,11-3.7c0.9-0.7,1.9-1.1,2.9-1.1c2.1,0,3.8,1.9,3.8,3.9
+c0,1.2-0.4,2.2-1.4,3.1c-4.2,3.5-10.1,5.4-16.5,5.4C158.1,76.5,147,65.3,147,50.5z M182.4,36.1c-2.8-2.8-6.4-4.2-10.7-4.2
+c-4.3,0-8.3,1.7-11.2,4.6c-2.3,2.3-3.9,5.3-3.9,7.3c0,1,0.6,1.4,1.9,1.4h26c1.2,0,1.8-0.4,1.8-1.4
+C186.3,41.4,184.4,38.1,182.4,36.1z"><path fill="#23a47f" d="M245.3,76c-2.4,0-4.3-1.9-4.3-4.3V44.5c0-7.1-5.6-12.5-12.8-12.5c-7.3,0-12.9,5.5-12.9,12.5v27.2
+c0,2.4-1.9,4.3-4.3,4.3c-2.3,0-4.2-1.9-4.2-4.3V29.2c0-2.3,1.9-4.2,4.1-4.2c4.2,0,4,3.8,6.2,3.8c2.2,0,5.2-4.3,13-4.3
+c10.9,0,19.4,9.1,19.4,20v27.2C249.5,74.1,247.6,76,245.3,76z"><path fill="#23a47f" d="M302.7,76c-2.4,0-4.3-1.9-4.3-4.3V44.5c0-7.1-5.6-12.5-12.8-12.5c-7.3,0-12.9,5.5-12.9,12.5v27.2
+c0,2.4-1.9,4.3-4.3,4.3c-2.3,0-4.2-1.9-4.2-4.3V4.3c0-2.4,1.9-4.3,4.2-4.3c2.4,0,4.3,1.9,4.3,4.3v22.1c0,1.2,0.5,1.9,1.8,1.9
+c2.2,0,5.2-3.8,13-3.8c10.9,0,19.4,9.1,19.4,20v27.2C306.9,74.1,305,76,302.7,76z"><path fill="#23a47f" d="M318.59,50.5c0-14.5,11.6-26,26.2-26c14.6,0,26.2,11.5,26.2,26c0,14.5-11.6,26-26.2,26
+C330.2,76.5,318.59,65,318.59,50.5z M362.5,50.5c0-10.1-7.5-18.4-17.7-18.4c-10.1,0-17.6,8.3-17.6,18.4c0,10.1,7.5,18.4,17.6,18.4
+C355,68.9,362.5,60.6,362.5,50.5z"><path fill="#23a47f" d="M386.89,25c2.4,0,4.3,1.9,4.3,4.3v27.2c0,7.1,5.6,12.5,12.8,12.5c7.3,0,12.9-5.5,12.9-12.5V29.3
+c0-2.4,1.9-4.3,4.3-4.3c2.3,0,4.2,1.9,4.2,4.3v42.5c0,2.3-1.9,4.2-4.1,4.2c-4.2,0-4-3.8-6.2-3.8c-2.2,0-5.2,4.3-13,4.3
+c-10.9,0-19.4-9.1-19.4-20V29.3C382.7,26.9,384.59,25,386.89,25z"><path fill="#23a47f" d="M440.49,72.8c-1.9-1.2-3.2-2.4-3.2-4.7c0-2.2,1.7-3.9,3.8-3.9c2.5,0,3.6,1.5,5.7,2.6c2.6,1.5,5.6,2.3,9.3,2.3
+c6.8,0,10.2-3.1,10.2-6.9c0-5.4-5-6.4-11.8-8.2c-8.4-2.2-16.5-4.7-16.5-14.4c0-8.6,6.6-15.1,18.3-15.1c4.6,0,8.9,1.2,12.3,3.3
+c1.2,0.7,2.4,2.2,2.4,3.9c0,2.2-1.8,4.1-4.1,4.1c-1.5,0-2.7-1-4.2-2c-1.5-1-3.7-1.9-6.7-1.9c-6.7,0-9.6,2.9-9.6,6.8
+c0,5.1,4.9,6.3,11.9,8c8.2,2,16.3,4.6,16.3,14.5c0,8.6-6.4,15.3-18.7,15.3C449.89,76.5,444.49,75.3,440.49,72.8z"><path fill="#23a47f" d="M482.59,50.5c0-15.1,10.4-26,24.7-26c13.1,0,23.5,9.6,23.5,22.7c0,3.1-2,5.2-4.9,5.2h-32.5
+c-1.4,0-1.9,0.5-1.9,1.6c0,2.5,2,7.1,5,10.1s7.1,4.8,12.9,4.8c4.3,0,8.1-1.6,11-3.7c0.9-0.7,1.9-1.1,2.9-1.1c2.1,0,3.8,1.9,3.8,3.9
+c0,1.2-0.4,2.2-1.4,3.1c-4.2,3.5-10.1,5.4-16.5,5.4C493.7,76.5,482.59,65.3,482.59,50.5z M518,36.1c-2.8-2.8-6.4-4.2-10.7-4.2
+c-4.3,0-8.3,1.7-11.2,4.6c-2.3,2.3-3.9,5.3-3.9,7.3c0,1,0.6,1.4,1.9,1.4h26c1.2,0,1.8-0.4,1.8-1.4C521.9,41.4,520,38.1,518,36.1z">((STORAGE_KEY, restoreKey) => {
+if (!window.history.state || !window.history.state.key) {
+let key = Math.random().toString(32).slice(2);
+window.history.replaceState({
+key
+}, "");
+}
+try {
+let positions = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");
+let storedY = positions[restoreKey || window.history.state.key];
+if (typeof storedY === "number") {
+window.scrollTo(0, storedY);
+}
+} catch (error) {
+console.error(error);
+sessionStorage.removeItem(STORAGE_KEY);
+}
+})("positions", null)import "https://job-boards.cdn.greenhouse.io/assets/manifest-3d7c4fe1.js";
+import * as route0 from "https://job-boards.cdn.greenhouse.io/assets/root-vMg8Je3T.js";
+import * as route1 from "https://job-boards.cdn.greenhouse.io/assets/_url_token_.jobs_._job_post_id-DZc8ac3B.js";
+window.__remixRouteModules = {"root":route0,"routes/$url_token_.jobs_.$job_post_id":route1};
+import("https://job-boards.cdn.greenhouse.io/assets/entry.client-Da_lLnMl.js");

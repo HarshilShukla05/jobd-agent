@@ -1,0 +1,111 @@
+{
+  "job_id": "capco-19505-python-backend",
+  "summary": "ai-platform",
+  "bullets": {
+    "clarity-se1": [
+      "rest-apis",
+      "swagger-docs",
+      "llm-rag-pipeline",
+      "feed-dataflow",
+      "authz-fix",
+      "secret-rotation",
+      "pricing-ssot",
+      "feed-index-opt",
+      "ws-audio-recording",
+      "spanner-consistency",
+      "code-review-gate"
+    ],
+    "clarity-intern": [
+      "at-least-once-delivery",
+      "bifrost-design",
+      "wallet-ab-cicd"
+    ],
+    "ibm-intern": [
+      "jest-coverage",
+      "ci-quality-gates",
+      "sql-migrations"
+    ],
+    "iris-mlops": [
+      "iris-flask-api",
+      "iris-terraform"
+    ],
+    "loop": [
+      "loop-webhook-engine",
+      "loop-pg-queue",
+      "loop-idempotency"
+    ]
+  },
+  "tech_lines": {
+    "clarity-se1": [
+      "Node.js",
+      "Express",
+      "Go",
+      "Java",
+      "GCP",
+      "Dataflow",
+      "Redis",
+      "gRPC"
+    ],
+    "clarity-intern": [
+      "Node.js",
+      "Pub/Sub",
+      "Redis",
+      "GCP",
+      "HTTP"
+    ],
+    "ibm-intern": [
+      "Java",
+      "SQL",
+      "Jest",
+      "Jenkins",
+      "Node.js"
+    ]
+  },
+  "skills": {
+    "languages": [
+      "Python",
+      "SQL",
+      "Node.js",
+      "TypeScript",
+      "JavaScript",
+      "Java",
+      "Go"
+    ],
+    "cloud_infra": [
+      "Docker",
+      "Kubernetes",
+      "Terraform",
+      "GitHub Actions",
+      "Jenkins",
+      "AWS (EC2, S3, IAM)",
+      "GCP (GKE, Pub/Sub, Dataflow, GCS, IAM)",
+      "DevOps"
+    ],
+    "data_storage": [
+      "PostgreSQL",
+      "SQL",
+      "NoSQL",
+      "MongoDB",
+      "Redis",
+      "BigQuery",
+      "Spanner"
+    ],
+    "systems": [
+      "REST",
+      "Security",
+      "Performance Optimization",
+      "Microservices",
+      "Git",
+      "OOP",
+      "Distributed Systems",
+      "React",
+      "Express",
+      "Postman"
+    ]
+  },
+  "aliases": [],
+  "include_projects": [
+    "iris-mlops",
+    "loop"
+  ]
+}
