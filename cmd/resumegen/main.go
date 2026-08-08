@@ -15,6 +15,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -116,9 +117,89 @@ type renderData struct {
 var latexEscaper = strings.NewReplacer(
 	`\`, `\textbackslash{}`, `&`, `\&`, `%`, `\%`, `$`, `\$`, `#`, `\#`,
 	`_`, `\_`, `{`, `\{`, `}`, `\}`, `~`, `\textasciitilde{}`, `^`, `\textasciicircum{}`,
+	// LaTeX turns a plain ' into a curly U+2019 in the text layer, so "user's"
+	// extracts as "user’s" and a literal search for the ASCII spelling misses
+	// it. \textquotesingle keeps U+0027, which is what an ATS actually greps for.
+	`'`, `\textquotesingle{}`,
 )
 
 func esc(s string) string { return latexEscaper.Replace(s) }
+
+// Words too ordinary for a repeat to mean anything. Anything not listed here and
+// at least 5 letters long is "distinctive" enough that saying it twice in one
+// breath is waste rather than grammar.
+var commonWords = map[string]bool{
+	"across": true, "after": true, "against": true, "another": true, "before": true,
+	"below": true, "between": true, "every": true, "from": true, "into": true,
+	"other": true, "over": true, "their": true, "them": true, "then": true,
+	"there": true, "these": true, "they": true, "this": true, "those": true,
+	"through": true, "under": true, "until": true, "when": true, "where": true,
+	"which": true, "while": true, "with": true, "without": true,
+}
+
+var wordRe = regexp.MustCompile(`[A-Za-z][A-Za-z.+/-]*`)
+
+// significantWords returns the lowercased distinctive words in a line.
+func significantWords(s string) []string {
+	var out []string
+	for _, w := range wordRe.FindAllString(s, -1) {
+		w = strings.ToLower(strings.Trim(w, ".-/"))
+		if len(w) >= 5 && !commonWords[w] {
+			out = append(out, w)
+		}
+	}
+	return out
+}
+
+// lintRepeats warns when a distinctive word is used twice inside one line, or in
+// two lines that sit next to each other on the page.
+//
+// Harshil's rule, 2026-08-07: "Backend engineer ... on the backend of a chat app"
+// spent two of the summary's ~35 words saying one thing. This is deliberately
+// scoped to ONE line and its immediate neighbour — a keyword recurring across the
+// whole page ("payments" in five bullets) is correct and helps the ATS.
+//
+// A warning, never a hard failure: a genuine repeat is occasionally the clearest
+// phrasing, and that call is Harshil's. But it is printed, because the same rule
+// written only in prose was already broken once — two pricing bullets shipped
+// together both hanging on the word "six".
+func lintRepeats(lines []string) {
+	var warned []string
+	for i, line := range lines {
+		seen := map[string]bool{}
+		for _, w := range significantWords(line) {
+			if seen[w] {
+				warned = append(warned, fmt.Sprintf(
+					"  %q used twice in one line: %s", w, line))
+				break
+			}
+			seen[w] = true
+		}
+		if i == 0 {
+			continue
+		}
+		prev := map[string]bool{}
+		for _, w := range significantWords(lines[i-1]) {
+			prev[w] = true
+		}
+		for _, w := range significantWords(line) {
+			if prev[w] {
+				warned = append(warned, fmt.Sprintf(
+					"  %q repeats from the line above:\n    %s\n    %s", w, lines[i-1], line))
+				break
+			}
+		}
+	}
+	if len(warned) == 0 {
+		return
+	}
+	fmt.Fprintf(os.Stderr, "\nrepeated wording (%d) — each repeat is a slot that "+
+		"could carry a new fact:\n", len(warned))
+	for _, w := range warned {
+		fmt.Fprintln(os.Stderr, w)
+	}
+	fmt.Fprintln(os.Stderr)
+}
 
 func fail(format string, a ...any) {
 	fmt.Fprintf(os.Stderr, "resumegen: "+format+"\n", a...)
@@ -153,6 +234,7 @@ func main() {
 	// --- validate + resolve ---
 	var data renderData
 	var plainBullets []string // pre-escape text for the ATS round-trip check
+	var prose []string        // summary + bullet text only, in render order, for the repeat lint
 	data.Identity = bank.Identity
 	data.Education = bank.Education
 
@@ -162,6 +244,7 @@ func main() {
 		for _, sm := range bank.Summaries {
 			if sm.ID == sel.Summary {
 				plainBullets = append(plainBullets, sm.Text)
+				prose = append(prose, sm.Text)
 				data.Summary = esc(sm.Text)
 				found = true
 				break
@@ -206,6 +289,7 @@ func main() {
 			}
 			text := applyAliases(b.Text, id, sel.Aliases, bank.Aliases)
 			plainBullets = append(plainBullets, text)
+			prose = append(prose, text)
 			texts = append(texts, esc(text))
 		}
 		techLine := r.TechLine

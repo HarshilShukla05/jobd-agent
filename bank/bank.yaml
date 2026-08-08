@@ -15,19 +15,50 @@
 #   - no bullet that describes a limitation rather than work he did
 # A skill he genuinely has is stated plainly. A skill he lacks is simply absent —
 # omission is the honest move, self-criticism is not.
+#
+# NO REDUNDANT BULLETS, NO BULLETS WITHOUT NUMBERS (Harshil, 2026-08-07).
+# Two rules the selector must apply on every job, not just when it notices:
+#   1. Never select two bullets that make the same point. Two lines describing
+#      one piece of work read as padding and waste a slot on a one-page resume.
+#      Where two bullets are two views of the same thing, they carry `conflicts`
+#      and the renderer rejects the pair — but the selector must not rely on that
+#      as the only guard, because closely-related-but-not-identical bullets slip
+#      through. Ask of each pair: could a reader tell these apart? If not, drop one.
+#   2. Prefer bullets that quantify. A bullet with a number (throughput, latency,
+#      volume, count, time saved, before -> after) outranks one without, and a
+#      metric-free bullet should only make the page when nothing better covers a
+#      point the JD asks for. "Impact" means numbers, not adjectives.
+# Neither rule licenses inventing a figure. If a bullet needs a number that is
+# not in this file, ask Harshil for it — do not estimate one.
+#
+# NO REPEATED WORDS IN ONE BREATH (Harshil, 2026-08-07).
+# Never use the same distinctive word twice inside one sentence, or in two lines
+# sitting next to each other. "Backend engineer ... on the backend of a chat app"
+# spends two of the summary's ~35 words saying one thing. Every repeat is a slot
+# that could have carried a new fact.
+# The fix is almost never to delete the second use — it is to make the FIRST word
+# do different work. Here: open with "Software Engineer" (his real title, which
+# the resume otherwise never states in the summary) and let "on the backend of"
+# carry the specialism. One sentence, two facts, same length.
+# Note this is about distinctive words in adjacent text, NOT about keywords
+# recurring across the page. "payments" appearing in five separate bullets is
+# correct and helps the ATS; "backend ... backend" in one sentence is waste.
+# resumegen warns on within-sentence repeats at render time — a prose rule alone
+# already failed once, when two pricing bullets both shipped saying "six".
 
 identity:
   name: Harshil Shukla
   phone: "+91 7905878588"
   email: harshilshukla0502@gmail.com
-  linkedin: linkedin.com/in/harshil-shukla
+  linkedin: linkedin.com/in/harshil-shukla-775a44229
   github: github.com/HarshilShukla05
 
 education:
   - school: Maulana Azad National Institute of Technology
     location: Bhopal, MP
-    degree: B.Tech in Mechanical Engineering, Minor in Computer Science
-    dates: "2021 -- 2025"
+    # Corrected 2026-08-07 (Harshil): there is no Computer Science minor.
+    degree: B.Tech in Mechanical Engineering
+    dates: "2021 - 2025"
 
 # Pre-approved summary variants. The selector picks ONE by id — it never writes
 # or edits this prose. Each must stay true against the bullets below.
@@ -39,6 +70,37 @@ summaries:
   - id: backend-fullstack-ts
     text: "Backend-focused engineer with 1 year shipping production services in Go and Node.js, scaling message queues to 1M+ RPS and feed pipelines to sub-20ms p99. Also build full stack with TypeScript, React and PostgreSQL."
     tags: [backend, full-stack, typescript, react, postgresql, go, node, scale]
+  # Added 2026-08-07 (Harshil). Names three domains, not one: leading with
+  # "1 year in payments" labelled him a payments specialist, which under-states
+  # the range. Every claim maps to a bullet — "six surfaces" is exactly the six
+  # pricing-fanout names (feed, sessions, inbox, search, auto-connect,
+  # recommendations), 1M+ RPS is bifrost-go-migration, sub-20ms p99 is
+  # feed-dataflow.
+  # NO trailing full-stack clause, deliberately. Every version of it read as an
+  # afterthought bolted onto the end, and it was the one line Harshil kept
+  # flagging. React/TypeScript still show as work done (loop-react-dashboard) and
+  # as skills; they just are not asserted in a sentence that has to carry them.
+  # Revised 2026-08-07 (Harshil): dropped "queues at 1M+ RPS" and the pricing
+  # source-of-truth clause — both are already bullets, so the summary was
+  # spending its two lines repeating the page. What replaces them is the product
+  # context no bullet states: the app itself is live voice, video and chat, and
+  # he builds its backend. That frames every payments and real-time bullet below.
+  # Says "on the backend of" rather than "exposure to" — see the no-self-
+  # downgrading rule at the top of this file; "exposure to" shrinks real work.
+  # Backed by: turn-stun-failover (WebRTC/TURN/STUN), telephony-migration (call
+  # traffic), chat-media-support (streaming audio, images, GIFs in chat),
+  # ws-audio-recording, bifrost-design and wallet-live-balance (WebSocket).
+  - id: backend-platform-breadth
+    # punctuation tightened by Harshil directly in the .tex, 2026-08-07, and
+    # pulled back here so the next render does not revert it: one serial list
+    # (payments and wallets, streaming, calling and feeds) instead of two clauses.
+    # Opens "Software Engineer" (Harshil, 2026-08-07), his actual title, because
+    # "Backend engineer ... on the backend" said the same word twice in one
+    # sentence. Leading with the title and letting "on the backend of" carry the
+    # specialism says two things in the space that previously said one.
+    text: "Software Engineer with 1 year in Go and Node.js on the backend of a voice, video and chat app: payments and wallets, real-time streaming, peer-to-peer calling and feeds at sub-20ms p99."
+    tags: [backend, platform, distributed, payments, realtime, webrtc, voip, calling, messaging, streaming, feed, go, node]
+
   - id: ai-platform
     text: "Backend engineer with 1 year building AI-enabled services: an LLM agentic chat pipeline on Apache Beam with Pinecone RAG, durable Temporal workflows, and event-driven Pub/Sub systems in Go and Node.js on GCP."
     tags: [ai, llm, rag, vector-db, workflows, temporal, backend, orchestration]
@@ -69,12 +131,33 @@ stories:
     after: "A business rate change is a single config edit, and caches refresh across every consumer. No feature can drift from another, and nobody has to remember the six places a rate used to live."
     use_when: "the JD mentions clean or modular code, OOP, SOLID, design patterns, maintainability, refactoring or system design"
 
+  - id: wallet-live-balance
+    title: "Post-payment wallet balance: a full app refresh down to one pushed event"
+    demonstrates: [customer-obsession, event-driven-design, performance, real-time, ownership]
+    bullets: [wallet-live-balance, wallet-credit-event]
+    before: "A user who paid through the payment gateway came back to the app and the whole app refreshed just to show the new wallet balance. Every top-up cost a full reload — the client re-fetched everything to update one number, and the user watched it happen."
+    action: "I moved it onto the real-time path we already owned. The wallet service now publishes an event on payment success, the real-time service delivers it to that user's open WebSocket, and the Android client listens on a real-time flow and updates the balance in place."
+    after: "The balance updates the moment the payment lands, with no reload. The client stops re-fetching everything to change one field, so the work drops on both sides and the top-up feels instant instead of interrupting."
+    use_when: "the JD mentions real-time, WebSockets, event-driven systems, payments or wallets, client performance, or customer experience"
+
+  # The answer to "tell me about a time you decided NOT to do something." The
+  # fix here was small; the judgment was in scoping it. Keep both halves when
+  # telling it — the cliff alone is a bug report, the boundary call is the story.
+  - id: pricing-window-scope
+    title: "A pricing cliff, and the change I deliberately did not make"
+    demonstrates: [dive-deep, are-right-a-lot, blast-radius, separation-of-concerns, ownership, config-driven-design]
+    bullets: [pricing-window-cliff, pricing-scope-guard]
+    before: "New users got a discounted rate for their first day, but the window was measured from the moment they recharged. Someone who recharged at 23:50 IST got ten minutes of it. Someone who recharged twenty minutes later got a full day. Same offer, same product, and the only thing separating them was the clock — a cliff nobody had noticed because it only hurt people who paid late at night."
+    action: "The obvious fix was to flip the user's segment field in the shared user service and let every consumer read the longer window. I did not do that. Listener cooldown reads the same field, and changing its meaning would have quietly changed cooldown behaviour with nothing to catch it — no test asserts a field means what it meant last week. So I scoped the change to the pricing layer instead: the window became three IST calendar days, configurable per environment without a release, and the shared field kept its original meaning. Because the two services still had to agree, I sequenced the rollout — the user service PR landed before the pricing service PR, never the other way round."
+    after: "The cliff is gone and the window is a config value, so changing it later costs no deploy. Cooldown behaves exactly as it did. The part worth saying out loud in an interview is the restraint: the one-line fix in the shared service would have worked on the day I shipped it and broken something unrelated weeks later, with nobody able to trace it back."
+    use_when: "the JD mentions system design, service boundaries, shared services, migrations, blast radius, or asks for a judgement call — and for any 'what would you do differently / what did you decide not to do' question"
+
 experience:
   - id: clarity-se1
     company: Clarity App
     location: Jhansi, UP
     title: Software Engineer 1
-    dates: "Oct. 2025 -- Present"
+    dates: "Oct. 2025 - Present"
     # tech line is assembled per-JD from this pool (order = selection order)
     tech_pool: [Go, Node.js, Express, Java, C++, gRPC, GCP, Redis, Temporal, Spanner, Dataflow, Pub/Sub]
     min_bullets: 4
@@ -135,11 +218,19 @@ experience:
         text: "Built a configurable listener cooldown system with timers that pause offline and resume on reconnect"
         tags: [state-machine, redis, product, backend, fairness]
       # --- payments & wallet ---
+      # Reworded 2026-08-08 (Harshil): the old text led with "GST", which is a
+      # local tax acronym a reader outside India cannot price. The work that
+      # transfers is moving WHERE in the lifecycle a charge is applied, across
+      # four surfaces, behind a segment flag. Same facts, legible anywhere.
       - id: gst-ab-rollout
-        text: "Ran a GST-at-recharge A/B test across wallet, receipts, and recharge flows, then rolled out to 100%"
-        tags: [ab-testing, payments, fintech, product, rollout]
+        text: "Moved tax collection from session-time to recharge-time behind a segment flag, then rolled out to 100%"
+        tags: [ab-testing, payments, fintech, product, rollout, billing, tax, experimentation]
+      # Reworded 2026-08-07 (Harshil): the old text read "Rejected late payment
+      # webhooks..." / "Skipped wallet deduction...", which claims he personally
+      # rejected or skipped each one. He built the guard; the guard does that.
+      # The verb has to name the engineering, not the system's runtime behaviour.
       - id: late-webhook-guard
-        text: "Rejected late payment webhooks arriving after the gateway auto-refund window, preventing wrong credits"
+        text: "Built a guard rejecting webhooks that arrive after the gateway auto-refund window, stopping wrong credits"
         tags: [payments, webhooks, correctness, fintech, reliability]
       - id: payment-polling-backup
         text: "Built a Redis Streams pipeline polling Razorpay every 30s as backup for delayed or missed webhooks"
@@ -148,11 +239,49 @@ experience:
         text: "Split session billing into per-rate segments so mid-session rate changes pay out exactly"
         tags: [payments, correctness, billing, fintech]
       - id: negative-wallet-flow
-        text: "Enforced negative-balance limits with a mandatory recharge flow that auto-restores listener profiles"
-        tags: [payments, product, fintech, backend]
+        text: "Blocked listeners below a negative wallet floor from going online until a mandatory recharge cleared it"
+        tags: [payments, product, fintech, backend, trust-safety, billing]
       - id: auto-wallet-credit
         text: "Automated manual wallet credits for underpaid sessions, including benefit-rate recalculation"
         tags: [payments, automation, fintech, backend]
+      # From Harshil's account 2026-08-07 — post-payment wallet refresh. Two views
+      # of the SAME work: the backend event, and the customer-facing outcome. They
+      # conflict so a selection can pick the angle the JD cares about, never both.
+      # Internal service names stay out of the text: a reader outside the company
+      # cannot decode a codename, so the mechanism has to carry the meaning.
+      - id: wallet-live-balance
+        text: "Replaced a full app refresh after payment with a wallet-credit event pushed to the user's WebSocket"
+        tags: [payments, fintech, realtime, websocket, product, performance, backend, mobile]
+        conflicts: [wallet-credit-event]
+      - id: wallet-credit-event
+        text: "Published a wallet-credit event on payment success, delivered to that user's open WebSocket in real time"
+        tags: [payments, fintech, events, realtime, websocket, pubsub, backend, distributed]
+        conflicts: [wallet-live-balance]
+      # From Harshil's 6-month payments log, 2026-08-07. Tickets whose whole
+      # change was a constant or a flag value are deliberately NOT here: a rate
+      # floor moving 22 -> 25 is a config edit, not engineering, and a bullet
+      # that claims it invites an interviewer to find that out.
+      - id: pricing-window-cliff
+        text: "Extended new-user pricing to a 3-day IST window, ending a cliff that cut a 23:50 recharge to 10 minutes"
+        tags: [pricing, payments, fintech, product, correctness, backend, config]
+      - id: pricing-scope-guard
+        text: "Scoped a pricing change to the pricing layer, leaving the shared user segment that cooldown reads"
+        tags: [architecture, blast-radius, separation-of-concerns, backend, correctness, coupling, pricing]
+      - id: unpaid-rate-display
+        text: "Served new-user discounted rates to unpaid users, who were shown full rates despite qualifying"
+        tags: [pricing, payments, correctness, product, backend, segmentation]
+      - id: first-recharge-lang
+        text: "Made the first-recharge amount configurable per signup language, with language-wise A/B tests"
+        tags: [payments, fintech, ab-testing, config, product, backend, localization]
+      - id: short-session-guard
+        text: "Made billing skip wallet deduction for sessions of 10 seconds or less, so dropped calls are not charged"
+        tags: [payments, billing, correctness, fintech, trust-safety, backend]
+      - id: payment-success-push
+        text: "Dropped redundant Android GA4 events and added an FCM push confirming successful payment"
+        tags: [payments, notifications, fcm, analytics, mobile, product, backend]
+      - id: receipt-fraud-fields
+        text: "Restored missing device ID and client IP on in-session payment receipts used for fraud checks"
+        tags: [payments, data-quality, fraud, attribution, correctness, backend]
       # --- AI & onboarding ---
       - id: onboarding-state-machine
         text: "Built a resumable state-machine backend for multi-step onboarding with face detection and AI interviews"
@@ -189,15 +318,39 @@ experience:
         tags: [code-review, quality, collaboration, process, git, standards, testing]
       # DRAFT from Harshil's account 2026-08-05 — variable listener pricing.
       # Correct any wording that misstates the work before this ships.
+      # Reworked twice on 2026-08-07 (Harshil). First pass merged pricing-ssot and
+      # pricing-fanout, which were one idea over two lines. Second pass split the
+      # work along its real seam instead: pricing-ssot is the CONSOLIDATION (one
+      # owner for variable spending/earning rates, so a business change is config)
+      # and pricing-rate-cache is the PERFORMANCE work that let it take the load.
+      # Both said "six places/surfaces" before — the same redundancy one level
+      # down. Neither says it now; they are distinguished by what they claim, not
+      # by wording.
+      # Facts from Harshil 2026-08-07: rates are variable (discounts, and listener
+      # bands by session duration); consumers include getAllExpertFeed,
+      # sendSessionRequest and inbox display; the rate APIs are cached in Redis,
+      # answer in 1-2ms, and run across 40 pods; feed and session requests each
+      # run ~10K/min; one user's inbox can fan out to ~1,000 pairs.
       - id: pricing-ssot
-        text: "Replaced listener pricing rates scattered across code, config and database with one source of truth"
-        tags: [architecture, refactor, ssot, separation-of-concerns, solid, oop, design-patterns, backend, maintainability]
+        text: "Made variable spending and earning rates one source of truth platform-wide, so a rate change is config"
+        tags: [architecture, refactor, ssot, separation-of-concerns, solid, oop, design-patterns, backend, maintainability, pricing, config]
+        metric: "one config edit"
+        conflicts: [pricing-fanout]
+      - id: pricing-rate-cache
+        text: "Cached the spending and earning rate APIs in Redis for sub-2ms reads at 10K+ req/min across 40 pods"
+        tags: [caching, redis, performance, scale, distributed, backend, apis, latency, pricing]
+        metric: "sub-2ms, 10K+ req/min, 40 pods"
+      # kept for JDs that want the fan-out angle rather than the consolidation;
+      # reworded off "Served ..." because the pricing layer serves, not Harshil
       - id: pricing-fanout
-        text: "Served variable pricing to feed, sessions, inbox, search, auto-connect and recommendations alike"
-        tags: [architecture, backend, product, consistency, reuse, modularity, apis]
+        text: "Wired one pricing layer into six surfaces, from feed and search to inbox threads of 1,000+ pairs"
+        tags: [architecture, backend, product, consistency, reuse, modularity, apis, scale]
+        metric: "six surfaces, 1,000+ pairs per inbox"
+        conflicts: [pricing-ssot]
       - id: pricing-config-switch
-        text: "Turned a business rate change into a one-file config edit, refreshing caches across consumers"
+        text: "Cut a rate change from edits in six places to one config edit, refreshing caches across consumers"
         tags: [config, caching, maintainability, leverage, operability, backend, product]
+        metric: "six edits to one"
       # from the FRD work summary (FRD-1466)
       - id: swagger-docs
         text: "Wrote Swagger API documentation so frontend teams could integrate onboarding endpoints cleanly"
@@ -234,7 +387,7 @@ experience:
     company: Clarity App
     location: Jhansi, UP
     title: Software Engineering Intern
-    dates: "Jul. 2025 -- Sep. 2025"
+    dates: "Jul. 2025 - Sep. 2025"
     tech_pool: [Node.js, HTTP, gRPC, GCP, Redis, WebSocket, Pub/Sub]
     min_bullets: 2
     max_bullets: 4
@@ -253,10 +406,12 @@ experience:
         tags: [redis, reliability, realtime, fault-tolerance]
 
   - id: ibm-intern
-    company: IBM
+    # Corrected 2026-08-07 (Harshil): the employer is CCTech, not IBM. Dates,
+    # title, location and bullets are unchanged.
+    company: CCTech
     location: Bangalore, KA
     title: SDE Intern
-    dates: "May 2025 -- Jun. 2025"
+    dates: "May 2025 - Jun. 2025"
     tech_pool: [Jest, ESLint, Node.js, Java, SQL, Jenkins]
     min_bullets: 2
     max_bullets: 3
@@ -281,14 +436,17 @@ projects:
     tech_line: "Go, TypeScript, React, PostgreSQL, Webhooks, Meta API"
     min_bullets: 2
     max_bullets: 5
-    dates: "2025 -- 2026"
+    dates: "2025 - 2026"
     bullets:
       - id: loop-webhook-engine
         text: "Architected an async comment-to-DM automation engine in Go scaling 1M+ daily webhook events"
         tags: [go, webhooks, async, scale, architecture]
         metric: "1M+ daily events"
+      # "lock-free" was wrong: the queue uses FOR UPDATE SKIP LOCKED
+      # (server/db/queries/dm_outbox.sql), which takes row locks and skips
+      # contended rows. That is non-blocking, not lock-free. Corrected 2026-08-06.
       - id: loop-pg-queue
-        text: "Built lock-free PostgreSQL job queue for concurrent goroutines"
+        text: "Built a non-blocking PostgreSQL job queue with SKIP LOCKED for concurrent goroutines"
         tags: [go, postgresql, queues, concurrency, databases]
       - id: loop-rate-limiter
         text: "Engineered thread-safe token-bucket rate limiter in atomic SQL, enforcing Meta's 750/hr API cap"
@@ -303,6 +461,39 @@ projects:
       - id: loop-sqlc-postgres
         text: "Modelled the PostgreSQL schema with sqlc for type-safe queries, containerised via Docker Compose"
         tags: [postgresql, sql, databases, docker, go, type-safety]
+
+  # verified from github.com/HarshilShukla05/argus (2026-08-07): Python, created
+  # 2026-07-28, last pushed 2026-08-06. requirements.txt names numpy, scipy,
+  # opencv-python, torch, ultralytics, gdown, bpy, pytest. Metrics below are the
+  # README's own cross-subject numbers.
+  # NOTE the README is candid that NTU is lab-acted and the model is pre-alpha —
+  # NTU-120 drops to AUC 0.879 and G2 hard negatives fail. No bullet here claims
+  # deployment or real-world accuracy; "cross-subject on NTU-60" is stated so the
+  # benchmark is named rather than implied. Keep it that way.
+  - id: argus
+    name: Argus
+    tech_line: "Python, PyTorch, Ultralytics YOLO, OpenCV, NumPy"
+    dates: "2026"
+    min_bullets: 0
+    max_bullets: 4
+    bullets:
+      - id: argus-dyad-features
+        text: "Extracted 53 relational and kinematic features per person-pair per frame from tracked pose skeletons"
+        tags: [python, ml, computer-vision, feature-engineering, pipelines, data]
+      - id: argus-torso-normalization
+        text: "Normalised features in torso-lengths, not pixels, so one model generalises across camera setups"
+        tags: [ml, computer-vision, generalization, modelling, python]
+      - id: argus-dual-head-gru
+        text: "Built a dual-head GRU predicting violence now and ~3s ahead, AUC 0.970 cross-subject on NTU-60"
+        tags: [ml, deep-learning, pytorch, gru, python, modelling]
+        metric: "AUC 0.970"
+      - id: argus-pose-pipeline
+        text: "Built a streaming pipeline from pose estimation to multi-person tracking with persistent IDs"
+        tags: [python, computer-vision, pipelines, streaming, realtime, tracking]
+      - id: argus-cpu-training
+        text: "Trained the 129k-parameter model to convergence in 40 minutes on a laptop CPU, no GPU required"
+        tags: [ml, performance, efficiency, python, pytorch]
+        metric: "129k params, 40 min CPU"
 
   # verified from github.com/HarshilShukla05/Rezume (2026-08-03): backend/ is
   # TypeScript + Express + OpenAI + pdf-parse + puppeteer, with a Dockerfile and
@@ -402,7 +593,14 @@ skills:
                 "AWS (EC2, S3, IAM)", Kubernetes, Docker, Terraform,
                 Jenkins, Spinnaker, "GitHub Actions", DevOps]
   data_storage: [PostgreSQL, Spanner, Redis, MongoDB, BigQuery, SQL, NoSQL]
-  systems: [gRPC, REST, Protocol Buffers, Express, React, WebSockets, Microservices, Distributed Systems, Temporal, OOP, Git, Postman, "AI-assisted development (Claude Code, Codex)"]
+  # "Security" and "Performance Optimization" added 2026-08-06. Not new facts —
+  # both are already evidenced by existing bullets (secret-rotation, authz-fix;
+  # feed-index-opt, webp-optimization, feed-dataflow). Added as pool keywords
+  # because JDs boolean-search for them and no bullet carries the literal word.
+  # WebRTC added 2026-08-07: already evidenced by turn-stun-failover (TURN/STUN
+  # failover switching WebRTC traffic to Twilio), but no pool keyword carried the
+  # literal term and JDs boolean-search for it.
+  systems: [gRPC, REST, Protocol Buffers, Express, React, WebSockets, WebRTC, Microservices, Distributed Systems, Temporal, Security, "Performance Optimization", OOP, Git, Postman, "AI-assisted development (Claude Code, Codex)"]
 
 achievements:
   - id: jee

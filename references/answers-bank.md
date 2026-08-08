@@ -41,7 +41,11 @@ the bottom (dedupe, keep it under 30 entries). Never edit the sections above it.
 
 ## Salary expectations
 
-> ₹16–20 LPA, negotiable based on the overall package and the role's scope.
+Harshil prioritises the **fixed** component over the rest of the CTC
+(confirmed 2026-08-06). Never frame an answer as "weighted toward equity" or
+"I weigh the package as a whole" — that is the opposite of what he wants.
+
+> ₹16 LPA fixed. Variable pay, equity and benefits are flexible on top of that.
 
 ## Notice period / when can you start?
 
@@ -89,3 +93,24 @@ Never exceed 200 words. Never invent a metric or a claim.
 
 *(Agents append newly-approved verbatim answers here — one per question, with
 the date. Facts must still come from profile.md.)*
+
+### Are you willing to work UK / evening shift timings (e.g. 12:30pm – 9:30pm IST)?
+
+_Confirmed by Harshil in chat, 2026-08-07 (Capco application)._
+
+> Yes.
+
+### Do you have any offers in hand / holding offer details?
+
+_Confirmed by Harshil in chat, 2026-08-07. This is time-sensitive — re-confirm
+before reusing it after a few weeks._
+
+> No offers in hand at present.
+
+### Notice period — note
+
+`profile.md` records the notice period as **15 days**, so the "Notice period /
+when can you start?" `[TODO]` above is stale for the notice-period half of the
+question. Forms asking "how soon can you join" were answered 2026-08-07 as
+"Within 15 days of an offer", derived from that profile fact. Harshil should
+still confirm the phrasing and resolve the `[TODO]`.

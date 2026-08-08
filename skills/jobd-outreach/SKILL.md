@@ -14,7 +14,7 @@ after Harshil approves on the dashboard.
 ## 1. Find the companies
 
 ```
-sqlite3 ~/agent/jobd.db "SELECT id, token, title, url FROM jobs WHERE status='applied' AND applied_at > date('now','-2 days')"
+sqlite3 ~/projects/agent/jobd.db "SELECT id, token, title, url FROM jobs WHERE status='applied' AND applied_at > date('now','-2 days')"
 ```
 
 Skip staffing agencies and any posting where the end client is unnamed.
@@ -111,6 +111,12 @@ Rules:
 - Subject line: 4-6 words, concrete. "Feed infra — 10K users, sub-20ms p99" beats
   "Application for Backend Engineer".
 - Mention he applied, once, briefly. Context, not a request for a favour.
+- **Always identify the exact req.** Include the posting's job ID (the requisition
+  or board id, e.g. `6696781`) in the sentence where you mention applying. If the
+  posting has no visible ID, use the posting URL instead. Never send an outreach
+  message that names only the role title — a recruiter with six open backend reqs
+  cannot pull up your application from "the backend role", and the message dies
+  there. Job id preferred over link: it is what they paste into their ATS.
 
 Good example:
 
@@ -119,8 +125,8 @@ Good example:
 > Saw you're hiring an SDE-1 for the feed team at Acme. Feed systems get hard at the
 > read path, which is most of what I do right now: I run a sorted home feed for 10K+
 > users at sub-20ms p99 on Pub/Sub, Dataflow and Redis, and I moved our message broker
-> from Node to Go to sustain 1M+ RPS. I applied through the portal this morning —
-> worth 15 minutes this week?
+> from Node to Go to sustain 1M+ RPS. I applied through the portal this morning
+> (req 6696781) — worth 15 minutes this week?
 >
 > Harshil
 

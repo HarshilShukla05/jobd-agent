@@ -11,7 +11,7 @@ Every fact an application form asks for must come from this file or
 | Full name                            | Harshil Shukla                                                                                                                         |
 | Email                                | harshilshukla0502@gmail.com                                                                                                            |
 | Phone                                | +91 7905878588                                                                                                                         |
-| LinkedIn                             | https://linkedin.com/in/harshil-shukla                                                                                                 |
+| LinkedIn                             | https://linkedin.com/in/harshil-shukla-775a44229                                                                                       |
 | GitHub                               | https://github.com/HarshilShukla05                                                                                                     |
 | Current location                     | Jhansi, Uttar Pradesh, India                                                                                                           |
 | Nationality / work authorization     | Indian citizen — authorized to work in India, **no sponsorship needed for India roles**. Would require sponsorship for US/UK/EU roles. |
@@ -26,7 +26,7 @@ Every fact an application form asks for must come from this file or
 | Field            | Value                                                         |
 | ---------------- | ------------------------------------------------------------- |
 | Institution      | Maulana Azad National Institute of Technology (MANIT), Bhopal |
-| Degree           | B.Tech, Mechanical Engineering (Minor in Computer Science)    |
+| Degree           | B.Tech, Mechanical Engineering                                |
 | Dates            | 2021 – 2025                                                   |
 | GPA / percentage | 7.2                                                           |
 
@@ -44,7 +44,7 @@ Every fact an application form asks for must come from this file or
 - Software Engineer 1, **Oct 2025 – Present**
 - Software Engineering Intern, **Jul 2025 – Sep 2025**
 
-**IBM** (Bangalore, KA) — SDE Intern, May 2025 – Jun 2025
+**CCTech** (Bangalore, KA) — SDE Intern, May 2025 – Jun 2025
 
 | Field                        | Value               |
 | ---------------------------- | ------------------- |

@@ -11,7 +11,30 @@
   % Kerning off: kern pairs (AW, Te, Va...) make pdf text extraction insert a
   % space mid-word — "AWS" came out as "A WS", invisible to an ATS keyword
   % search. Correct extraction matters more than micro-typography here.
-  Kerning = Off]
+  Kerning = Off,
+  % Shrink bounded to 0.2 of the font's natural value. xdvipdfmx writes NO space
+  % glyphs — every word gap in the text layer is positional, so an extractor
+  % rebuilds spaces by comparing each gap against a tolerance. Measured
+  % 2026-08-07: the usual gap is 3.32pt, but justification was squeezing 24 of
+  % them to 2.86pt, under pdfplumber's 3.0pt default. That collapsed the page to
+  % "Backend-focusedengineerwith1year" — one token, matching no keyword at all.
+  % Base width is left alone; only the squeeze is capped, so the floor is 3.32pt.
+  % This costs roughly one line of vertical space. Pay it: an unparseable page is
+  % worth nothing, and the bullet it displaces is worth much less than that.
+  WordSpace = {1.0, 1.0, 0.2}]
+% Hyphenation OFF everywhere. A hyphen inserted at a line break splits a keyword
+% in the text layer — "Performance Optimiza-tion", "We-bRTC" — and an ATS search
+% for the whole word then misses the resume. Hit three times (2026-08-07) before
+% this went in. A resume is keyword lists and one-line bullets; hyphenation buys
+% nothing here and can only ever cost a match.
+% \raggedright rather than \sloppy: \sloppy stretched a wrapped skills line so
+% badly that pdfminer read its second line BEFORE its first, splitting
+% "Performance Optimization" across a reading-order inversion. Ragged-right
+% removes justification altogether, so no hyphens, no stretched gaps, and every
+% word space sits at its natural width — which is what the extractors measure.
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\raggedright
 \usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{titlesec}
