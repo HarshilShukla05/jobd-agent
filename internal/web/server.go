@@ -5,23 +5,30 @@
 //	GET  /                      dashboard (HTML)
 //	GET  /api/apply-queue       shortlisted jobs, best first
 //	GET  /api/stats             pipeline counts
+//	POST /api/jobs/submit       hand one job to the pipeline (link or JD text)
 //	POST /api/jobs/{id}/result  {"status": "...", "note": "..."} from the apply stage
 package web
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
 	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/harshil/agent/internal/intake"
 	"github.com/harshil/agent/internal/jd"
+	"github.com/harshil/agent/internal/llm"
 	"github.com/harshil/agent/internal/store"
 )
 
@@ -32,6 +39,14 @@ type Server struct {
 	ResumegenBin string
 	WorkDir      string
 	BaselinePDF  string
+
+	// Gate is the LLM the intake endpoint screens submissions with. Left nil
+	// it is built on first use from the environment, so submissions still get
+	// gated when the daemon was started in API-only mode (-backend off) — which
+	// is exactly the mode an apply session starts it in.
+	Gate     llm.Client
+	gateOnce sync.Once
+	gateErr  error
 }
 
 func New(st *store.Store) *Server {
@@ -56,6 +71,8 @@ func (s *Server) Routes() http.Handler {
 	mux.HandleFunc("GET /{$}", s.dashboard)
 	mux.HandleFunc("GET /api/stats", s.stats)
 	mux.HandleFunc("GET /api/apply-queue", s.applyQueue)
+	mux.HandleFunc("POST /api/jobs/submit", s.jobSubmit)
+	mux.HandleFunc("POST /submit", s.dashboardSubmit)
 	mux.HandleFunc("POST /api/jobs/{id}/claim", s.jobClaim)
 	mux.HandleFunc("GET /api/jobs/{id}/context", s.jobContext)
 	mux.HandleFunc("POST /api/jobs/{id}/resume", s.jobResume)
@@ -131,6 +148,85 @@ func pathID(r *http.Request) (int64, error) {
 	return strconv.ParseInt(r.PathValue("id"), 10, 64)
 }
 
+// gateClient lazily builds the JD-gate LLM. A submission must never be queued
+// ungated just because the process was started without one.
+func (s *Server) gateClient() (llm.Client, error) {
+	s.gateOnce.Do(func() {
+		if s.Gate != nil {
+			return
+		}
+		gem, err := llm.NewGeminiFromEnv(context.Background())
+		if err != nil {
+			s.gateErr = err
+			return
+		}
+		s.Gate = gem
+	})
+	return s.Gate, s.gateErr
+}
+
+func (s *Server) intakeDeps() intake.Deps {
+	gate, err := s.gateClient()
+	if err != nil {
+		fmt.Println("intake: LLM gate unavailable:", err)
+	}
+	return intake.Deps{Store: s.St, Gate: gate, Client: &http.Client{Timeout: 30 * time.Second}}
+}
+
+// jobSubmit is the manual intake endpoint: hand it a posting and it runs the
+// same dedupe, prefilter, LLM gate and scoring policy the sweep runs, then adds
+// the survivors to the apply queue. Nothing bypasses a filter except an
+// explicit {"force": true}.
+//
+//	{"url": "...", "jd_text": "...", "title": "...", "company": "...",
+//	 "location": "...", "note": "...", "force": false}
+//
+// 200 with a Result; 422 when the URL is not a board jobd can read and no
+// jd_text was supplied (the caller should fetch the page and re-post).
+func (s *Server) jobSubmit(w http.ResponseWriter, r *http.Request) {
+	var req intake.Request
+	if err := json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(&req); err != nil {
+		http.Error(w, "body must be a JSON object with at least {\"url\": \"...\"}: "+err.Error(), 400)
+		return
+	}
+	res, err := intake.Submit(r.Context(), s.intakeDeps(), req)
+	switch {
+	case errors.Is(err, intake.ErrNeedJDText), errors.Is(err, intake.ErrNoTitle):
+		writeJSONStatus(w, 422, map[string]any{"ok": false, "error": err.Error(),
+			"needs": []string{"jd_text", "title"}})
+	case errors.Is(err, intake.ErrNoURL):
+		writeJSONStatus(w, 400, map[string]any{"ok": false, "error": err.Error()})
+	case err != nil:
+		writeJSONStatus(w, 500, map[string]any{"ok": false, "error": err.Error()})
+	default:
+		writeJSON(w, res)
+	}
+}
+
+// dashboardSubmit is the same intake from the dashboard's paste-a-link box.
+func (s *Server) dashboardSubmit(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	res, err := intake.Submit(r.Context(), s.intakeDeps(), intake.Request{
+		URL:      r.FormValue("url"),
+		JDText:   r.FormValue("jd_text"),
+		Title:    r.FormValue("title"),
+		Company:  r.FormValue("company"),
+		Location: r.FormValue("location"),
+		Note:     r.FormValue("note"),
+		Force:    r.FormValue("force") != "",
+	})
+	msg := ""
+	if err != nil {
+		msg = "error: " + err.Error()
+	} else {
+		msg = fmt.Sprintf("%s (%s) — %s: %s", strings.ToUpper(res.Decision), res.Stage, res.Title, res.Note)
+	}
+	http.Redirect(w, r, "/?msg="+url.QueryEscape(msg), http.StatusSeeOther)
+}
+
 // jobClaim is the double-apply guard: exactly one caller can win a job.
 func (s *Server) jobClaim(w http.ResponseWriter, r *http.Request) {
 	id, err := pathID(r)
@@ -163,9 +259,20 @@ func (s *Server) jobContext(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 404)
 		return
 	}
-	jdText, jdErr := jd.Fetch(r.Context(), &http.Client{Timeout: 30 * time.Second}, d.ATS, d.Token, d.ReqID)
-	if jdErr != nil {
-		jdText = "" // dead postings are the apply session's call to report
+	// Manually-added postings off a board jobd cannot read carry their JD text
+	// in the row — there is nothing to re-fetch, so serve what intake stored.
+	var jdText string
+	var jdErr error
+	if d.ATS == "manual" {
+		jdText, jdErr = s.St.JobJD(d.ID)
+		if jdErr == nil && jdText == "" {
+			jdErr = fmt.Errorf("manual posting has no stored JD text")
+		}
+	} else {
+		jdText, jdErr = jd.Fetch(r.Context(), &http.Client{Timeout: 30 * time.Second}, d.ATS, d.Token, d.ReqID)
+		if jdErr != nil {
+			jdText = "" // dead postings are the apply session's call to report
+		}
 	}
 	bank, _ := os.ReadFile(s.BankPath)
 	writeJSON(w, map[string]any{
@@ -284,19 +391,46 @@ var dashTmpl = template.Must(template.New("dash").Parse(`<!doctype html>
   .pill { display: inline-block; padding: 0 .5rem; border-radius: 999px; background: rgba(127,127,127,.15); margin-right: .5rem; }
   .note { opacity: .65; font-size: .85em; }
   a { color: inherit; }
+  form.intake { border: 1px solid rgba(127,127,127,.3); border-radius: 8px; padding: .8rem 1rem; }
+  form.intake input[type=url], form.intake textarea { width: 100%; box-sizing: border-box; font: inherit; }
+  form.intake .row { display: flex; gap: .5rem; margin-top: .5rem; }
+  form.intake .row input { flex: 1; font: inherit; min-width: 0; }
+  .msg { background: rgba(127,127,127,.15); padding: .5rem .8rem; border-radius: 6px; }
+  .tag { font-size: .75em; border: 1px solid rgba(127,127,127,.4); border-radius: 4px; padding: 0 .3rem; }
 </style>
 <h1>jobd — pipeline dashboard</h1>
 <p>
 {{range $k, $v := .Counts}}<span class="pill">{{$k}}: <b>{{$v}}</b></span>{{end}}
 </p>
+{{if .Msg}}<p class="msg">{{.Msg}}</p>{{end}}
+
+<h2>Found a job yourself? Put it through the filters</h2>
+<form class="intake" method="post" action="/submit">
+  <input type="url" name="url" placeholder="https://job-boards.greenhouse.io/acme/jobs/123 — or any posting URL" required>
+  <div class="row">
+    <input name="title" placeholder="title (only needed if it is not a tracked board)">
+    <input name="company" placeholder="company">
+    <input name="location" placeholder="location">
+  </div>
+  <div class="row"><input name="note" placeholder="note — e.g. referral from Ankit"></div>
+  <details style="margin-top:.5rem">
+    <summary class="note">JD text — paste it for LinkedIn / careers pages jobd cannot read</summary>
+    <textarea name="jd_text" rows="6" placeholder="paste the job description"></textarea>
+  </details>
+  <div class="row" style="align-items:center">
+    <button>run the filters</button>
+    <label class="note" style="flex:0 0 auto"><input type="checkbox" name="force" style="flex:0"> queue it even if a filter rejects it</label>
+  </div>
+</form>
 
 <h2>Shortlisted — apply queue ({{len .Shortlist}})</h2>
 <table>
 <tr><th class="num">score</th><th>title</th><th>company</th><th>location</th><th>note</th></tr>
 {{range .Shortlist}}
-<tr><td class="num">{{.Score}}</td><td><a href="{{.URL}}">{{.Title}}</a></td>
+<tr><td class="num">{{.Score}}</td>
+<td><a href="{{.URL}}">{{.Title}}</a>{{if eq .Source "manual"}} <span class="tag">manual</span>{{end}}</td>
 <td>{{.Token}}</td><td>{{.Location}}</td><td class="note">{{.Note}}</td></tr>
-{{else}}<tr><td colspan="5" class="note">empty — run a sweep + gate</td></tr>{{end}}
+{{else}}<tr><td colspan="5" class="note">empty — run a sweep + gate, or paste a link above</td></tr>{{end}}
 </table>
 
 <h2>Outreach drafts — approve to queue for sending ({{len .Drafts}})</h2>
@@ -370,7 +504,7 @@ func (s *Server) dashboard(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := dashTmpl.Execute(w, map[string]any{
 		"Counts": counts, "Shortlist": shortlist, "Deferred": deferred, "Runs": runs,
-		"Drafts": drafts, "Approved": approved,
+		"Drafts": drafts, "Approved": approved, "Msg": r.URL.Query().Get("msg"),
 	}); err != nil {
 		fmt.Println("dashboard render:", err)
 	}

@@ -3,6 +3,7 @@
 //	jobd seed  -db jobd.db -skill <v1 SKILL.md>   import registry tokens + ledger
 //	jobd sweep -db jobd.db [-max N]               sweep boards, record new postings
 //	jobd gate  -db jobd.db [-max N]               prefilter 'new' jobs, LLM-gate survivors
+//	jobd add   -db jobd.db -url <posting url>     run ONE hand-found job through the filters
 //	jobd stats -db jobd.db                        print table counts
 //
 // The sweep is politeness-hardened per DESIGN.md: sequential per-host requests
@@ -23,8 +24,10 @@ import (
 
 	"github.com/harshil/agent/internal/agent"
 	"github.com/harshil/agent/internal/ats"
+	"github.com/harshil/agent/internal/intake"
 	"github.com/harshil/agent/internal/jd"
 	"github.com/harshil/agent/internal/llm"
+	"github.com/harshil/agent/internal/policy"
 	"github.com/harshil/agent/internal/prefilter"
 	"github.com/harshil/agent/internal/store"
 	"github.com/harshil/agent/internal/web"
@@ -49,6 +52,13 @@ func main() {
 	dryRun := fs.Bool("dry-run", false, "outreach-send: print what would be sent, send nothing")
 	intervalMin := fs.Int("interval-min", 30, "daemon: min minutes between cycles")
 	intervalMax := fs.Int("interval-max", 60, "daemon: max minutes between cycles")
+	addURL := fs.String("url", "", "add: the job posting URL")
+	addTitle := fs.String("title", "", "add: job title (required when -jd supplies the text)")
+	addCompany := fs.String("company", "", "add: company name (non-board URLs)")
+	addLocation := fs.String("location", "", "add: location, if the URL is not a tracked board")
+	addJD := fs.String("jd", "", "add: file holding the JD text, for boards jobd cannot read")
+	addNote := fs.String("note", "", "add: free-text note kept on the job (e.g. 'referral')")
+	addForce := fs.Bool("force", false, "add: queue it even if a filter rejects it")
 	fs.Parse(args)
 
 	st, err := store.Open(*dbPath)
@@ -66,6 +76,11 @@ func main() {
 		sweep(st, *max, *only)
 	case "gate":
 		gate(st, *max)
+	case "add":
+		if *addURL == "" {
+			die("add requires -url")
+		}
+		add(st, *addURL, *addTitle, *addCompany, *addLocation, *addJD, *addNote, *addForce)
 	case "daemon":
 		var runner *agent.Runner
 		if *backend != "off" {
@@ -206,7 +221,10 @@ func sweep(st *store.Store, max int, only string) (okBoards, failedBoards, newJo
 			} else if hit {
 				continue
 			}
-			isNew, err := st.UpsertJob(c.ATS, c.Token, p.ReqID, p.URL, p.Title, p.Location, p.PostedAt)
+			_, isNew, err := st.UpsertJob(store.NewJob{
+				ATS: c.ATS, Token: c.Token, ReqID: p.ReqID, URL: p.URL,
+				Title: p.Title, Location: p.Location, PostedAt: p.PostedAt,
+			})
 			if err != nil {
 				die("upsert: %v", err)
 			}
@@ -274,21 +292,6 @@ func daemon(st *store.Store, listen string, gateMax, intervalMin, intervalMax in
 	}
 }
 
-// YoE policy: Harshil has ~1 year. Roles at or below that are the preferred
-// target; 1-2 years is a reasonable stretch worth applying to (the JD gate
-// has already read the real requirement, and "2 years" postings routinely
-// hire 1-year candidates). Above 2 years is a hard reject — v1 proved those
-// get same-day rejections.
-const (
-	preferredYoE = 1.0
-	maxYoE       = 2.0
-)
-
-var profileStack = []string{"go", "golang", "node", "node.js", "javascript", "java", "c++",
-	"grpc", "rest", "gRPC", "websocket", "redis", "postgres", "postgresql", "spanner", "sql", "postgresql",
-	"gcp", "google cloud", "kubernetes", "docker", "pub/sub", "pubsub", "dataflow",
-	"apache beam", "temporal", "microservices", "distributed systems"}
-
 // gate runs the $0 prefilter over ALL 'new' jobs, then the LLM gate over up
 // to max survivors (JD fetch -> Gemini extraction -> YoE/salary policy).
 func gate(st *store.Store, max int) (gatedN, shortlistedN int) {
@@ -353,7 +356,7 @@ func gate(st *store.Store, max int) (gatedN, shortlistedN int) {
 			fmt.Printf("ESC   %-55.55s %v\n", j.Title, err)
 			continue
 		}
-		status, note, score := applyPolicy(v)
+		status, note, score := policy.Apply(v)
 		if err := st.SaveGate(j.ID, status, note, raw, v.YoeMin, score); err != nil {
 			die("save gate: %v", err)
 		}
@@ -367,44 +370,43 @@ func gate(st *store.Store, max int) (gatedN, shortlistedN int) {
 	return gatedN, shortlistedN
 }
 
-// applyPolicy turns extracted facts into a verdict. Policy lives here in
-// code — the LLM only ever reports facts.
-func applyPolicy(v llm.Verdict) (status, note string, score int) {
-	if v.YoeMin != nil && *v.YoeMin > maxYoE {
-		return "rejected_hard", fmt.Sprintf("YoE gate: min %.1f > %.1f (%q)", *v.YoeMin, maxYoE, v.YoeEvidence), 0
-	}
-	if v.LocationIndia != nil && !*v.LocationIndia {
-		return "rejected_hard", "JD states non-India location", 0
-	}
-	if v.SalaryMaxLPA != nil && *v.SalaryMaxLPA < 16 {
-		return "rejected_hard", fmt.Sprintf("salary band max %.0f LPA < 16 floor", *v.SalaryMaxLPA), 0
-	}
-	for _, s := range v.Stack {
-		for _, p := range profileStack {
-			if strings.EqualFold(strings.TrimSpace(s), p) {
-				score += 10
-				break
-			}
+// add is the manual intake path: one job Harshil found himself, pushed through
+// the same dedupe/prefilter/gate/policy the sweep uses. The HTTP endpoint
+// (POST /api/jobs/submit) is the same code; this exists for when the daemon
+// isn't up, and for piping a JD in from a file.
+func add(st *store.Store, url, title, company, location, jdFile, note string, force bool) {
+	req := intake.Request{URL: url, Title: title, Company: company,
+		Location: location, Note: note, Force: force}
+	if jdFile != "" {
+		b, err := os.ReadFile(jdFile)
+		if err != nil {
+			die("read -jd: %v", err)
 		}
+		req.JDText = string(b)
 	}
-	if score > 50 {
-		score = 50
+	ctx := context.Background()
+	deps := intake.Deps{Store: st, Client: &http.Client{Timeout: 30 * time.Second}}
+	if gem, err := llm.NewGeminiFromEnv(ctx); err == nil {
+		deps.Gate = gem
+	} else {
+		fmt.Fprintf(os.Stderr, "warning: LLM gate unavailable (%v)\n", err)
 	}
-	switch {
-	case v.YoeMin == nil:
-		score += 5
-		note = "no YoE stated — verify at apply time"
-	case *v.YoeMin <= preferredYoE: // squarely in range
-		score += 20
-		note = fmt.Sprintf("YoE ideal: %.1f (%q)", *v.YoeMin, v.YoeEvidence)
-	default: // 1-2 years: a stretch, still worth applying to
-		score += 10
-		note = fmt.Sprintf("YoE stretch: %.1f vs his ~1yr (%q)", *v.YoeMin, v.YoeEvidence)
+	res, err := intake.Submit(ctx, deps, req)
+	if err != nil {
+		die("submit: %v", err)
 	}
-	if v.LocationIndia != nil && *v.LocationIndia {
-		score += 10
+	label := res.Title
+	if label == "" {
+		label = res.URL
 	}
-	return "shortlisted", note, score
+	fmt.Printf("%-9s %s\n", strings.ToUpper(res.Decision), label)
+	fmt.Printf("  job %d  %s:%s  status=%s score=%d  (decided at: %s)\n",
+		res.JobID, res.ATS, res.Company, res.Status, res.Score, res.Stage)
+	fmt.Printf("  %s\n", res.Note)
+	if res.BoardAdded {
+		fmt.Printf("  + %s:%s added to the sweep registry — future postings there come in automatically\n",
+			res.ATS, res.Company)
+	}
 }
 
 // runDownstream drives the apply and outreach stages via a coding-agent CLI

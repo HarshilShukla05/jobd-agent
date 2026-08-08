@@ -93,6 +93,13 @@ var migrations = []string{
 	    gated       INTEGER NOT NULL,
 	    shortlisted INTEGER NOT NULL
 	)`,
+	// Provenance: 'sweep' (the daemon found it) or 'manual' (Harshil handed it
+	// over). Worth keeping — a hand-picked job carries a signal the score can't.
+	`ALTER TABLE jobs ADD COLUMN source TEXT NOT NULL DEFAULT 'sweep'`,
+	// JD text captured at intake. Only populated for postings whose board the
+	// jd package cannot re-fetch (LinkedIn, careers pages), so the apply stage
+	// still has something to tailor against.
+	`ALTER TABLE jobs ADD COLUMN jd_text TEXT NOT NULL DEFAULT ''`,
 }
 
 type Store struct{ DB *sql.DB }
@@ -172,6 +179,20 @@ func (s *Store) AddCompany(ats, token, status string) error {
 	return err
 }
 
+// EnsureCompany registers a board for sweeping if it is not known yet, and
+// reports whether it was newly added. A dead token stays dead — it failed
+// twice for a reason, and one hand-shared posting is not evidence it recovered.
+func (s *Store) EnsureCompany(ats, token string) (added bool, err error) {
+	res, err := s.DB.Exec(
+		`INSERT INTO companies (ats, token, status) VALUES (?, ?, 'active')
+		 ON CONFLICT (ats, token) DO NOTHING`, ats, token)
+	if err != nil {
+		return false, err
+	}
+	n, err := res.RowsAffected()
+	return n == 1, err
+}
+
 func (s *Store) AddLedger(url, verdict string) error {
 	_, err := s.DB.Exec(
 		`INSERT INTO ledger (url, verdict, noted_at) VALUES (?, ?, ?)
@@ -200,26 +221,58 @@ func (s *Store) ActiveCompanies(limit int) ([]Company, error) {
 	return out, rows.Err()
 }
 
-// UpsertJob records a sighting of a posting; reports whether it is new.
-func (s *Store) UpsertJob(ats, token, reqID, url, title, location, postedAt string) (bool, error) {
-	var exists bool
-	err := s.DB.QueryRow(
-		`SELECT 1 FROM jobs WHERE ats = ? AND token = ? AND req_id = ?`,
-		ats, token, reqID).Scan(&exists)
+// NewJob is one posting as first recorded. Source and JDText are set by the
+// manual intake path; the sweep leaves them empty and keeps the defaults.
+type NewJob struct {
+	ATS, Token, ReqID, URL, Title, Location, PostedAt string
+	Source, JDText                                    string
+}
+
+// UpsertJob records a sighting of a posting, returning its row id and whether
+// this is the first time it has been seen. Re-sighting only ever refreshes
+// last_seen_at plus the intake-supplied fields — never the status, so a job
+// already applied to or rejected stays that way.
+func (s *Store) UpsertJob(j NewJob) (id int64, isNew bool, err error) {
+	err = s.DB.QueryRow(
+		`SELECT id FROM jobs WHERE ats = ? AND token = ? AND req_id = ?`,
+		j.ATS, j.Token, j.ReqID).Scan(&id)
 	if err == sql.ErrNoRows {
-		_, err = s.DB.Exec(
-			`INSERT INTO jobs (ats, token, req_id, url, title, location, posted_at, first_seen_at, last_seen_at)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-			ats, token, reqID, url, title, location, postedAt, now(), now())
-		return err == nil, err
+		source := j.Source
+		if source == "" {
+			source = "sweep"
+		}
+		res, err := s.DB.Exec(
+			`INSERT INTO jobs (ats, token, req_id, url, title, location, posted_at,
+			                   first_seen_at, last_seen_at, source, jd_text)
+			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			j.ATS, j.Token, j.ReqID, j.URL, j.Title, j.Location, j.PostedAt,
+			now(), now(), source, j.JDText)
+		if err != nil {
+			return 0, false, err
+		}
+		id, err = res.LastInsertId()
+		return id, true, err
 	}
 	if err != nil {
-		return false, err
+		return 0, false, err
 	}
+	// NULLIF keeps a re-sweep from blanking what intake supplied.
 	_, err = s.DB.Exec(
-		`UPDATE jobs SET last_seen_at = ? WHERE ats = ? AND token = ? AND req_id = ?`,
-		now(), ats, token, reqID)
-	return false, err
+		`UPDATE jobs SET last_seen_at = ?,
+		     source  = COALESCE(NULLIF(?, ''), source),
+		     jd_text = COALESCE(NULLIF(?, ''), jd_text)
+		 WHERE id = ?`, now(), j.Source, j.JDText, id)
+	return id, false, err
+}
+
+// JobJD returns the JD text captured at intake, if any.
+func (s *Store) JobJD(id int64) (string, error) {
+	var text string
+	err := s.DB.QueryRow(`SELECT jd_text FROM jobs WHERE id = ?`, id).Scan(&text)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	return text, err
 }
 
 func (s *Store) SweepResult(c Company, etag string, ok bool) error {
@@ -326,31 +379,52 @@ type JobDetail struct {
 func (s *Store) JobDetail(id int64) (JobDetail, error) {
 	var d JobDetail
 	err := s.DB.QueryRow(
-		`SELECT id, score, title, token, ats, req_id, location, url, note, yoe_min,
-		        first_seen_at, gate_json, status
-		 FROM jobs WHERE id = ?`, id).
-		Scan(&d.ID, &d.Score, &d.Title, &d.Token, &d.ATS, &d.ReqID, &d.Location, &d.URL,
-			&d.Note, &d.YoeMin, &d.FirstSeen, &d.GateJSON, &d.Status)
+		`SELECT `+jobRowCols+`, req_id, gate_json, status FROM jobs WHERE id = ?`, id).
+		Scan(&d.ID, &d.Score, &d.Title, &d.Token, &d.ATS, &d.Location, &d.URL,
+			&d.Note, &d.YoeMin, &d.FirstSeen, &d.Source, &d.ReqID, &d.GateJSON, &d.Status)
 	return d, err
+}
+
+// JobByKey finds a posting by the identity the dedupe index is built on.
+func (s *Store) JobByKey(ats, token, reqID string) (JobDetail, bool, error) {
+	var id int64
+	err := s.DB.QueryRow(`SELECT id FROM jobs WHERE ats = ? AND token = ? AND req_id = ?`,
+		ats, token, reqID).Scan(&id)
+	if err == sql.ErrNoRows {
+		return JobDetail{}, false, nil
+	}
+	if err != nil {
+		return JobDetail{}, false, err
+	}
+	d, err := s.JobDetail(id)
+	return d, true, err
 }
 
 // JobRow is the dashboard/API projection of a job.
 type JobRow struct {
-	ID        int64   `json:"id"`
-	Score     int     `json:"score"`
-	Title     string  `json:"title"`
-	Token     string  `json:"company"`
-	ATS       string  `json:"ats"`
-	Location  string  `json:"location"`
-	URL       string  `json:"url"`
-	Note      string  `json:"note"`
+	ID        int64    `json:"id"`
+	Score     int      `json:"score"`
+	Title     string   `json:"title"`
+	Token     string   `json:"company"`
+	ATS       string   `json:"ats"`
+	Location  string   `json:"location"`
+	URL       string   `json:"url"`
+	Note      string   `json:"note"`
 	YoeMin    *float64 `json:"yoe_min"`
-	FirstSeen string  `json:"first_seen_at"`
+	FirstSeen string   `json:"first_seen_at"`
+	Source    string   `json:"source"`
+}
+
+const jobRowCols = `id, score, title, token, ats, location, url, note, yoe_min, first_seen_at, source`
+
+func scanJobRow(sc interface{ Scan(...any) error }, r *JobRow) error {
+	return sc.Scan(&r.ID, &r.Score, &r.Title, &r.Token, &r.ATS, &r.Location,
+		&r.URL, &r.Note, &r.YoeMin, &r.FirstSeen, &r.Source)
 }
 
 func (s *Store) JobRows(status string, limit int) ([]JobRow, error) {
 	rows, err := s.DB.Query(
-		`SELECT id, score, title, token, ats, location, url, note, yoe_min, first_seen_at
+		`SELECT `+jobRowCols+`
 		 FROM jobs WHERE status = ? ORDER BY score DESC, first_seen_at DESC LIMIT ?`, status, limit)
 	if err != nil {
 		return nil, err
@@ -359,8 +433,7 @@ func (s *Store) JobRows(status string, limit int) ([]JobRow, error) {
 	var out []JobRow
 	for rows.Next() {
 		var r JobRow
-		if err := rows.Scan(&r.ID, &r.Score, &r.Title, &r.Token, &r.ATS, &r.Location,
-			&r.URL, &r.Note, &r.YoeMin, &r.FirstSeen); err != nil {
+		if err := scanJobRow(rows, &r); err != nil {
 			return nil, err
 		}
 		out = append(out, r)

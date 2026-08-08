@@ -14,7 +14,7 @@ salary gates. Your job: claim, tailor, apply, report. Never re-litigate the gate
 ### Step 0 — make sure jobd is reachable (do this first, always)
 
 ```
-curl -sf http://127.0.0.1:8383/api/stats || (cd ~/agent && (./jobd-bin daemon -db jobd.db -backend off >/tmp/jobd.log 2>&1 &) && sleep 4 && curl -sf http://127.0.0.1:8383/api/stats)
+curl -sf http://127.0.0.1:8383/api/stats || (cd ~/projects/agent && (./jobd-bin daemon -db jobd.db -backend off >/tmp/jobd.log 2>&1 &) && sleep 4 && curl -sf http://127.0.0.1:8383/api/stats)
 ```
 
 The daemon serves the API this whole skill depends on. If it isn't running, start it
@@ -54,6 +54,14 @@ the gate missed. If you find one, report `rejected_hard` with the verbatim quote
 move on. Harshil has ~1 year; 1-2 year postings are a deliberate stretch and SHOULD be
 applied to (the note will say "YoE stretch") — do not skip those. This is the
 human-level double-check; it costs one read.
+
+**Two exceptions, both visible in `job.note`:**
+- A note containing **`FORCED`** means Harshil overrode a filter himself when he added
+  the job. Apply to it. Do not re-litigate what he already decided.
+- A job with `"ats": "manual"` came in through `skills/jobd-add` from a page jobd cannot
+  read (LinkedIn, a careers site). Its `jd_text` is the copy stored at intake, so it
+  cannot be stale-checked against the board — verify the posting is still live when you
+  open the URL, and report `dead` if it is gone.
 
 ### 4. Tailor the resume
 Read `bank_yaml`. Choose the bullets whose `tags` best mirror this JD, respecting each

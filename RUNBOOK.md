@@ -3,18 +3,79 @@
 Read this before your first unattended run so you know what is normal and what is a
 real fault.
 
+## A job you found yourself — put it INTO the pipeline
+
+When you're sent a link, spot a LinkedIn post, or get a referral, hand it to jobd rather
+than working it by hand. It runs the same dedupe, prefilter, LLM gate and scoring the
+178-board sweep runs, and a job that passes lands in the same apply queue — the apply and
+outreach stages cannot tell it apart from one the daemon found.
+
+Easiest: paste the URL into the box at the top of the dashboard (http://127.0.0.1:8383).
+
+Or ask Claude — this is what `skills/jobd-add/SKILL.md` is for. It resolves a LinkedIn
+post down to the real board URL first, which matters:
+
+    claude "/jobd-add https://job-boards.greenhouse.io/acme/jobs/1234567"
+
+Or the API / CLI directly:
+
+    curl -s -X POST http://127.0.0.1:8383/api/jobs/submit \
+      -H 'Content-Type: application/json' \
+      -d '{"url":"https://job-boards.greenhouse.io/acme/jobs/1234567","note":"referral from Ankit"}'
+
+    ./jobd-bin add -db jobd.db -url 'https://jobs.lever.co/acme/uuid' -note 'referral'
+
+For a **tracked board** (greenhouse/lever/ashby/workable/smartrecruiters) the URL is all
+it needs — it fetches the title, location and JD itself, and adds that company to the
+sweep registry, so every future opening there arrives on its own. For anything else
+(LinkedIn, a careers page) jobd cannot read the page: supply `title` and `jd_text`, or
+`-title` and `-jd <file>`. A `422` says exactly that and nothing else.
+
+What comes back:
+
+    queued     passed everything; it's in the apply queue at the score shown
+    rejected   a filter said no — `stage` says which one, `note` says why
+    duplicate  already known: `stage: ledger` = applied/rejected before, `jobs` = already queued
+    deferred   the gate couldn't run (JD too short, or Gemini unavailable) — needs your eye
+
+`force: true` (or `-force`) queues it despite a rejection. The gate still runs and the
+note records what was overridden — it changes the decision, never the facts. It cannot
+reopen a job already applied to: the ledger beats force, always.
+
+## One-off job — a single JD, outside the pipeline
+
+When someone hands you one posting (a link, a forwarded JD, a referral) and you want the
+same output the pipeline produces:
+
+    scripts/oneoff.sh <slug> [jd-url]
+
+    scripts/oneoff.sh bjak-backend                                  # JD text already written
+    scripts/oneoff.sh crunchyroll-6696781 https://job-boards...     # fetch the JD, then build
+
+It needs `jds/<slug>.txt` and `selections/<slug>.json` — same slug for both. With a URL it
+fetches the JD itself; **prefer that over pasting a summary**, because the screener matches
+against the JD text and a hand-written précis under-reports coverage (the full Crunchyroll
+posting scores against 17 terms, a summary of it only 8).
+
+Picking the bullets in `selections/<slug>.json` is the judgment call — that is Claude's job,
+reading the JD against `bank/bank.yaml`. The script does everything after that, and rebuilds
+`resumegen-bin` first if any Go source is newer.
+
 ## Manual override — run any stage yourself
 
 The daemon chains these automatically, but every stage is a standalone command you can
 run by hand when something fails. Order matters only in that each feeds the next.
 
-    cd ~/agent
+    cd ~/projects/agent
 
     # 1. discovery: sweep all 178 boards (no LLM, free)
     ./jobd-bin sweep -db jobd.db
 
     # 2. prefilter + LLM gate (add -max 25 to limit spend on a big backlog)
     ./jobd-bin gate -db jobd.db
+
+    # 2b. hand-add a job you found yourself (same filters, same queue)
+    ./jobd-bin add -db jobd.db -url '<posting url>'
 
     # 3. see what's queued
     ./jobd-bin stats -db jobd.db
@@ -53,7 +114,7 @@ Single-job manual recovery (when one job is wedged):
 
 Terminal 1 — the daemon (leave it open; this is the whole discovery+gate engine):
 
-    cd ~/agent && ./jobd-bin daemon -db jobd.db
+    cd ~/projects/agent && ./jobd-bin daemon -db jobd.db
 
 Browser — the dashboard, refreshes itself every 2 min:
 
@@ -152,7 +213,7 @@ Stale claims (crashed session) auto-return to the queue after 1 hour.
 Dashboard: apply queue, "Pending for Harshil", and the run log (boards/new/gated/
 shortlisted per cycle).
 
-    sqlite3 ~/agent/jobd.db "SELECT applied_at, title, token, resume_tailored, note FROM jobs WHERE status='applied' ORDER BY applied_at DESC LIMIT 20"
+    sqlite3 ~/projects/agent/jobd.db "SELECT applied_at, title, token, resume_tailored, note FROM jobs WHERE status='applied' ORDER BY applied_at DESC LIMIT 20"
 
 Cost check (should be pennies):
 
